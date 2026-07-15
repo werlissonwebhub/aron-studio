@@ -719,7 +719,9 @@
             } catch (tokenErr) {
                 console.error("apiFetch: erro ao obter token do Firebase:", tokenErr);
             }
-            return fetch(url, { ...options, headers });
+            const BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") ? "http://127.0.0.1:8000" : "https://aron-studio-api.onrender.com";
+            const fullUrl = url.startsWith("http") ? url : BASE + url;
+            return fetch(fullUrl, { ...options, headers });
         };
 
         // =============================================
