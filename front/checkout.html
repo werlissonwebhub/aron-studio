@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aron Studio — Checkout</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Mercado Pago SDK -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <!-- Firebase SDKs (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #030303;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary-text: #ffffff;
+            --secondary-text: rgba(255, 255, 255, 0.6);
+            --accent-gradient: linear-gradient(135deg, #a78bfa, #38bdf8);
+            --accent-color: #a78bfa;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at center, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+            color: var(--primary-text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .logo-accent {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-link {
+            color: var(--secondary-text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary-text);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card Base style */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 30px;
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* PLANS STATE */
+        .plans-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .plans-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.03em;
+        }
+
+        .plans-header p {
+            color: var(--secondary-text);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .plan-card {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card.popular-border {
+            border-color: rgba(167, 139, 250, 0.5);
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.1);
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(167, 139, 250, 0.05);
+        }
+
+        .plan-card.popular-border:hover {
+            border-color: rgba(167, 139, 250, 0.8);
+            box-shadow: 0 15px 35px rgba(167, 139, 250, 0.15);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 9999px;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .badge-popular {
+            background: rgba(167, 139, 250, 0.15);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .badge-best {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .plan-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+        }
+
+        .plan-price-box {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .plan-price {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .plan-period {
+            color: var(--secondary-text);
+            margin-left: 5px;
+            font-size: 14px;
+        }
+
+        .plan-credits {
+            font-size: 15px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 25px;
+        }
+
+        .benefits {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 35px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .benefits li {
+            font-size: 14px;
+            color: var(--secondary-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .benefits li .check {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
+        .btn-continue {
+            background: var(--accent-gradient);
+            color: #030303;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.3);
+        }
+
+        /* CHECKOUT STATE */
+        .checkout-layout {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--secondary-text);
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            color: var(--primary-text);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .checkout-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .summary-box {
+            margin-bottom: 30px;
+            border-left: 4px solid #a78bfa;
+        }
+
+        .summary-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--secondary-text);
+            margin-bottom: 8px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4px;
+        }
+
+        .summary-row .plan-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .summary-row .plan-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .summary-credits {
+            font-size: 13px;
+            color: var(--secondary-text);
+        }
+
+        .secure-footer {
+            text-align: center;
+            color: var(--secondary-text);
+            font-size: 13px;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* SPINNER */
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.05);
+            border-top-color: #a78bfa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner-container p {
+            color: var(--secondary-text);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* ERROR MESSAGE */
+        .error-msg {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* RESULT STATE */
+        .result-card {
+            text-align: center;
+            max-width: 500px;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .icon-success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 2px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .icon-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 2px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .icon-failure {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 2px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .icon-wrapper svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .result-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .result-text {
+            color: var(--secondary-text);
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .btn-action {
+            background: var(--accent-gradient);
+            color: #030303;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 28px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(167, 139, 250, 0.2);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(167, 139, 250, 0.3);
+        }
+
+        .countdown-text {
+            font-size: 12px;
+            color: var(--secondary-text);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <img src="/img/Aron-mark.png" alt="Aron Studio" style="height: 50px; width: auto; object-fit: contain;">
+        </div>
+        <a href="/chat" class="back-link">Voltar ao chat</a>
+    </header>
+
+    <!-- ESTADO 1: SELEÇÃO DE PLANO -->
+    <div id="state-plans" class="container">
+        <div class="plans-header">
+            <h1>Escolha seu plano</h1>
+            <p>Selecione a quantidade ideal de créditos para criar seus projetos</p>
+        </div>
+
+        <div class="plans-grid">
+            <!-- STARTER -->
+            <div class="plan-card card">
+                <h2 class="plan-title">Starter</h2>
+                <div class="plan-price-box">
+                    <span class="plan-price">R$ 29,90</span>
+                    <span class="plan-period">/ único</span>
+                </div>
+                <div class="plan-credits">50 créditos</div>
+
+                <ul class="benefits">
+                    <li><span class="check">✓</span> 50 gerações de alta fidelidade</li>
+                    <li><span class="check">✓</span> Ideal para landing pages e sites institucionais</li>
+                    <li><span class="check">✓</span>Acesso ao chat de planejamentos estruturados</li>
+                      <li><span class="check">✓</span>Copiar código diretamente da tela</li>
+                        <li><span class="check">✓</span>Suporte padrão por e-mail</li>
+                </ul>
+
+                <button type="button" class="btn-continue" onclick="selectPlan('PLAN_STARTER')">Continuar</button>
+            </div>
+
+            <!-- PRO -->
+            <div class="plan-card card popular-border">
+                <span class="badge badge-popular"> Mais popular</span>
+                <h2 class="plan-title">Pro</h2>
+                <div class="plan-price-box">
+                    <span class="plan-price">R$ 59,90</span>
+                    <span class="plan-period">/ único</span>
+                </div>
+                <div class="plan-credits">150 créditos</div>
+
+                <ul class="benefits">
+                    <li><span class="check">✓</span> 150 gerações premium</li>
+                    <li><span class="check">✓</span> Criação de aplicações web completos (front e back-end)</li>
+                    <li><span class="check">✓</span> Gemini 3.5 flash Claude-Sonnet e GPT como modo thiking ativado</li>
+                    <li><span class="check">✓</span> Copiar códico e exportar projetos em formato zip</li>
+                    <li><span class="check">✓</span> Suporte prioritário por e-mail</li>
+                </ul>
+
+                <button type="button" class="btn-continue" onclick="selectPlan('PLAN_PRO')">Continuar</button>
+            </div>
+
+            <!-- ULTRA -->
+            <div class="plan-card card">
+                <span class="badge badge-best"> Melhor valor</span>
+                <h2 class="plan-title">Ultra</h2>
+                <div class="plan-price-box">
+                    <span class="plan-price">R$ 99,90</span>
+                    <span class="plan-period">/ único</span>
+                </div>
+                <div class="plan-credits">350 créditos</div>
+
+                <ul class="benefits">
+                    <li><span class="check">✓</span> 350 gerações altíssima fidelidade</li>
+                    <li><span class="check">✓</span>acesso livre ao gemini 3.5 flash e claude-sonnet</li>
+                    <li><span class="check">✓</span>criação de apps,sites e jogos complexos </li>
+                     <li><span class="check">✓</span>Exportação completa em formato.zip</li>
+                       <li><span class="check">✓</span>Deploy em nuvem integrado com um clique</li>
+                       <li><span class="check">✓</span>Suporte VIP e acesso antecipado a novos recusros</li>
+                </ul>
+
+                <button type="button" class="btn-continue" onclick="selectPlan('PLAN_ULTRA')">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESTADO 2: CHECKOUT (MERCADO PAGO BRICK) -->
+    <div id="state-checkout" class="container hidden">
+        <div class="checkout-layout">
+            <button type="button" class="btn-back" onclick="goBackToPlans()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Voltar
+            </button>
+
+            <h1 class="checkout-title">Finalizar pagamento</h1>
+
+            <!-- Resumo do plano -->
+            <div class="summary-box card">
+                <div class="summary-title">Resumo do Plano</div>
+                <div class="summary-row">
+                    <span id="summary-plan-name" class="plan-name">-</span>
+                    <span id="summary-plan-price" class="plan-price">-</span>
+                </div>
+                <div id="summary-plan-credits" class="summary-credits">-</div>
+            </div>
+
+            <!-- Error container -->
+            <div id="error-message" class="error-msg hidden"></div>
+
+            <!-- Spinner -->
+            <div id="checkout-spinner" class="spinner-container">
+                <div class="spinner"></div>
+                <p>Preparando checkout seguro...</p>
+            </div>
+
+            <!-- Payment Brick Container -->
+            <div id="paymentBrick_container"></div>
+
+            <!-- Aviso PIX -->
+            <div id="pix-hint" style="
+                margin-top: 12px;
+                padding: 12px 16px;
+                background: rgba(52,215,221,0.08);
+                border: 1px solid rgba(52,215,221,0.25);
+                border-radius: 10px;
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 13px;
+                color: rgba(255,255,255,0.75);
+                line-height: 1.5;
+            ">
+                <svg style="flex-shrink:0;margin-top:1px" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="#34D7DD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <div>
+                    <strong style="color:#34D7DD">O QR Code PIX aparece aqui na tela</strong> — você não precisa esperar
+                    nenhum email.<br>
+                    Basta copiar o código ou escanear o QR Code diretamente pelo seu app de banco.
+                </div>
+            </div>
+
+            <div class="secure-footer">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Pagamento seguro via Mercado Pago
+            </div>
+        </div>
+    </div>
+
+    <!-- ESTADO 3: RESULTADO DO PAGAMENTO -->
+    <div id="state-result" class="container hidden">
+
+        <!-- SUCCESS -->
+        <div id="result-success" class="card result-card hidden">
+            <div class="icon-wrapper icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2 class="result-title">Pagamento confirmado! </h2>
+            <p class="result-text">Seus créditos foram adicionados. Bem-vindo ao Aron Elite v1!</p>
+            <a href="/chat" class="btn-action">Ir para o Chat</a>
+            <span class="countdown-text">Redirecionando em <span id="countdown">5</span> segundos...</span>
+        </div>
+
+        <!-- PENDING -->
+        <div id="result-pending" class="card result-card hidden">
+            <div class="icon-wrapper icon-pending">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </div>
+            <h2 class="result-title">Pagamento em processamento</h2>
+            <p class="result-text">Seu pagamento está sendo processado. Você receberá uma confirmação em breve.</p>
+            <a href="/chat" class="btn-action">Voltar ao Studio</a>
+        </div>
+
+        <!-- FAILURE -->
+        <div id="result-failure" class="card result-card hidden">
+            <div class="icon-wrapper icon-failure">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+            <h2 class="result-title">Pagamento não aprovado</h2>
+            <p class="result-text">Não foi possível processar o pagamento. Tente novamente.</p>
+            <button type="button" class="btn-action" onclick="retryPayment()">Tentar novamente</button>
+        </div>
+
+    </div>
+
+    <script>
+        // =============================================
+        // FIREBASE (igual ao chat.html) — necessario pra
+        // anexar o token nas chamadas de pagamento agora
+        // que elas exigem login.
+        // =============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1E__qsxIBVr5R3lVR60LB5YmSH5N6cao",
+            authDomain: "ia-enterprises.firebaseapp.com",
+            databaseURL: "https://ia-enterprises-default-rtdb.firebaseio.com",
+            projectId: "ia-enterprises",
+            storageBucket: "ia-enterprises.firebasestorage.app",
+            messagingSenderId: "136892318871",
+            appId: "1:136892318871:web:d618a17524e39d742f55d2",
+            measurementId: "G-1FG3KPREV1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+        // Espera o Firebase restaurar a sessao (currentUser comeca null ate
+        // o SDK confirmar), pra nao disparar fetch autenticado cedo demais.
+        function waitForAuthUser() {
+            return new Promise((resolve) => {
+                if (auth.currentUser) return resolve(auth.currentUser);
+                const unsubscribe = auth.onAuthStateChanged((user) => {
+                    unsubscribe();
+                    resolve(user);
+                });
+            });
+        }
+
+        // apiFetch: igual ao fetch normal, mas sempre tenta anexar o token
+        // do Firebase no header Authorization.
+        window.apiFetch = async function (url, options = {}) {
+            const headers = { ...(options.headers || {}) };
+            try {
+                const user = await waitForAuthUser();
+                if (user) {
+                    const token = await user.getIdToken();
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+            } catch (tokenErr) {
+                console.error("apiFetch: erro ao obter token do Firebase:", tokenErr);
+            }
+            return fetch(url, { ...options, headers });
+        };
+
+        // =============================================
+        // ESTADO GLOBAL
+        // =============================================
+        const PLANS = {
+            PLAN_STARTER: { title: 'Starter', price: 29.90, priceLabel: 'R$ 29,90', credits: '50 créditos' },
+            PLAN_PRO: { title: 'Pro', price: 59.90, priceLabel: 'R$ 59,90', credits: '150 créditos' },
+            PLAN_ULTRA: { title: 'Ultra', price: 99.90, priceLabel: 'R$ 99,90', credits: '350 créditos' }
+        };
+
+        let currentPlanId = null;
+        let selectedPrice = 0;
+        let brickController = null; // para destruir o brick se voltar ao ESTADO 1
+
+        // =============================================
+        // AO CARREGAR A PÁGINA
+        // =============================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            // 1. Verificar se tem user_id
+            const userId = localStorage.getItem('aron_user_id');
+            if (!userId) { window.location.href = '/chat'; return; }
+
+            // 2. Verificar se tem status na URL (retorno do MP)
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+            const planParam = params.get('plan');
+
+            if (status) {
+                showState('result');
+                handleResult(status);
+                return;
+            }
+
+            // 3. Se veio com ?plan=PLAN_PRO, pular seleção e ir direto ao checkout
+            if (planParam && PLANS[planParam]) {
+                currentPlanId = planParam;
+                selectedPrice = PLANS[planParam].price;
+                updatePlanSummary(planParam);
+                showState('checkout');
+                await loadCheckout();
+                return;
+            }
+
+            // 4. Estado padrão: seleção de plano
+            showState('plans');
+        });
+
+        // =============================================
+        // FUNÇÕES PRINCIPAIS
+        // =============================================
+        function showState(state) {
+            // 'plans' | 'checkout' | 'result'
+            document.getElementById('state-plans').classList.add('hidden');
+            document.getElementById('state-checkout').classList.add('hidden');
+            document.getElementById('state-result').classList.add('hidden');
+
+            if (state === 'plans') {
+                document.getElementById('state-plans').classList.remove('hidden');
+            } else if (state === 'checkout') {
+                document.getElementById('state-checkout').classList.remove('hidden');
+            } else if (state === 'result') {
+                document.getElementById('state-result').classList.remove('hidden');
+            }
+        }
+
+        function updatePlanSummary(planId) {
+            const plan = PLANS[planId];
+            if (!plan) return;
+            const nameEl = document.getElementById('summary-plan-name');
+            const priceEl = document.getElementById('summary-plan-price');
+            const creditsEl = document.getElementById('summary-plan-credits');
+            if (nameEl) nameEl.textContent = `Plano ${plan.title}`;
+            if (priceEl) priceEl.textContent = plan.priceLabel;
+            if (creditsEl) creditsEl.textContent = plan.credits;
+        }
+
+        async function selectPlan(planId) {
+            currentPlanId = planId;
+            selectedPrice = PLANS[planId].price;
+            updatePlanSummary(planId);
+
+            showState('checkout');
+            await loadCheckout();
+        }
+
+        async function loadCheckout() {
+            try {
+                showSpinner(true);
+                showError(null);
+
+                // 1. Buscar chave pública do MP
+                const configRes = await fetch('/api/config');
+                const { mp_public_key } = await configRes.json();
+
+                // 2. Criar preferência no backend
+                const userId = localStorage.getItem('aron_user_id');
+                const prefRes = await apiFetch('/api/payments/preference', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan_id: currentPlanId, user_id: userId })
+                });
+                const prefData = await prefRes.json();
+
+                if (!prefRes.ok || !prefData.preference_id) {
+                    throw new Error(prefData.detail || 'Falha ao criar preferência de pagamento.');
+                }
+
+                // 3. Inicializar brick
+                await initBrick(prefData.preference_id, mp_public_key);
+
+            } catch (err) {
+                console.error(err);
+                showError('Erro ao carregar checkout. Tente novamente.');
+                showSpinner(false);
+            }
+        }
+
+        async function initBrick(preferenceId, mpPublicKey) {
+            // Se já existir um Brick anterior, destrua-o
+            if (brickController) {
+                try { await brickController.unmount(); } catch (e) { }
+                brickController = null;
+            }
+            document.getElementById('paymentBrick_container').innerHTML = '';
+
+            const mp = new MercadoPago(mpPublicKey, { locale: 'pt-BR' });
+            const bricksBuilder = mp.bricks();
+
+            brickController = await bricksBuilder.create("payment", "paymentBrick_container", {
+                initialization: {
+                    amount: selectedPrice,    // número float ex: 59.90
+                    preferenceId: preferenceId,
+                },
+                customization: {
+                    visual: { style: { theme: 'dark' } },
+                    paymentMethods: {
+                        creditCard: "all",
+                        debitCard: "all",
+                        ticket: "all",       // boleto
+                        bankTransfer: "all", // PIX
+                        atm: "all",
+                    },
+                    visual: {
+                        style: {
+                            theme: "dark",
+                            customVariables: {
+                                baseColor: "#a78bfa",
+                                buttonBackground: "linear-gradient(135deg, #a78bfa, #38bdf8)",
+                                buttonTextColor: "#ffffff",
+                                inputBackgroundColor: "rgba(255,255,255,0.05)",
+                                inputBorderColor: "rgba(255,255,255,0.15)",
+                                labelColor: "rgba(255,255,255,0.8)",
+                                textColor: "#ffffff",
+                                formBackgroundColor: "transparent",
+                            }
+                        }
+                    }
+                },
+                callbacks: {
+                    onReady: () => {
+                        showSpinner(false);
+                    },
+                    onSubmit: async ({ selectedPaymentMethod, formData }) => {
+                        showSpinner(true);
+                        try {
+                            const userId = localStorage.getItem('aron_user_id') || '';
+                            const res = await apiFetch('/api/payments/process', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ plan_id: currentPlanId, user_id: userId, formData: formData })
+                            });
+                            const data = await res.json();
+                            console.log('[PAYMENT RESPONSE]', data);
+                            showSpinner(false);
+                            if (!res.ok) { showError(data.detail || 'Erro ao processar pagamento.'); return; }
+                            if (data.qr_code) { showPixScreen(data); return; }
+                            if (data.boleto_url) { window.open(data.boleto_url, '_blank'); return; }
+                            if (data.status === 'approved') { showSuccessScreen(); return; }
+                            showError('Pagamento em analise. Status: ' + (data.status || 'pendente'));
+                        } catch (e) {
+                            console.error('[PAYMENT CATCH ERROR]', e);
+                            showSpinner(false);
+                            showError('Falha de conexao ao processar pagamento.');
+                        }
+                    },
+                    onError: (error) => {
+                        console.error("[BRICK ERROR]", error);
+                        showError("Erro ao carregar o checkout. Tente novamente.");
+                        showSpinner(false);
+                    }
+                }
+            });
+        }
+
+
+        function showPixScreen(data) {
+            const box = document.getElementById('paymentBrick_container');
+            if (brickController) { try { brickController.unmount(); } catch (e) { } brickController = null; }
+            box.innerHTML = '<div style="text-align:center;padding:28px 16px;">' +
+                '<h3 style="color:#fff;font-size:20px;font-weight:800;margin-bottom:6px;">Escaneie para pagar</h3>' +
+                '<p style="color:rgba(255,255,255,.5);font-size:13px;margin-bottom:20px;">Abra o app do seu banco e escaneie o QR Code, ou copie o codigo abaixo.</p>' +
+                '<img src="data:image/png;base64,' + data.qr_code_base64 + '" style="width:240px;height:240px;border-radius:16px;background:#fff;padding:12px;margin:0 auto 20px;display:block;">' +
+                '<div style="display:flex;gap:8px;max-width:420px;margin:0 auto;">' +
+                '<input id="pix-code-input" value="' + data.qr_code + '" readonly style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-size:12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;">' +
+                '<button onclick="const i=document.getElementById(\'pix-code-input\');i.select();document.execCommand(\'copy\');this.textContent=\'Copiado!\';" style="background:linear-gradient(135deg,#B349F5,#34D7DD);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">Copiar</button>' +
+                '</div>' +
+                '<p style="color:rgba(255,255,255,.35);font-size:12px;margin-top:18px;">Assim que o pagamento for confirmado, seus creditos caem automaticamente. Pode levar alguns segundos.</p>' +
+                '</div>';
+            iniciarPollingPagamento(data.payment_id);
+        }
+
+        function showSuccessScreen() {
+            const box = document.getElementById('paymentBrick_container');
+            if (brickController) { try { brickController.unmount(); } catch (e) { } brickController = null; }
+            box.innerHTML = '<div style="text-align:center;padding:48px 16px;">' +
+                '<div style="width:72px;height:72px;border-radius:50%;background:rgba(74,222,128,.12);border:2px solid #4ade80;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:34px;color:#4ade80;">&#10003;</div>' +
+                '<h3 style="color:#fff;font-size:22px;font-weight:800;margin-bottom:8px;">Pagamento aprovado!</h3>' +
+                '<p style="color:rgba(255,255,255,.55);font-size:14px;margin-bottom:24px;">Seus creditos ja foram adicionados. Bora criar!</p>' +
+                '<a href="/chat" style="display:inline-block;background:linear-gradient(135deg,#B349F5,#34D7DD);color:#fff;border-radius:12px;padding:12px 32px;font-weight:700;text-decoration:none;">Ir para o Studio</a>' +
+                '</div>';
+        }
+
+        function iniciarPollingPagamento(paymentId) {
+            let tentativas = 0;
+            const timer = setInterval(async () => {
+                tentativas++;
+                if (tentativas > 60) { clearInterval(timer); return; }
+                try {
+                    const r = await apiFetch('/api/payments/status/' + paymentId);
+                    const d = await r.json();
+                    if (d.status === 'approved') { clearInterval(timer); showSuccessScreen(); }
+                } catch (e) { }
+            }, 5000);
+        }
+
+        function goBackToPlans() {
+            // Destruir brick antes de voltar
+            if (brickController) {
+                try { brickController.unmount(); } catch (e) { }
+                brickController = null;
+            }
+            document.getElementById('paymentBrick_container').innerHTML = '';
+            currentPlanId = null;
+            // Remove query params da url
+            history.replaceState({}, document.title, window.location.pathname);
+            showState('plans');
+        }
+
+        function handleResult(status) {
+            const successDiv = document.getElementById('result-success');
+            const pendingDiv = document.getElementById('result-pending');
+            const failureDiv = document.getElementById('result-failure');
+
+            successDiv.classList.add('hidden');
+            pendingDiv.classList.add('hidden');
+            failureDiv.classList.add('hidden');
+
+            if (status === 'success') {
+                successDiv.classList.remove('hidden');
+                // Mostrar sucesso + auto-redirect 5s
+                let seconds = 5;
+                const countdownEl = document.getElementById('countdown');
+                if (countdownEl) countdownEl.textContent = seconds;
+
+                const timer = setInterval(() => {
+                    seconds--;
+                    if (countdownEl) countdownEl.textContent = seconds;
+                    if (seconds <= 0) {
+                        clearInterval(timer);
+                        window.location.href = '/chat';
+                    }
+                }, 1000);
+            } else if (status === 'pending') {
+                pendingDiv.classList.remove('hidden');
+            } else {
+                failureDiv.classList.remove('hidden');
+            }
+        }
+
+        function retryPayment() {
+            // Remove status da URL
+            history.replaceState({}, document.title, window.location.pathname);
+            showState('plans');
+        }
+
+        function showSpinner(show) {
+            const spinner = document.getElementById('checkout-spinner');
+            if (show) {
+                spinner.classList.remove('hidden');
+            } else {
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function showError(msg) {
+            const errorEl = document.getElementById('error-message');
+            if (msg) {
+                errorEl.textContent = msg;
+                errorEl.classList.remove('hidden');
+            } else {
+                errorEl.classList.add('hidden');
+                errorEl.textContent = '';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+# robots.txt — Aron Studio
+User-agent: *
+Allow: /$
+Allow: /index.html
+Allow: /img/
+Allow: /css/
+Allow: /js/
+
+# Area logada do app: nao indexar (nao tem conteudo publico)
+Disallow: /chat.html
+Disallow: /checkout
+Disallow: /api/
+Disallow: /generate/
+Disallow: /deploy
+
+Sitemap: https://aronstudio.com.br/sitemap.xml

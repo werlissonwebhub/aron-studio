@@ -1,0 +1,39 @@
+# Ambiente e segredos
+.env
+*.env
+server/.env
+
+# Firebase — NUNCA versionar chaves privadas
+server/firebase-service-account*.json
+firebase-service-account*.json
+
+# Banco de dados local
+*.db
+*.sqlite
+server/aron_studio.db
+
+# Python
+server/.venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Scripts de debug (mover para fora do repo)
+scratch/
+server/check_*.py
+server/trace_*.py
+server/test_*.py
+server/fix_*.py
+server/reset_*.py
+server/count_*.py
+server/scratch_*.py
+
+# Sistema
+.DS_Store
+Thumbs.db
+server/nul
+
+firebase-service-account.json

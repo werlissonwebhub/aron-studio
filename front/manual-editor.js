@@ -1,0 +1,633 @@
+/*! ===================================================================
+    ARON MANUAL EDITOR  —  edição manual direta no preview (SEM TOKENS)
+    -------------------------------------------------------------------
+    Opera a partir do parent (chat.html) sobre o iframe same-origin
+    (#preview-iframe). Clica pra selecionar, 2 cliques edita texto,
+    painel muda cor/fonte/tamanho/etc, e troca imagem por upload.
+
+    API global:
+      AronManualEditor.toggle()   liga/desliga o modo edição
+      AronManualEditor.enable()
+      AronManualEditor.disable()
+      AronManualEditor.isOn()
+      AronManualEditor.save()      captura HTML limpo e salva
+      AronManualEditor.getCleanHTML()
+
+    PRÉ-REQUISITO p/ salvar persistir (1 linha no chat.html, perto de
+    "let fullHtml = ''"):
+      window.__aronSetFullHtml = (h) => { fullHtml = h; window.fullHtml = h; };
+    =================================================================== */
+(function () {
+  'use strict';
+  if (window.AronManualEditor) return; // evita injeção dupla
+
+  // iframes candidatos (usa o visível)
+  var IFRAME_SELECTORS = ['#preview-iframe', '#editor-preview-iframe'];
+
+  var FONTS = [
+    ["'Inter', sans-serif", 'Inter'],
+    ["'Plus Jakarta Sans', sans-serif", 'Plus Jakarta Sans'],
+    ["'Poppins', sans-serif", 'Poppins'],
+    ["'Montserrat', sans-serif", 'Montserrat'],
+    ["'EB Garamond', serif", 'EB Garamond'],
+    ['Georgia, serif', 'Georgia'],
+    ['Arial, sans-serif', 'Arial'],
+    ["'Courier New', monospace", 'Courier New']
+  ];
+
+  var OUTLINE_SEL = '2px solid #6366f1';
+  var OUTLINE_HOV = '2px dashed #8b5cf6';
+
+  var enabled = false;
+  var iframe = null, idoc = null, iwin = null;
+  var sel = null;            // elemento selecionado (dentro do iframe)
+  var listeners = [];        // p/ limpeza
+  var loadBound = false;
+  var deviceMode = 'desktop';
+  var origIframeCss = null;
+  var hiddenInputs = [];
+  var imgMode = 'replace';
+
+  // ---------- helpers ----------
+  function $(id) { return document.getElementById(id); }
+  function addL(t, type, fn, cap) { t.addEventListener(type, fn, !!cap); listeners.push({ t: t, type: type, fn: fn, cap: !!cap }); }
+  function clearL() { listeners.forEach(function (l) { try { l.t.removeEventListener(l.type, l.fn, l.cap); } catch (e) {} }); listeners = []; }
+  function rgbToHex(rgb) { if (!rgb) return '#000000'; var m = rgb.match(/\d+/g); if (!m) return '#000000'; return '#' + m.slice(0, 3).map(function (x) { return (+x).toString(16).padStart(2, '0'); }).join(''); }
+  function isTransp(c) { return !c || c === 'transparent' || /rgba\(0, 0, 0, 0\)/.test(c); }
+  function isLeafText(el) {
+    if (!el || el.tagName === 'IMG' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return false;
+    var inlineTags = ['BR', 'B', 'I', 'SPAN', 'STRONG', 'EM', 'A'];
+    for (var i=0; i<el.children.length; i++) {
+       if (inlineTags.indexOf(el.children[i].tagName) === -1) return false;
+    }
+    return true;
+  }
+  function skip(el) { return !el || !idoc || el === idoc.body || el === idoc.documentElement || ['aron-plus-btn', 'aron-editor-script', 'aron-dynamic-content'].indexOf(el.id) >= 0; }
+
+  function getActiveIframe() {
+    var i, el;
+    for (i = 0; i < IFRAME_SELECTORS.length; i++) { el = document.querySelector(IFRAME_SELECTORS[i]); if (el && el.offsetParent !== null) return el; }
+    for (i = 0; i < IFRAME_SELECTORS.length; i++) { el = document.querySelector(IFRAME_SELECTORS[i]); if (el) return el; }
+    return null;
+  }
+
+  function toast(msg) {
+    var t = $('ame-toast');
+    if (!t) return;
+    $('ame-toast-msg').textContent = msg || 'Aplicado!';
+    t.classList.add('show');
+    clearTimeout(t._tm); t._tm = setTimeout(function () { t.classList.remove('show'); }, 1600);
+  }
+
+  // ===================================================================
+  //  CSS + UI (injetados no PARENT)
+  // ===================================================================
+  function injectStyles() {
+    if ($('ame-style')) return;
+    var css = [
+      ":root{--ame-indigo:#6366f1;--ame-violet:#8b5cf6;--ame-cyan:#34D7DD;--ame-panel:#13131f;--ame-panel2:#1a1a28;--ame-border:rgba(255,255,255,.08);--ame-txt:#f1f5f9;--ame-dim:rgba(241,245,249,.55)}",
+      // pílula superior
+      ".ame-pill{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-80px);z-index:2147483600;display:flex;align-items:center;flex-wrap:wrap;justify-content:center;max-width:94vw;gap:10px;background:var(--ame-panel);border:1px solid var(--ame-border);border-radius:14px;padding:8px 10px 8px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-family:'Inter',system-ui,sans-serif;transition:transform .3s cubic-bezier(.16,1,.3,1)}",
+      ".ame-dev{display:flex;gap:3px;background:var(--ame-panel2);border:1px solid var(--ame-border);border-radius:9px;padding:3px}",
+      ".ame-dev button{border:none;background:transparent;color:var(--ame-dim);border-radius:7px;padding:6px 9px;cursor:pointer;display:flex;align-items:center;justify-content:center}",
+      ".ame-dev button.active{background:linear-gradient(135deg,var(--ame-indigo),var(--ame-violet));color:#fff}",
+      ".ame-dev svg{width:15px;height:15px}",
+      ".ame-pill.show{transform:translateX(-50%) translateY(0)}",
+      ".ame-pill .ame-pill-txt{font-size:13px;font-weight:600;color:var(--ame-txt);display:flex;align-items:center;gap:8px}",
+      ".ame-pill .ame-pill-txt b{color:var(--ame-violet)}",
+      ".ame-pbtn{border:none;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}",
+      ".ame-pbtn.save{background:linear-gradient(135deg,var(--ame-indigo),var(--ame-violet));color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.35)}",
+      ".ame-pbtn.exit{background:var(--ame-panel2);color:var(--ame-txt);border:1px solid var(--ame-border)}",
+      // painel
+      ".ame-panel{position:fixed;top:0;right:0;height:100vh;width:300px;background:var(--ame-panel);border-left:1px solid var(--ame-border);z-index:2147483601;overflow-y:auto;font-family:'Inter',system-ui,sans-serif;color:var(--ame-txt);transform:translateX(105%);transition:transform .3s cubic-bezier(.16,1,.3,1);box-shadow:-12px 0 40px rgba(0,0,0,.4)}",
+      ".ame-panel.open{transform:translateX(0)}",
+      ".ame-panel::-webkit-scrollbar{width:8px}.ame-panel::-webkit-scrollbar-thumb{background:rgba(99,102,241,.4);border-radius:10px}",
+      ".ame-head{padding:16px 18px;border-bottom:1px solid var(--ame-border);position:sticky;top:0;background:var(--ame-panel);z-index:3;display:flex;align-items:center;justify-content:space-between;gap:8px}",
+      ".ame-tag{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--ame-cyan);background:rgba(52,215,221,.1);padding:4px 10px;border-radius:7px;border:1px solid rgba(52,215,221,.25)}",
+      ".ame-x{background:var(--ame-panel2);border:1px solid var(--ame-border);color:var(--ame-txt);border-radius:8px;width:30px;height:30px;font-size:16px;cursor:pointer;flex:none}",
+      ".ame-sec{padding:16px 18px;border-bottom:1px solid var(--ame-border)}",
+      ".ame-sec-t{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ame-dim);margin-bottom:12px}",
+      ".ame-c{margin-bottom:14px}.ame-c:last-child{margin-bottom:0}",
+      ".ame-c label{display:block;font-size:12px;color:var(--ame-dim);margin-bottom:6px}",
+      ".ame-row{display:flex;align-items:center;gap:8px}",
+      ".ame-panel input[type=color]{width:40px;height:32px;border:1px solid var(--ame-border);border-radius:8px;background:var(--ame-panel2);cursor:pointer;padding:2px}",
+      ".ame-panel input[type=color]::-webkit-color-swatch-wrapper{padding:0}.ame-panel input[type=color]::-webkit-color-swatch{border:none;border-radius:5px}",
+      ".ame-hex{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--ame-panel2);border:1px solid var(--ame-border);border-radius:8px;padding:7px 10px;color:var(--ame-txt);text-transform:uppercase}",
+      ".ame-panel select,.ame-panel input[type=text]{width:100%;background:var(--ame-panel2);border:1px solid var(--ame-border);border-radius:8px;padding:8px 10px;color:var(--ame-txt);font-size:13px;font-family:inherit}",
+      ".ame-panel select:focus,.ame-panel input:focus{outline:none;border-color:rgba(99,102,241,.5)}",
+      ".ame-panel input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:10px;background:var(--ame-panel2)}",
+      ".ame-panel input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--ame-indigo),var(--ame-violet));cursor:pointer}",
+      ".ame-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ame-txt);min-width:40px;text-align:right}",
+      ".ame-align{display:flex;gap:6px}.ame-align button{flex:1;padding:8px;background:var(--ame-panel2);border:1px solid var(--ame-border);border-radius:8px;color:var(--ame-dim);cursor:pointer;display:flex;align-items:center;justify-content:center}",
+      ".ame-align button.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.5);color:var(--ame-txt)}",
+      ".ame-align svg{width:15px;height:15px}",
+      ".ame-imgmode{display:flex;gap:6px}",
+      ".ame-imgmode button{flex:1;padding:7px;background:var(--ame-panel2);border:1px solid var(--ame-border);border-radius:8px;color:var(--ame-dim);cursor:pointer;font-size:12px;font-weight:600;font-family:inherit}",
+      ".ame-imgmode button.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.5);color:var(--ame-txt)}",
+      ".ame-remove{width:100%;margin-top:12px;padding:9px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px}",
+      ".ame-remove:hover{background:rgba(239,68,68,.16)}",
+      ".ame-remove svg{width:14px;height:14px}",
+      ".ame-drop{border:1.5px dashed rgba(99,102,241,.4);border-radius:10px;padding:18px;text-align:center;cursor:pointer;background:rgba(99,102,241,.04);transition:all .2s}",
+      ".ame-drop.drag,.ame-drop:hover{border-color:var(--ame-indigo);background:rgba(99,102,241,.1)}",
+      ".ame-drop svg{width:26px;height:26px;color:var(--ame-indigo);margin-bottom:8px}.ame-drop p{font-size:12px;color:var(--ame-dim);line-height:1.5}.ame-drop strong{color:var(--ame-txt)}",
+      // toast
+      ".ame-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ame-panel2);border:1px solid rgba(52,215,221,.4);color:var(--ame-txt);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:2147483602;box-shadow:0 10px 30px rgba(0,0,0,.5);font-family:'Inter',sans-serif;pointer-events:none}",
+      ".ame-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}",
+      // ===== MOBILE: painel vira bottom sheet =====
+      "@media (max-width:820px){",
+      ".ame-panel{top:auto;bottom:0;right:0;left:0;width:100%;height:auto;max-height:76vh;border-left:none;border-top:1px solid var(--ame-border);border-radius:20px 20px 0 0;transform:translateY(105%);box-shadow:0 -12px 44px rgba(0,0,0,.55)}",
+      ".ame-panel.open{transform:translateY(0)}",
+      ".ame-head{position:static}",
+      ".ame-pill{top:auto;bottom:14px;padding:6px 8px 6px 12px;transform:translateX(-50%) translateY(140px)}",
+      ".ame-pill.show{transform:translateX(-50%) translateY(0)}",
+      ".ame-pill.ame-hidden{display:none !important}",
+      ".ame-pbtn{min-height:40px;padding:10px 16px;font-size:13px;touch-action:manipulation}",
+      ".ame-pill.show{transform:translateX(-50%) translateY(0)}",
+      ".ame-pill .ame-pill-txt b{display:none}",
+      "}"
+    ].join('\n');
+    var s = document.createElement('style');
+    s.id = 'ame-style'; s.textContent = css;
+    document.head.appendChild(s);
+  }
+
+  function buildUI() {
+    if ($('ame-panel')) return;
+
+    // pílula superior
+    var pill = document.createElement('div');
+    pill.className = 'ame-pill'; pill.id = 'ame-pill';
+    pill.innerHTML =
+      '<span class="ame-pill-txt"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> <b>Edição manual</b> Clique num elemento</span>' +
+      '<div class="ame-dev" id="ame-dev">' +
+        '<button data-dev="desktop" class="active" title="Desktop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>' +
+        '<button data-dev="mobile" title="Mobile" style="display:none" class="md-only-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></button>' +
+      '</div>' +
+      '<button class="ame-pbtn save" id="ame-save">Salvar</button>' +
+      '<button class="ame-pbtn exit" id="ame-exit">Sair</button>';
+    document.body.appendChild(pill);
+
+    // painel de propriedades
+    var fontOpts = FONTS.map(function (f) { return '<option value="' + f[0].replace(/"/g, '&quot;') + '">' + f[1] + '</option>'; }).join('');
+    var panel = document.createElement('div');
+    panel.className = 'ame-panel'; panel.id = 'ame-panel';
+    panel.innerHTML =
+      '<div class="ame-head"><span class="ame-tag" id="ame-tag">DIV</span><button class="ame-x" id="ame-close">&times;</button></div>' +
+      '<div class="ame-sec" id="ame-sec-text"><div class="ame-sec-t">Texto</div>' +
+        '<div class="ame-c"><label>Conteúdo (ou 2 cliques no elemento)</label><input type="text" id="ame-text" placeholder="Texto"></div></div>' +
+      '<div class="ame-sec" id="ame-sec-typo"><div class="ame-sec-t">Tipografia</div>' +
+        '<div class="ame-c"><label>Fonte</label><select id="ame-font">' + fontOpts + '</select></div>' +
+        '<div class="ame-c"><label>Tamanho</label><div class="ame-row"><input type="range" id="ame-size" min="8" max="90" step="1"><span class="ame-val" id="ame-size-v">16px</span></div></div>' +
+        '<div class="ame-c"><label>Peso</label><select id="ame-weight"><option value="300">Leve (300)</option><option value="400">Normal (400)</option><option value="500">Médio (500)</option><option value="600">Semi-bold (600)</option><option value="700">Bold (700)</option><option value="800">Extra-bold (800)</option></select></div>' +
+        '<div class="ame-c"><label>Alinhamento</label><div class="ame-align" id="ame-align">' +
+          '<button data-a="left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h12M3 18h15"/></svg></button>' +
+          '<button data-a="center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M5 18h14"/></svg></button>' +
+          '<button data-a="right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M9 12h12M6 18h15"/></svg></button>' +
+        '</div></div></div>' +
+      '<div class="ame-sec"><div class="ame-sec-t">Cores</div>' +
+        '<div class="ame-c"><label>Cor do texto</label><div class="ame-row"><input type="color" id="ame-color"><input type="text" class="ame-hex" id="ame-color-h"></div></div>' +
+        '<div class="ame-c"><label>Cor de fundo</label><div class="ame-row"><input type="color" id="ame-bg"><input type="text" class="ame-hex" id="ame-bg-h"></div></div></div>' +
+      '<div class="ame-sec"><div class="ame-sec-t">Layout</div>' +
+        '<div class="ame-c"><label>Espaçamento interno</label><div class="ame-row"><input type="range" id="ame-pad" min="0" max="80" step="1"><span class="ame-val" id="ame-pad-v">0px</span></div></div>' +
+        '<div class="ame-c"><label>Cantos arredondados</label><div class="ame-row"><input type="range" id="ame-rad" min="0" max="60" step="1"><span class="ame-val" id="ame-rad-v">0px</span></div></div></div>' +
+      '<div class="ame-sec" id="ame-sec-img"><div class="ame-sec-t">Imagem</div>' +
+        '<div class="ame-c"><label>Aplicar como</label><div class="ame-imgmode" id="ame-imgmode">' +
+          '<button data-im="replace" id="ame-im-replace">Trocar</button>' +
+          '<button data-im="background">Fundo</button>' +
+          '<button data-im="insert">Inserir</button>' +
+        '</div></div>' +
+        '<div class="ame-drop" id="ame-drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><p><strong>Clique ou arraste</strong> sua imagem.</p></div>' +
+        '<div class="ame-c" id="ame-imgw-wrap" style="display:none;margin-top:14px"><label>Largura da imagem</label><div class="ame-row"><input type="range" id="ame-imgw" min="40" max="700" step="2"><span class="ame-val" id="ame-imgw-v">auto</span></div></div>' +
+        '<button class="ame-remove" id="ame-remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>Remover imagem</button>' +
+        '<input type="file" id="ame-file" accept="image/*" style="display:none"></div>';
+    document.body.appendChild(panel);
+
+    // toast
+    var t = document.createElement('div');
+    t.className = 'ame-toast'; t.id = 'ame-toast';
+    t.innerHTML = '<span id="ame-toast-msg">Aplicado!</span>';
+    document.body.appendChild(t);
+
+    wireControls();
+  }
+
+  // ===================================================================
+  //  ENABLE / DISABLE
+  // ===================================================================
+  function enable() {
+    iframe = getActiveIframe();
+    if (!iframe) { alert('Gere ou abra um site primeiro para editar.'); return; }
+    injectStyles(); buildUI();
+    attachIdoc();
+    if (!idoc) { alert('Não consegui acessar o preview. Tente recarregar o site no preview.'); return; }
+    if (!loadBound) { iframe.addEventListener('load', onIframeReload); loadBound = true; }
+    enabled = true;
+    hideInput();
+    var wrap = iframe.closest('.preview-iframe-wrapper') || iframe.parentElement;
+    if (wrap && !wrap.dataset.ameMoved) {
+      if (!iframe.dataset.ameOrigCss) { iframe.dataset.ameOrigCss = iframe.style.cssText; }
+      wrap.dataset.ameOrigCss = wrap.style.cssText;
+      var placeholder = document.createElement('div');
+      placeholder.id = 'ame-wrap-placeholder';
+      placeholder.style.display = 'none';
+      wrap.parentNode.insertBefore(placeholder, wrap);
+      document.body.appendChild(wrap);
+      wrap.dataset.ameMoved = '1';
+    }
+    if (wrap) {
+      wrap.style.cssText = 'position:fixed;top:64px;left:0;right:0;bottom:0;width:100vw;height:calc(100vh - 64px);z-index:2147480000;background:#0a0a0a;overflow:auto;margin:0;padding:0;display:flex;align-items:center;justify-content:center;';
+    }
+    iframe.style.cssText = 'transform:scale(1);transform-origin:top left;width:100%;height:100%;display:block;border:none;background:#fff;flex-shrink:0;';
+    $('ame-pill').classList.remove('ame-hidden');
+    $('ame-pill').classList.add('show');
+  }
+
+  function disable() {
+    deselect();
+    setDevice('desktop');
+    restoreInput();
+    if (iframe) {
+      var wrap = iframe.closest('.preview-iframe-wrapper') || iframe.parentElement;
+      if (wrap && wrap.dataset.ameMoved === '1') {
+        var placeholder = document.getElementById('ame-wrap-placeholder');
+        if (placeholder && placeholder.parentNode) {
+          placeholder.parentNode.insertBefore(wrap, placeholder);
+          placeholder.remove();
+        }
+        delete wrap.dataset.ameMoved;
+      }
+      if (wrap && wrap.dataset.ameOrigCss !== undefined) {
+        wrap.style.cssText = wrap.dataset.ameOrigCss;
+        delete wrap.dataset.ameOrigCss;
+      }
+      if (iframe.dataset.ameOrigCss !== undefined) {
+        iframe.style.cssText = iframe.dataset.ameOrigCss;
+        delete iframe.dataset.ameOrigCss;
+      }
+    }
+    if (iframe) {
+      var wrap = iframe.closest('.preview-iframe-wrapper') || iframe.parentElement;
+      if (wrap && wrap.dataset.ameOrigCss !== undefined) {
+        wrap.style.cssText = wrap.dataset.ameOrigCss;
+        delete wrap.dataset.ameOrigCss;
+      }
+    }
+    clearL();
+    var _pill = $('ame-pill');
+    if (_pill) {
+      _pill.classList.remove('show');
+      // Esconder de verdade: no mobile a pill fica ancorada embaixo e a
+      // animacao de transform sozinha nao a tirava da tela.
+      _pill.classList.add('ame-hidden');
+    }
+    if ($('ame-panel')) $('ame-panel').classList.remove('open');
+    enabled = false;
+  }
+
+  function onIframeReload() {
+    // o preview recarregou (regerou/trocou) -> re-liga listeners
+    if (!enabled) return;
+    clearL();
+    sel = null;
+    if ($('ame-panel')) $('ame-panel').classList.remove('open');
+    attachIdoc();
+  }
+
+  function attachIdoc() {
+    try { idoc = iframe.contentDocument; iwin = iframe.contentWindow; } catch (e) { idoc = null; return; }
+    if (!idoc || !idoc.body) { idoc = null; return; }
+    addL(idoc, 'mouseover', onHover);
+    addL(idoc, 'mouseout', onUnhover);
+    addL(idoc, 'click', onClick, true);
+    addL(idoc, 'dblclick', onDbl, true);
+  }
+
+  // ===================================================================
+  //  SELEÇÃO / HOVER / EDIÇÃO INLINE
+  // ===================================================================
+  function onHover(e) { var el = e.target; if (skip(el) || el === sel || el.isContentEditable) return; el.style.outline = OUTLINE_HOV; el.style.outlineOffset = '-2px'; }
+  function onUnhover(e) { var el = e.target; if (el === sel) return; el.style.outline = ''; el.style.outlineOffset = ''; }
+
+  function onClick(e) {
+    if (e.target && e.target.isContentEditable) return; // deixa posicionar o cursor
+    if (skip(e.target)) { return; }
+    e.preventDefault(); e.stopPropagation();
+    select(e.target);
+  }
+
+  function onDbl(e) {
+    var el = e.target;
+    if (skip(el) || !isLeafText(el)) return;
+    e.preventDefault();
+    var prevText = el.textContent || '';
+    
+    // Evita bug do Chrome onde o cursor foge do elemento inline ao apagar tudo (Backspace)
+    var oldDisplay = el.style.display;
+    var oldMinWidth = el.style.minWidth;
+    var oldMinHeight = el.style.minHeight;
+    var cs = iwin.getComputedStyle(el);
+    if (cs.display === 'inline') {
+      el.style.setProperty('display', 'inline-block', 'important');
+    }
+    el.style.setProperty('min-width', '1em', 'important');
+    el.style.setProperty('min-height', '1em', 'important');
+
+    el.setAttribute('contenteditable', 'true');
+    el.focus();
+    // Seleciona todo o texto para fácil substituição
+    try {
+      var range = idoc.createRange();
+      range.selectNodeContents(el);
+      var isel = iwin.getSelection();
+      isel.removeAllRanges();
+      isel.addRange(range);
+    } catch(ex) {}
+    
+    var off = function () {
+      el.removeAttribute('contenteditable');
+      el.style.display = oldDisplay;
+      el.style.minWidth = oldMinWidth;
+      el.style.minHeight = oldMinHeight;
+      el.removeEventListener('blur', off);
+      el.removeEventListener('keydown', onKey);
+      
+      // Limpa os espaços invisíveis inseridos como trava
+      var currentText = el.textContent.replace(/\u200B/g, '').trim();
+      if (!currentText && prevText.trim()) {
+        el.textContent = prevText;
+      } else if (currentText !== el.textContent) {
+        el.textContent = currentText;
+      }
+      
+      if (sel === el && $('ame-text')) $('ame-text').value = el.textContent;
+      toast('Texto atualizado');
+    };
+    
+    var onKey = function(ev) {
+      if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); el.blur(); }
+      if (ev.key === 'Escape') { el.textContent = prevText; el.blur(); }
+      // Backspace/Delete: browser apaga normalmente
+      // min-height:1em (setado acima) mantém o elemento visível mesmo vazio
+      // off() restaura prevText se o usuário sair sem digitar nada
+    };
+    
+    el.addEventListener('blur', off);
+    el.addEventListener('keydown', onKey);
+  }
+
+  function select(el) {
+    if (sel) { sel.style.outline = ''; sel.style.outlineOffset = ''; }
+    el.style.outline = OUTLINE_SEL; el.style.outlineOffset = '-2px';
+    sel = el;
+    populate(el);
+    $('ame-panel').classList.add('open');
+  }
+
+  function deselect() {
+    if (sel) { sel.style.outline = ''; sel.style.outlineOffset = ''; }
+    sel = null;
+    if ($('ame-panel')) $('ame-panel').classList.remove('open');
+  }
+
+  function populate(el) {
+    var cs = iwin.getComputedStyle(el);
+    var isImg = el.tagName === 'IMG';
+    $('ame-tag').textContent = el.tagName;
+
+    $('ame-sec-text').style.display = (!isImg && isLeafText(el)) ? 'block' : 'none';
+    $('ame-sec-typo').style.display = isImg ? 'none' : 'block';
+    if (!isImg && isLeafText(el)) $('ame-text').value = el.textContent;
+
+    var fs = parseInt(cs.fontSize) || 16;
+    $('ame-size').value = fs; $('ame-size-v').textContent = fs + 'px';
+    $('ame-weight').value = (cs.fontWeight || '400');
+    var cur = cs.fontFamily.split(',')[0].replace(/["']/g, '').trim().toLowerCase();
+    var fsel = $('ame-font'), m = false, i;
+    for (i = 0; i < fsel.options.length; i++) { if (fsel.options[i].value.toLowerCase().indexOf(cur) >= 0) { fsel.selectedIndex = i; m = true; break; } }
+    if (!m) fsel.selectedIndex = 0;
+    var aBtns = $('ame-align').querySelectorAll('button');
+    for (i = 0; i < aBtns.length; i++) aBtns[i].classList.toggle('active', aBtns[i].getAttribute('data-a') === cs.textAlign);
+
+    var ch = rgbToHex(cs.color); $('ame-color').value = ch; $('ame-color-h').value = ch.toUpperCase();
+    var bh = rgbToHex(cs.backgroundColor); $('ame-bg').value = bh; $('ame-bg-h').value = isTransp(cs.backgroundColor) ? 'transparent' : bh.toUpperCase();
+
+    var pd = parseInt(cs.paddingTop) || 0; $('ame-pad').value = pd; $('ame-pad-v').textContent = pd + 'px';
+    var rd = parseInt(cs.borderRadius) || 0; $('ame-rad').value = rd; $('ame-rad-v').textContent = rd + 'px';
+
+    // imagem: seção sempre visível (permite inserir imagem em qualquer elemento)
+    $('ame-im-replace').style.display = isImg ? 'block' : 'none';
+    imgMode = isImg ? 'replace' : (isLeafText(el) ? 'insert' : 'background');
+    updateImgMode();
+    $('ame-imgw-wrap').style.display = isImg ? 'block' : 'none';
+    if (isImg) { var iw = parseInt(cs.width) || 200; $('ame-imgw').value = Math.min(700, Math.max(40, iw)); $('ame-imgw-v').textContent = iw + 'px'; }
+  }
+
+  // ===================================================================
+  //  CONTROLES
+  // ===================================================================
+  function ap(prop, val) { if (sel) sel.style[prop] = val; }
+  function applyColor(v) { if (!sel) return; sel.style.setProperty('color', v, 'important'); sel.style.setProperty('-webkit-text-fill-color', v, 'important'); }
+  function applyBg(v) {
+    if (!sel) return;
+    // Remove declarações antigas que poderiam conflitar com o novo !important
+    try { sel.style.removeProperty('background'); } catch(e) {}
+    try { sel.style.removeProperty('background-color'); } catch(e) {}
+    try { sel.style.removeProperty('background-image'); } catch(e) {}
+    // Aguarda 1 frame para garantir que a remoção foi processada pelo browser
+    setTimeout(function() {
+      sel.style.setProperty('background-image', 'none', 'important');
+      sel.style.setProperty('background-color', v, 'important');
+      sel.style.setProperty('background', v, 'important');
+    }, 0);
+  }
+
+  function wireControls() {
+    $('ame-close').onclick = deselect;
+    // Botoes da pill: no mobile o 'click' era engolido pelo seletor de elementos.
+    // Aqui respondemos a pointerdown/touchstart e bloqueamos a propagacao.
+    function bindPillBtn(id, fn) {
+      var b = $(id);
+      if (!b) return;
+      var disparado = false;
+      function acionar(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (disparado) return;
+        disparado = true;
+        setTimeout(function () { disparado = false; }, 400);
+        fn();
+      }
+      b.addEventListener('touchstart', acionar, { passive: false, capture: true });
+      b.addEventListener('pointerdown', acionar, { capture: true });
+      b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); }, true);
+    }
+
+    bindPillBtn('ame-exit', function () { disable(); });
+    bindPillBtn('ame-save', function () { save(); });
+    var devBtns = $('ame-dev').querySelectorAll('button');
+    devBtns.forEach(function (b) { b.addEventListener('click', function () { setDevice(b.getAttribute('data-dev')); }); });
+
+    $('ame-text').addEventListener('input', function (e) { if (sel && isLeafText(sel)) sel.textContent = e.target.value; });
+    $('ame-font').addEventListener('change', function (e) { ap('fontFamily', e.target.value); });
+    $('ame-size').addEventListener('input', function (e) { ap('fontSize', e.target.value + 'px'); $('ame-size-v').textContent = e.target.value + 'px'; });
+    $('ame-weight').addEventListener('change', function (e) { ap('fontWeight', e.target.value); });
+    var aBtns = $('ame-align').querySelectorAll('button');
+    aBtns.forEach(function (b) { b.addEventListener('click', function () { ap('textAlign', b.getAttribute('data-a')); aBtns.forEach(function (x) { x.classList.remove('active'); }); b.classList.add('active'); }); });
+    $('ame-color').addEventListener('input', function (e) { applyColor(e.target.value); $('ame-color-h').value = e.target.value.toUpperCase(); });
+    $('ame-color-h').addEventListener('change', function (e) { applyColor(e.target.value); $('ame-color').value = e.target.value; });
+    $('ame-bg').addEventListener('input', function (e) { applyBg(e.target.value); $('ame-bg-h').value = e.target.value.toUpperCase(); });
+    $('ame-bg-h').addEventListener('change', function (e) { var v = e.target.value.trim(); if (v.toLowerCase() === 'transparent') { applyBg('transparent'); } else { applyBg(v); $('ame-bg').value = v; } });
+    $('ame-pad').addEventListener('input', function (e) { ap('padding', e.target.value + 'px'); $('ame-pad-v').textContent = e.target.value + 'px'; });
+    $('ame-rad').addEventListener('input', function (e) { ap('borderRadius', e.target.value + 'px'); $('ame-rad-v').textContent = e.target.value + 'px'; });
+
+    // imagem
+    var drop = $('ame-drop'), file = $('ame-file');
+    drop.addEventListener('click', function () { file.click(); });
+    file.addEventListener('change', function (e) { if (e.target.files[0]) loadImg(e.target.files[0]); e.target.value = ''; });
+    ['dragover', 'dragenter'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('drag'); }); });
+    ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('drag'); }); });
+    drop.addEventListener('drop', function (e) { if (e.dataTransfer.files[0]) loadImg(e.dataTransfer.files[0]); });
+    var imBtns = $('ame-imgmode').querySelectorAll('button');
+    imBtns.forEach(function (b) { b.addEventListener('click', function () { imgMode = b.getAttribute('data-im'); updateImgMode(); }); });
+    $('ame-imgw').addEventListener('input', function (e) { if (sel) { sel.style.width = e.target.value + 'px'; sel.style.height = 'auto'; } $('ame-imgw-v').textContent = e.target.value + 'px'; });
+    $('ame-remove').addEventListener('click', removeImage);
+  }
+
+  function removeImage() {
+    if (!sel) return;
+    if (sel.tagName === 'IMG') { sel.remove(); toast('Imagem removida'); deselect(); return; }
+    var bg = iwin.getComputedStyle(sel).backgroundImage;
+    if (bg && bg !== 'none') { sel.style.setProperty('background-image', 'none', 'important'); toast('Imagem de fundo removida'); return; }
+    toast('Nenhuma imagem neste elemento');
+  }
+
+  function updateImgMode() {
+    var box = $('ame-imgmode'); if (!box) return;
+    var b = box.querySelectorAll('button');
+    for (var i = 0; i < b.length; i++) b[i].classList.toggle('active', b[i].getAttribute('data-im') === imgMode);
+  }
+
+  function loadImg(f) {
+    if (!f || (f.type || '').indexOf('image/') !== 0 || !sel) return;
+    var r = new FileReader();
+    r.onload = function (ev) {
+      var data = ev.target.result;
+      if (imgMode === 'replace' && sel.tagName === 'IMG') {
+        sel.removeAttribute('srcset');
+        if (sel.parentNode && sel.parentNode.tagName === 'PICTURE') {
+          var srcs = sel.parentNode.querySelectorAll('source');
+          for (var k = 0; k < srcs.length; k++) srcs[k].remove();
+        }
+        sel.src = data; toast('Imagem trocada');
+      } else if (imgMode === 'background') {
+        sel.style.backgroundImage = 'url(' + data + ')';
+        sel.style.backgroundSize = 'cover';
+        sel.style.backgroundPosition = 'center';
+        sel.style.backgroundRepeat = 'no-repeat';
+        toast('Imagem de fundo aplicada');
+      } else {
+        var img = idoc.createElement('img');
+        img.src = data; img.style.maxWidth = '100%'; img.style.height = 'auto'; img.style.display = 'block';
+        var VOID = ['IMG', 'INPUT', 'BR', 'HR'];
+        if (sel.parentNode && VOID.indexOf(sel.tagName) >= 0) sel.parentNode.insertBefore(img, sel.nextSibling);
+        else sel.insertBefore(img, sel.firstChild);
+        toast('Imagem inserida'); select(img);
+      }
+    };
+    r.readAsDataURL(f);
+  }
+
+  // ===================================================================
+  //  PREVIEW MOBILE  +  ESCONDER INPUT
+  // ===================================================================
+  function setDevice(mode) {
+    if (!iframe) return;
+    if (mode === 'mobile') {
+      if (origIframeCss === null) origIframeCss = iframe.style.cssText;
+      iframe.style.transform = 'none';
+      iframe.style.width = '390px';
+      iframe.style.maxWidth = '390px';
+      iframe.style.height = 'calc(100vh - 120px)';
+      iframe.style.minHeight = '600px';
+      iframe.style.margin = '10px auto';
+      iframe.style.display = 'block';
+      iframe.style.border = '10px solid #0b0b14';
+      iframe.style.borderRadius = '32px';
+      iframe.style.boxShadow = '0 24px 70px rgba(0,0,0,.55)';
+      iframe.style.background = '#000';
+      deviceMode = 'mobile';
+    } else {
+      if (origIframeCss !== null) { iframe.style.cssText = origIframeCss; origIframeCss = null; }
+      deviceMode = 'desktop';
+    }
+    updateDeviceButtons();
+    try { if (iframe.contentWindow) iframe.contentWindow.postMessage({ type: 'PING_RESIZE' }, '*'); } catch (e) {}
+  }
+
+  function updateDeviceButtons() {
+    var box = $('ame-dev'); if (!box) return;
+    var btns = box.querySelectorAll('button');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-dev') === deviceMode);
+  }
+
+  function hideInput() {
+    ['#studio-input-area'].forEach(function (q) {
+      var el = document.querySelector(q);
+      if (el) { hiddenInputs.push([el, el.style.display]); el.style.display = 'none'; }
+    });
+  }
+
+  function restoreInput() {
+    hiddenInputs.forEach(function (p) { p[0].style.display = p[1]; });
+    hiddenInputs = [];
+  }
+
+  // ===================================================================
+  //  CAPTURA + SALVAR
+  // ===================================================================
+  function getCleanHTML() {
+    if (!idoc) return '';
+    deselect();
+    var root = idoc.documentElement.cloneNode(true);
+    // remove artefatos da shell do editor (se existirem)
+    ['aron-plus-btn', 'aron-editor-script'].forEach(function (id) { var n = root.querySelector('#' + id); if (n) n.remove(); });
+    // remove contenteditable + outlines transitórios nossos
+    root.querySelectorAll('[contenteditable]').forEach(function (n) { n.removeAttribute('contenteditable'); });
+    root.querySelectorAll('*').forEach(function (n) {
+      if (n.style && (n.style.outlineColor === 'rgb(99, 102, 241)' || n.style.outlineColor === 'rgb(139, 92, 246)' || n.style.outlineOffset === '-2px')) {
+        n.style.outline = ''; n.style.outlineOffset = '';
+      }
+    });
+    return '<!DOCTYPE html>\n' + root.outerHTML;
+  }
+
+  function save() {
+    var html = getCleanHTML();
+    if (!html || html.length < 50) { toast('Nada para salvar'); return; }
+    if (typeof window.__aronSetFullHtml === 'function') {
+      window.__aronSetFullHtml(html);
+    } else {
+      window.fullHtml = html;
+    }
+    // Garante que openLivePreview use a versão editada (não a original da IA)
+    window.fullHtml = html;
+    if (window.currentProjectData) window.currentProjectData.full_html = html;
+    if (typeof window.updateCodePanel === 'function') { try { window.updateCodePanel(html); } catch (e) {} }
+    if (typeof window.saveProjectToCloud === 'function') {
+      window.saveProjectToCloud(false);
+    } else {
+      toast('HTML capturado (salvamento na nuvem indisponível)');
+    }
+
+    // Salvar tambem encerra o modo de edicao (o usuario espera isso)
+    setTimeout(function () { disable(); }, 350);
+  }
+
+  // ===================================================================
+  window.AronManualEditor = {
+    enable: enable, disable: disable,
+    toggle: function () { enabled ? disable() : enable(); },
+    isOn: function () { return enabled; },
+    save: save, getCleanHTML: getCleanHTML
+  };
+})();

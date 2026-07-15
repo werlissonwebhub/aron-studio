@@ -1,0 +1,31 @@
+# ── Core API ─────────────────────────────
+fastapi==0.135.2
+uvicorn[standard]==0.42.0
+starlette==1.0.0
+pydantic==2.12.5
+
+# ── Banco de dados ───────────────────────
+aiosqlite==0.22.1
+
+# ── Ambiente ─────────────────────────────
+python-dotenv==1.2.2
+
+# ── IA — modelos ─────────────────────────
+google-genai==2.8.0
+anthropic          # Claude — ativar quando tiver API key
+# openai           # GPT-4o — descomentar quando necessário
+
+# ── Auth ─────────────────────────────────
+firebase-admin==7.4.0
+
+# ── Rate limiting ─────────────────────────
+slowapi==0.1.10
+
+# ── Pagamentos ───────────────────────────
+mercadopago==3.2.0
+
+# ── HTTP client ───────────────────────────
+httpx==0.28.1
+
+# --- Monitoramento ---
+sentry-sdk[fastapi]==2.19.0

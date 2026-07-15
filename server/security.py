@@ -1,0 +1,307 @@
+"""
+security.py — Modulo de seguranca da Aron Studio
+Responsabilidades:
+  1. Verificacao de token Firebase (autenticacao real)
+  2. Rate limiting por IP (protecao contra abuso)
+
+Como usar nas rotas:
+    from security import verify_firebase_token, limiter
+
+    @app.post("/rota-protegida")
+    @limiter.limit("10/minute")
+    async def minha_rota(request: Request, uid: str = Depends(verify_firebase_token)):
+        # uid é o ID real do usuário verificado pelo Firebase
+        ...
+"""
+
+import os
+import json
+from fastapi import HTTPException, Header
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+# Carrega o .env ANTES de ler qualquer variavel de ambiente
+# Isso garante que DEV_MODE esteja disponivel mesmo sendo importado antes do main.py
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+
+# =================================================================
+# RATE LIMITER
+# Usa o IP do cliente como chave de identificacao
+# =================================================================
+limiter = Limiter(key_func=get_remote_address)
+
+
+# =================================================================
+# FIREBASE ADMIN SDK — INICIALIZACAO
+# =================================================================
+def _init_firebase():
+    """
+    Inicializa o Firebase Admin SDK (executa apenas uma vez).
+
+    Suporta duas formas de configuracao:
+      - FIREBASE_SERVICE_ACCOUNT_PATH: caminho para o arquivo JSON
+        (recomendado para desenvolvimento local)
+      - FIREBASE_SERVICE_ACCOUNT_JSON: JSON completo como string
+        (recomendado para producao: Render, Railway, Fly.io)
+
+    Como obter o arquivo:
+      Firebase Console → Configuracoes do projeto
+      → Contas de servico → Gerar nova chave privada
+    """
+    try:
+        import firebase_admin
+        firebase_admin.get_app()  # Ja inicializado — nao faz nada
+        return
+    except ValueError:
+        pass  # Ainda nao inicializado, continua abaixo
+
+    import firebase_admin
+    from firebase_admin import credentials
+
+    # Opcao 1: arquivo JSON local
+    path = os.getenv("FIREBASE_SERVICE_ACCOUNT_PATH", "firebase-service-account.json")
+    if os.path.exists(path):
+        cred = credentials.Certificate(path)
+        firebase_admin.initialize_app(cred)
+        print(">>> [FIREBASE] Inicializado via arquivo de servico.")
+        return
+
+    # Opcao 2: JSON como variavel de ambiente (producao)
+    json_str = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
+    if json_str:
+        try:
+            service_account = json.loads(json_str)
+            cred = credentials.Certificate(service_account)
+            firebase_admin.initialize_app(cred)
+            print(">>> [FIREBASE] Inicializado via variavel de ambiente.")
+            return
+        except json.JSONDecodeError as e:
+            raise RuntimeError(f"FIREBASE_SERVICE_ACCOUNT_JSON invalido: {e}")
+
+    # Nenhuma configuracao encontrada
+    raise RuntimeError(
+        "\n\n[ERRO DE CONFIGURACAO] Firebase nao configurado.\n"
+        "Defina uma das variaveis no .env:\n"
+        "  FIREBASE_SERVICE_ACCOUNT_PATH=./firebase-service-account.json\n"
+        "  FIREBASE_SERVICE_ACCOUNT_JSON='{\"type\": \"service_account\", ...}'\n"
+        "\nPara gerar o arquivo:\n"
+        "  Firebase Console → Configuracoes → Contas de servico → Gerar chave\n"
+    )
+
+
+# =================================================================
+# MODO DESENVOLVIMENTO (DEV_MODE=true no .env)
+# Pula a verificacao Firebase e aceita qualquer user_id do body
+# NUNCA use em producao
+# =================================================================
+DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
+
+# =================================================================
+# CHECK_REVOKED
+# True  -> consulta o Google a CADA requisicao (mais seguro, porem mais
+#          lento e com muito mais chance de falhar por rede).
+# False -> valida o token localmente com as chaves publicas em cache
+#          (padrao da industria). Uma sessao revogada continua valida
+#          ate o token expirar sozinho, em no maximo 1 hora.
+#
+# Recomendado: False. Ative apenas se precisar revogar sessoes na hora.
+# =================================================================
+CHECK_REVOKED = os.getenv("CHECK_REVOKED", "false").lower() == "true"
+
+
+# =================================================================
+# VERIFICACAO COM RETRY
+# O Firebase Admin precisa buscar as chaves publicas do Google para
+# validar o token. Uma falha de rede transitoria (SSL, DNS, timeout)
+# nao pode derrubar o login de um usuario legitimo — por isso tentamos
+# novamente antes de rejeitar.
+# =================================================================
+import asyncio as _asyncio
+
+_NETWORK_HINTS = (
+    "ssl", "connection", "timeout", "timed out", "temporarily",
+    "unreachable", "reset by peer", "handshake", "eof occurred",
+    "max retries exceeded", "httpsconnectionpool", "name resolution",
+)
+
+
+def _is_network_error(err: Exception) -> bool:
+    """True se o erro parece ser de rede (e nao um token realmente invalido)."""
+    msg = str(err).lower()
+    return any(h in msg for h in _NETWORK_HINTS)
+
+
+async def _verify_with_retry(token: str, tentativas: int = 3):
+    """
+    Valida o ID token com retry em falhas de REDE.
+    Tokens invalidos/expirados/revogados falham na hora (sem retry),
+    porque tentar de novo nao mudaria o resultado.
+    """
+    from firebase_admin import auth as _auth
+
+    ultimo = None
+    for i in range(tentativas):
+        try:
+            return _auth.verify_id_token(token, check_revoked=CHECK_REVOKED)
+        except (_auth.ExpiredIdTokenError, _auth.RevokedIdTokenError,
+                _auth.UserDisabledError, _auth.InvalidIdTokenError):
+            raise  # erro real do token: nao adianta tentar de novo
+        except Exception as e:
+            ultimo = e
+            if not _is_network_error(e) or i == tentativas - 1:
+                raise
+            espera = 0.6 * (i + 1)
+            print(f">>> [AUTH] Falha de rede ao validar token "
+                  f"(tentativa {i+1}/{tentativas}). Repetindo em {espera}s...")
+            await _asyncio.sleep(espera)
+    raise ultimo
+
+
+if DEV_MODE:
+    print(">>> [SECURITY] ⚠️  DEV_MODE ativado — autenticacao Firebase desabilitada!")
+    print(">>> [SECURITY] ⚠️  Nao use DEV_MODE em producao!")
+else:
+    _init_firebase()
+
+
+# =================================================================
+# DEPENDENCY: VERIFICACAO DO FIREBASE ID TOKEN
+# =================================================================
+async def verify_firebase_token(authorization: str = Header(None)) -> str:
+    """
+    FastAPI Dependency — verifica o Firebase ID Token e retorna o uid real.
+
+    O frontend deve enviar o token em cada requisicao protegida:
+        Authorization: Bearer <firebase_id_token>
+
+    Como obter o token no frontend (JavaScript):
+        import { getAuth } from "firebase/auth";
+        const token = await getAuth().currentUser.getIdToken();
+        // Envie token no header de cada fetch/axios
+
+    Retorna o uid verificado pelo Firebase (string).
+    Lanca HTTPException 401 se o token for invalido, expirado ou ausente.
+    """
+    from firebase_admin import auth
+
+    # Modo desenvolvimento — bypass total, sem exigir header
+    if DEV_MODE:
+        return "__DEV__"
+
+    # --- Validacao do header ---
+    if not authorization:
+        raise HTTPException(
+            status_code=401,
+            detail="Header 'Authorization' ausente. Envie: Bearer <firebase_id_token>"
+        )
+
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=401,
+            detail="Formato invalido. Use: Authorization: Bearer <token>"
+        )
+
+    token = authorization.removeprefix("Bearer ").strip()
+
+    if not token:
+        raise HTTPException(status_code=401, detail="Token vazio.")
+
+    # --- Verificacao do token no Firebase ---
+    try:
+        decoded = await _verify_with_retry(token)
+        uid = decoded["uid"]
+        return uid
+
+    except auth.ExpiredIdTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token expirado. O frontend deve renovar automaticamente com getIdToken(true)."
+        )
+    except auth.RevokedIdTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token revogado. Faca login novamente."
+        )
+    except auth.UserDisabledError:
+        raise HTTPException(
+            status_code=403,
+            detail="Conta desativada. Entre em contato com o suporte."
+        )
+    except auth.InvalidIdTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token invalido."
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=401,
+            detail=f"Falha na autenticacao: {str(e)}"
+        )
+
+
+async def verify_firebase_token_full(authorization: str = Header(None)) -> dict:
+    """
+    Variante de verify_firebase_token que devolve o token decodificado
+    INTEIRO (uid, email, email_verified, name) em vez de so o uid.
+
+    Usada em rotas que precisam confiar no e-mail verificado pelo Firebase
+    (ex: /api/auth/sync) — nunca no email/email_verified que vem do corpo
+    da requisicao, que pode ser forjado pelo cliente.
+    """
+    from firebase_admin import auth
+
+    if DEV_MODE:
+        return {"uid": "__DEV__", "email": None, "email_verified": True, "name": None}
+
+    if not authorization:
+        raise HTTPException(
+            status_code=401,
+            detail="Header 'Authorization' ausente. Envie: Bearer <firebase_id_token>"
+        )
+
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=401,
+            detail="Formato invalido. Use: Authorization: Bearer <token>"
+        )
+
+    token = authorization.removeprefix("Bearer ").strip()
+
+    if not token:
+        raise HTTPException(status_code=401, detail="Token vazio.")
+
+    try:
+        decoded = await _verify_with_retry(token)
+        return {
+            "uid": decoded["uid"],
+            "email": decoded.get("email"),
+            "email_verified": decoded.get("email_verified", False),
+            "name": decoded.get("name"),
+        }
+
+    except auth.ExpiredIdTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token expirado. O frontend deve renovar automaticamente com getIdToken(true)."
+        )
+    except auth.RevokedIdTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token revogado. Faca login novamente."
+        )
+    except auth.UserDisabledError:
+        raise HTTPException(
+            status_code=403,
+            detail="Conta desativada. Entre em contato com o suporte."
+        )
+    except auth.InvalidIdTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token invalido."
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=401,
+            detail=f"Falha na autenticacao: {str(e)}"
+        )
