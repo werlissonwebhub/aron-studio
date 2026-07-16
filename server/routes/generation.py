@@ -224,32 +224,44 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
             clone_instr = ""
             img_b64 = None
             mime = "image/jpeg"
-            if getattr(body, 'image_data', None):
-                clone_instr = (
-                    "TAREFA CRITICA: CLONAGEM VISUAL EXATA DA IMAGEM DE REFERENCIA ANEXADA.\n"
-                    "Analise cada detalhe da imagem e recrie em HTML+CSS identico ao original.\n"
-                    "REGRAS OBRIGATORIAS:\n"
-                    "1. CORES DE FUNDO: extraia e use o hexadecimal EXATO do fundo da pagina e de cada secao.\n"
-                    "2. CORES DE TEXTO: se algum texto tem cor diferente do preto/branco (ex: verde, azul, gradiente), "
-                    "replique essa cor EXATAMENTE. Textos coloridos sao um elemento de design critico.\n"
-                    "3. TEXTOS: reproduza EXATAMENTE o texto visivel, palavra por palavra, no mesmo tamanho e peso.\n"
-                    "4. LAYOUT: replique a estrutura na MESMA ordem e posicionamento (colunas, grid, alinhamento).\n"
-                    "5. IMAGENS: para cada imagem ou foto na referencia, use esta URL confiavel: "
-                    "https://picsum.photos/seed/[palavra-tema]/800/600 "
-                    "onde [palavra-tema] e uma palavra em ingles que descreve o conteudo (ex: food, nature, product). "
-                    "NUNCA use source.unsplash.com pois esta fora do ar.\n"
-                    "6. BOTOES: replique cor, formato (arredondado/quadrado), tamanho e texto dos botoes.\n"
-                    "7. ESPACAMENTO: respeite proporcoes, padding e margens visiveis na imagem.\n"
-                    "PROIBIDO: inventar cores, mudar textos, reordenar secoes, usar URLs de imagem que nao sejam picsum.photos.\n\n"
-                )
-                full_prompt = clone_instr + full_prompt
-                img_str = body.image_data
-                if ',' in img_str:
-                    header_part, img_b64 = img_str.split(',', 1)
-                    mime = header_part.split(':')[1].split(';')[0] if ':' in header_part else 'image/jpeg'
-                else:
-                    img_b64, mime = img_str, 'image/jpeg'
+           # Processar imagens de referencia (suporta multiplas)
+clone_instr = ""
+images_parts = []  # lista de (img_b64, mime)
+mime = "image/jpeg"
 
+# Suporte a multiplas imagens (images_data) e imagem unica (image_data)
+raw_images = getattr(body, 'images_data', None) or []
+if not raw_images and getattr(body, 'image_data', None):
+    raw_images = [body.image_data]
+
+if raw_images:
+    clone_instr = (
+        "TAREFA CRITICA: CLONAGEM VISUAL EXATA DA IMAGEM DE REFERENCIA ANEXADA.\n"
+        "Analise cada detalhe da imagem e recrie em HTML+CSS identico ao original.\n"
+        "REGRAS OBRIGATORIAS:\n"
+        "1. CORES DE FUNDO: extraia e use o hexadecimal EXATO do fundo da pagina e de cada secao.\n"
+        "2. CORES DE TEXTO: se algum texto tem cor diferente do preto/branco (ex: verde, azul, gradiente), "
+        "replique essa cor EXATAMENTE. Textos coloridos sao um elemento de design critico.\n"
+        "3. TEXTOS: reproduza EXATAMENTE o texto visivel, palavra por palavra, no mesmo tamanho e peso.\n"
+        "4. LAYOUT: replique a estrutura na MESMA ordem e posicionamento (colunas, grid, alinhamento).\n"
+        "5. IMAGENS: para cada imagem ou foto na referencia, use esta URL confiavel: "
+        "https://picsum.photos/seed/[palavra-tema]/800/600 "
+        "onde [palavra-tema] e uma palavra em ingles que descreve o conteudo (ex: food, nature, product). "
+        "NUNCA use source.unsplash.com pois esta fora do ar.\n"
+        "6. BOTOES: replique cor, formato (arredondado/quadrado), tamanho e texto dos botoes.\n"
+        "7. ESPACAMENTO: respeite proporcoes, padding e margens visiveis na imagem.\n"
+        "PROIBIDO: inventar cores, mudar textos, reordenar secoes, usar URLs de imagem que nao sejam picsum.photos.\n\n"
+    )
+    full_prompt = clone_instr + full_prompt
+    for img_str in raw_images:
+        if ',' in img_str:
+            header_part, img_b64 = img_str.split(',', 1)
+            mime = header_part.split(':')[1].split(';')[0] if ':' in header_part else 'image/jpeg'
+        else:
+            img_b64, mime = img_str, 'image/jpeg'
+        images_parts.append((img_b64, mime))
+
+img_b64 = images_parts[0][0] if images_parts else None
             # ── Roteamento por modelo ──────────────────────────────
             if model_alias.startswith('claude') and claude_client:
                 # Claude Sonnet — streaming via SDK Anthropic
@@ -276,14 +288,12 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
 
             else:
                 # Gemini — streaming padrao
-                if img_b64:
-                    img_bytes = base64.b64decode(img_b64)
-                    contents = [
-                        types.Content(role="user", parts=[
-                            types.Part.from_bytes(data=img_bytes, mime_type=mime),
-                            types.Part.from_text(text=full_prompt),
-                        ])
-                    ]
+                if images_parts:
+                parts = []
+                for ib64, imime in images_parts:
+                parts.append(types.Part.from_bytes(data=base64.b64decode(ib64), mime_type=imime))
+                parts.append(types.Part.from_text(text=full_prompt))
+                contents = [types.Content(role="user", parts=parts)]
                 else:
                     contents = full_prompt
 

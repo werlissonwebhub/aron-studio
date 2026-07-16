@@ -20,7 +20,7 @@ class GenerationRequest(BaseModel):
     mode: str = "assistant"
     model_alias: str = "claude-sonnet-4-6"
     image_data: Optional[str] = None
-
+    images_data: Optional[list] = None
 class ProjectModel(BaseModel):
     chat_id: str
     user_id: str

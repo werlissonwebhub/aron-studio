@@ -3430,11 +3430,11 @@
             let visualEditorEnabled = false;
 
             let currentModel = 'gemini'; // Estado Global do Modelo
-            let currentImageData = null; // Gestão de Imagem Anexada
+            let currentImagesData = []; // array de multiplas imagens
 
             // Bridge para o Design Gallery setar imagem de referência
             window.__aronSetReferenceImage = (base64) => {
-                currentImageData = base64;
+                if (base64) { currentImagesData.push(base64); } else { currentImagesData = []; }
                 const previewImg = document.getElementById('image-preview');
                 const previewContainer = document.getElementById('image-preview-container');
                 const clipBtn = document.getElementById('clip-btn') || document.querySelector('[id*="clip"]');
@@ -3451,7 +3451,7 @@
                 globalDesignContext = contextPrompt;
             };
             window.__aronSetReferenceImage = (data) => {
-                currentImageData = data;
+               if (data) { currentImagesData.push(data); } else { currentImagesData = []; }
                 const pc = document.getElementById('image-preview-container');
                 const pi = document.getElementById('image-preview');
                 const clip = document.getElementById('clip-btn');
@@ -3525,7 +3525,7 @@
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = (evt) => {
-                            currentImageData = evt.target.result; // string base64
+                           currentImagesData.push(evt.target.result);
                             previewImg.src = currentImageData;
                             previewContainer.classList.remove('hidden');
 
@@ -3540,7 +3540,7 @@
                 if (removeImgBtn) removeImgBtn.onclick = () => { window.clearAttachedImage(); };
 
                 window.clearAttachedImage = () => {
-                    currentImageData = null;
+                    currentImagesData = [];
                     if (fileInput) fileInput.value = '';
                     if (previewContainer) previewContainer.classList.add('hidden');
                     if (clipBtn) {
@@ -4505,7 +4505,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         // 2. Stream/Generate
                         const finalPrompt = globalDesignContext ? (globalDesignContext + "\n\n" + prompt) : prompt;
                         const bodyJson = { chat_id: currentChatId, prompt: finalPrompt, mode: currentMode, model_alias: currentModel };
-                        if (currentImageData) bodyJson.image_data = currentImageData;
+                        if (currentImagesData.length > 0) bodyJson.images_data = currentImagesData;
 
                         // ── NOVO FETCH COM SSE STREAMING ──────────────────────
 
