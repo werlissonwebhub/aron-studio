@@ -144,6 +144,10 @@ app.include_router(payments_router, prefix="/api/payments")
 # =================================================================
 # FRONTEND ESTATICO
 # =================================================================
+@app.get("/google022d0f40a84805e0.html")
+async def google_verification():
+    return FileResponse("../front/google022d0f40a84805e0.html")
+    
 @app.get("/chat")
 async def get_chat_page():
     return FileResponse("../front/chat.html")
