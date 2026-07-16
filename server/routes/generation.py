@@ -220,48 +220,43 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
                 full_prompt = f"{SYSTEM_PROMPT}{mode_instruction}\n\n--- PEDIDO DO USUARIO ---\n{body.prompt}"
             # model_alias e credit_cost ja foram calculados e validados antes do stream comecar
 
-            # Processar imagem de referencia (se houver)
+            # Processar imagens de referencia (suporta multiplas)
             clone_instr = ""
             img_b64 = None
+            images_parts = []
             mime = "image/jpeg"
-           # Processar imagens de referencia (suporta multiplas)
-clone_instr = ""
-images_parts = []  # lista de (img_b64, mime)
-mime = "image/jpeg"
+            _raw_imgs = getattr(body, 'images_data', None) or []
+            if not _raw_imgs and getattr(body, 'image_data', None):
+                _raw_imgs = [body.image_data]
+            if _raw_imgs:
+                clone_instr = (
+                    "TAREFA CRITICA: CLONAGEM VISUAL EXATA DA IMAGEM DE REFERENCIA ANEXADA.\n"
+                    "Analise cada detalhe da imagem e recrie em HTML+CSS identico ao original.\n"
+                    "REGRAS OBRIGATORIAS:\n"
+                    "1. CORES DE FUNDO: extraia e use o hexadecimal EXATO do fundo da pagina e de cada secao.\n"
+                    "2. CORES DE TEXTO: se algum texto tem cor diferente do preto/branco (ex: verde, azul, gradiente), "
+                    "replique essa cor EXATAMENTE. Textos coloridos sao um elemento de design critico.\n"
+                    "3. TEXTOS: reproduza EXATAMENTE o texto visivel, palavra por palavra, no mesmo tamanho e peso.\n"
+                    "4. LAYOUT: replique a estrutura na MESMA ordem e posicionamento (colunas, grid, alinhamento).\n"
+                    "5. IMAGENS: para cada imagem ou foto na referencia, use esta URL confiavel: "
+                    "https://picsum.photos/seed/[palavra-tema]/800/600 "
+                    "onde [palavra-tema] e uma palavra em ingles que descreve o conteudo (ex: food, nature, product). "
+                    "NUNCA use source.unsplash.com pois esta fora do ar.\n"
+                    "6. BOTOES: replique cor, formato (arredondado/quadrado), tamanho e texto dos botoes.\n"
+                    "7. ESPACAMENTO: respeite proporcoes, padding e margens visiveis na imagem.\n"
+                    "PROIBIDO: inventar cores, mudar textos, reordenar secoes, usar URLs de imagem que nao sejam picsum.photos.\n\n"
+                )
+                full_prompt = clone_instr + full_prompt
+                for _img_str in _raw_imgs:
+                    if ',' in _img_str:
+                        _hp, _b64 = _img_str.split(',', 1)
+                        _m = _hp.split(':')[1].split(';')[0] if ':' in _hp else 'image/jpeg'
+                    else:
+                        _b64, _m = _img_str, 'image/jpeg'
+                    images_parts.append((_b64, _m))
+                if images_parts:
+                    img_b64, mime = images_parts[0][0], images_parts[0][1]
 
-# Suporte a multiplas imagens (images_data) e imagem unica (image_data)
-raw_images = getattr(body, 'images_data', None) or []
-if not raw_images and getattr(body, 'image_data', None):
-    raw_images = [body.image_data]
-
-if raw_images:
-    clone_instr = (
-        "TAREFA CRITICA: CLONAGEM VISUAL EXATA DA IMAGEM DE REFERENCIA ANEXADA.\n"
-        "Analise cada detalhe da imagem e recrie em HTML+CSS identico ao original.\n"
-        "REGRAS OBRIGATORIAS:\n"
-        "1. CORES DE FUNDO: extraia e use o hexadecimal EXATO do fundo da pagina e de cada secao.\n"
-        "2. CORES DE TEXTO: se algum texto tem cor diferente do preto/branco (ex: verde, azul, gradiente), "
-        "replique essa cor EXATAMENTE. Textos coloridos sao um elemento de design critico.\n"
-        "3. TEXTOS: reproduza EXATAMENTE o texto visivel, palavra por palavra, no mesmo tamanho e peso.\n"
-        "4. LAYOUT: replique a estrutura na MESMA ordem e posicionamento (colunas, grid, alinhamento).\n"
-        "5. IMAGENS: para cada imagem ou foto na referencia, use esta URL confiavel: "
-        "https://picsum.photos/seed/[palavra-tema]/800/600 "
-        "onde [palavra-tema] e uma palavra em ingles que descreve o conteudo (ex: food, nature, product). "
-        "NUNCA use source.unsplash.com pois esta fora do ar.\n"
-        "6. BOTOES: replique cor, formato (arredondado/quadrado), tamanho e texto dos botoes.\n"
-        "7. ESPACAMENTO: respeite proporcoes, padding e margens visiveis na imagem.\n"
-        "PROIBIDO: inventar cores, mudar textos, reordenar secoes, usar URLs de imagem que nao sejam picsum.photos.\n\n"
-    )
-    full_prompt = clone_instr + full_prompt
-    for img_str in raw_images:
-        if ',' in img_str:
-            header_part, img_b64 = img_str.split(',', 1)
-            mime = header_part.split(':')[1].split(';')[0] if ':' in header_part else 'image/jpeg'
-        else:
-            img_b64, mime = img_str, 'image/jpeg'
-        images_parts.append((img_b64, mime))
-
-img_b64 = images_parts[0][0] if images_parts else None
             # ── Roteamento por modelo ──────────────────────────────
             if model_alias.startswith('claude') and claude_client:
                 # Claude Sonnet — streaming via SDK Anthropic
@@ -289,11 +284,11 @@ img_b64 = images_parts[0][0] if images_parts else None
             else:
                 # Gemini — streaming padrao
                 if images_parts:
-                parts = []
-                for ib64, imime in images_parts:
-                parts.append(types.Part.from_bytes(data=base64.b64decode(ib64), mime_type=imime))
-                parts.append(types.Part.from_text(text=full_prompt))
-                contents = [types.Content(role="user", parts=parts)]
+                    _parts = []
+                    for _ib64, _im in images_parts:
+                        _parts.append(types.Part.from_bytes(data=base64.b64decode(_ib64), mime_type=_im))
+                    _parts.append(types.Part.from_text(text=full_prompt))
+                    contents = [types.Content(role="user", parts=_parts)]
                 else:
                     contents = full_prompt
 
