@@ -87,8 +87,8 @@ async def save_project(request: Request, verified_uid: str = Depends(verify_fire
                 except Exception:
                     code_to_save = full_json
             else:
-                code_to_save = full_code
-        return {"status": "success", "message": "Projeto salvo com sucesso"}
+             await db.execute("UPDATE chats SET full_code = ?, title = ?, thumbnail = COALESCE(?, thumbnail), updated_at = datetime('now') WHERE id = ? AND user_id = ?", (code_to_save, name, thumbnail, chat_id, user_id))
+            await db.commit()
     except HTTPException:
         raise
     except Exception as e:
