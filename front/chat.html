@@ -3518,14 +3518,13 @@
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = (evt) => {
-                           currentImagesData.push(evt.target.result);
-                           window.currentImagesData = currentImagesData;
-                            previewImg.src = evt.target.result;
+                            currentImagesData.push(evt.target.result);
+                            window.currentImagesData = currentImagesData;
+                            if (typeof window.renderImagePreviews === 'function') window.renderImagePreviews();
                             previewContainer.classList.remove('hidden');
-
-                            // Adiciona Glow effect ao botão de anexo
                             clipBtn.classList.remove('text-surface-400');
                             clipBtn.classList.add('text-[#34D7DD]', 'bg-[#34D7DD]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]');
+                            fileInput.value = '';
                         };
                         reader.readAsDataURL(file);
                     }
@@ -3533,8 +3532,52 @@
 
                 if (removeImgBtn) removeImgBtn.onclick = () => { window.clearAttachedImage(); };
 
+                window.renderImagePreviews = () => {
+                    const pc = document.getElementById('image-preview-container');
+                    if (!pc) return;
+                    const imgs = window.currentImagesData || [];
+                    // limpa miniaturas antigas (mantem so o container)
+                    let strip = document.getElementById('aron-thumb-strip');
+                    if (!strip) {
+                        strip = document.createElement('div');
+                        strip.id = 'aron-thumb-strip';
+                        strip.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;';
+                        pc.innerHTML = '';
+                        pc.appendChild(strip);
+                        const info = document.createElement('div');
+                        info.style.cssText = 'margin-left:8px;display:flex;flex-direction:column;';
+                        info.innerHTML = '<span style="font-size:11px;font-weight:600;color:#fff;text-transform:uppercase;letter-spacing:.5px;">Imagens Anexadas</span><span id="aron-thumb-count" style="font-size:9px;color:#34D7DD;font-weight:600;">Visual Prompting</span>';
+                        pc.appendChild(info);
+                    }
+                    strip.innerHTML = '';
+                    imgs.forEach((src, idx) => {
+                        const wrap = document.createElement('div');
+                        wrap.style.cssText = 'position:relative;';
+                        const im = document.createElement('img');
+                        im.src = src;
+                        im.style.cssText = 'height:40px;width:40px;object-fit:cover;border-radius:6px;border:1px solid #34D7DD55;';
+                        const rm = document.createElement('button');
+                        rm.type = 'button';
+                        rm.textContent = 'x';
+                        rm.style.cssText = 'position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#111;color:#fff;border:1px solid #34D7DD;font-size:10px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;';
+                        rm.onclick = () => {
+                            window.currentImagesData.splice(idx, 1);
+                            currentImagesData = window.currentImagesData;
+                            if (window.currentImagesData.length === 0) { window.clearAttachedImage(); }
+                            else { window.renderImagePreviews(); }
+                        };
+                        wrap.appendChild(im);
+                        wrap.appendChild(rm);
+                        strip.appendChild(wrap);
+                    });
+                    const cnt = document.getElementById('aron-thumb-count');
+                    if (cnt) cnt.textContent = imgs.length + (imgs.length === 1 ? ' imagem' : ' imagens');
+                };
                 window.clearAttachedImage = () => {
                     currentImagesData = [];
+                    window.currentImagesData = [];
+                    const _strip = document.getElementById('aron-thumb-strip');
+                    if (_strip) _strip.innerHTML = '';
                     if (fileInput) fileInput.value = '';
                     if (previewContainer) previewContainer.classList.add('hidden');
                     if (clipBtn) {
