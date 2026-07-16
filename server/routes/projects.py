@@ -78,17 +78,18 @@ async def save_project(request: Request, verified_uid: str = Depends(verify_fire
                 async with db.execute("SELECT title FROM chats WHERE id = ? AND user_id = ?", (chat_id, user_id)) as cursor:
                     row = await cursor.fetchone()
                     name = row[0] if row else "Projeto Sem Nome"
-            # Extrair HTML puro do full_json se for um JSON com chave "html"
             if full_json:
                 try:
                     import json as _json
-                    parsed = _json.loads(full_json)
-                    code_to_save = parsed.get("html") or full_json
+                    _parsed = _json.loads(full_json)
+                    code_to_save = _parsed.get("html") or full_json
                 except Exception:
                     code_to_save = full_json
             else:
-             await db.execute("UPDATE chats SET full_code = ?, title = ?, thumbnail = COALESCE(?, thumbnail), updated_at = datetime('now') WHERE id = ? AND user_id = ?", (code_to_save, name, thumbnail, chat_id, user_id))
+                code_to_save = full_code
+            await db.execute("UPDATE chats SET full_code = ?, title = ?, thumbnail = COALESCE(?, thumbnail), updated_at = datetime('now') WHERE id = ? AND user_id = ?", (code_to_save, name, thumbnail, chat_id, user_id))
             await db.commit()
+        return {"status": "success", "message": "Projeto salvo com sucesso"}
     except HTTPException:
         raise
     except Exception as e:

@@ -3520,7 +3520,7 @@
                         reader.onload = (evt) => {
                            currentImagesData.push(evt.target.result);
                            window.currentImagesData = currentImagesData;
-                            previewImg.src = currentImageData;
+                            previewImg.src = evt.target.result;
                             previewContainer.classList.remove('hidden');
 
                             // Adiciona Glow effect ao botão de anexo
