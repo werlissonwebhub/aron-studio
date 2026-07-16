@@ -2187,9 +2187,14 @@
                         }
                     } else {
                         fullHtml = p.html_code || p.full_code || '';
+                        if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
+                        window.fullHtml = fullHtml;
                         renderInIframe(fullHtml);
                         if (window.monacoEditor) {
                             try { window.monacoEditor.setValue(fullHtml); } catch(e) {}
+                        }
+                        if (typeof window.updateCodePanel === 'function') {
+                            try { window.updateCodePanel(fullHtml); } catch(e) {}
                         }
                     }
 
