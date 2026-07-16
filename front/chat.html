@@ -5782,6 +5782,11 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         document.getElementById('thinking-state')?.classList.remove('active');
 
                         fullHtml = data.full_json || data.html_code || data.full_code || "";
+                        if (fullHtml && !fullHtml.trim().startsWith("{")) {
+                            window.fullHtml = fullHtml;
+                            if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
+                            if (typeof window.updateCodePanel === 'function') { try { window.updateCodePanel(fullHtml); } catch(e){} }
+                        }
 
                         try {
                             const parsedData = JSON.parse(fullHtml);
@@ -5793,9 +5798,14 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                                 } else {
                                     window.currentProjectData = null;
                                     if (window.files) window.files = {};
+                                    window.fullHtml = fullHtml;
+                                    if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
                                     renderInIframe(fullHtml);
                                     if (window.monacoEditor) {
                                         try { window.monacoEditor.setValue(fullHtml); } catch(e) {}
+                                    }
+                                    if (typeof window.updateCodePanel === 'function') {
+                                        try { window.updateCodePanel(fullHtml); } catch(e) {}
                                     }
                                 }
                             } else {
