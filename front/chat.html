@@ -3431,34 +3431,27 @@
 
             let currentModel = 'gemini'; // Estado Global do Modelo
             let currentImagesData = []; // array de multiplas imagens
-
+            window.currentImagesData = currentImagesData;
             // Bridge para o Design Gallery setar imagem de referência
-            window.__aronSetReferenceImage = (base64) => {
-                if (base64) { currentImagesData.push(base64); } else { currentImagesData = []; }
-                const previewImg = document.getElementById('image-preview');
-                const previewContainer = document.getElementById('image-preview-container');
-                const clipBtn = document.getElementById('clip-btn') || document.querySelector('[id*="clip"]');
-                if (previewImg) previewImg.src = base64;
-                if (previewContainer) previewContainer.classList.remove('hidden');
-                if (clipBtn) {
-                    clipBtn.classList.remove('text-surface-400');
-                    clipBtn.classList.add('text-[#34D7DD]', 'bg-[#34D7DD]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]');
-                }
-            };
-
+          
             // Bridge para o Design Gallery setar contexto de estilo curado
             window.__aronSetDesignContext = (contextPrompt) => {
                 globalDesignContext = contextPrompt;
             };
-            window.__aronSetReferenceImage = (data) => {
-               if (data) { currentImagesData.push(data); } else { currentImagesData = []; }
-                const pc = document.getElementById('image-preview-container');
-                const pi = document.getElementById('image-preview');
-                const clip = document.getElementById('clip-btn');
-                if (pi) pi.src = data;
-                if (pc) pc.classList.remove('hidden');
-                if (clip) { clip.classList.remove('text-surface-400'); clip.classList.add('text-[#34D7DD]','bg-[#34D7DD]/10','shadow-[0_0_15px_rgba(52,215,221,0.5)]'); }
-            };
+          window.__aronSetReferenceImage = (data) => {
+    if (data) { 
+        currentImagesData.push(data); 
+    } else { 
+        currentImagesData = []; 
+    }
+    window.currentImagesData = currentImagesData;
+    const pc = document.getElementById('image-preview-container');
+    const pi = document.getElementById('image-preview');
+    const clip = document.getElementById('clip-btn');
+    if (pi) pi.src = data;
+    if (pc) pc.classList.remove('hidden');
+    if (clip) { clip.classList.remove('text-surface-400'); clip.classList.add('text-[#34D7DD]','bg-[#34D7DD]/10','shadow-[0_0_15px_rgba(52,215,221,0.5)]'); }
+};
             let lastUsedPrompt = ""; // Cache do último prompt para re-tentativa sem custo
 
             let iframeInitialized = false;
@@ -3526,6 +3519,7 @@
                         const reader = new FileReader();
                         reader.onload = (evt) => {
                            currentImagesData.push(evt.target.result);
+                           window.currentImagesData = currentImagesData;
                             previewImg.src = currentImageData;
                             previewContainer.classList.remove('hidden');
 
