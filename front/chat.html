@@ -2076,6 +2076,8 @@
                 try {
                     const userId = localStorage.getItem('aron_user_id');
                     if (!userId || !fullHtml) return;
+                    let htmlToSave = fullHtml;
+                    try { const p = JSON.parse(fullHtml); if (p.html) htmlToSave = p.html; } catch(e) {}
 
                     if (isAuto) showAutoSaveIndicator('Salvando...');
 
@@ -2089,7 +2091,7 @@
                         id: currentProjectId,
                         user_id: userId,
                         name: projectName,
-                        html_code: fullHtml,
+                       html_code: htmlToSave,
                         full_json: window.currentProjectData ? JSON.stringify(window.currentProjectData) : null,
                         thumbnail: (typeof generateThumbnail === "function" ? generateThumbnail(fullHtml) : null)
                     };
