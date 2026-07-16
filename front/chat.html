@@ -6470,7 +6470,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     }
 
                     try {
-                        const response = await apiFetch(`${window.API_URL || 'http://localhost:8000'}/deploy`, {
+                        const response = await apiFetch(`${window.API_URL || API_URL}/deploy`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
