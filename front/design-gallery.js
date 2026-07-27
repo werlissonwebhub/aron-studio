@@ -22,9 +22,9 @@
   // ----- estilos curados (cada um carrega a "receita" que vai pra IA) -----
   var STYLES = [
     { key: 'saas', cls: 'ad-saas', name: 'SaaS Minimalista', tags: ['Clean', 'Indigo', 'Whitespace'],
-      prompt: 'Gere o site no estilo SaaS minimalista: fundo branco, muito espaco em branco, acento indigo (#6366f1), tipografia sans-serif moderna (Inter ou Plus Jakarta Sans), secoes bem espacadas, cards com bordas suaves e sombras leves, hero centralizado com headline grande e CTA destacado. Visual limpo e profissional.' },
+      prompt: 'Gere o site no estilo SaaS minimalista: fundo branco, muito espaco em branco, acento indigo (#FFFFFF), tipografia sans-serif moderna (Inter ou Plus Jakarta Sans), secoes bem espacadas, cards com bordas suaves e sombras leves, hero centralizado com headline grande e CTA destacado. Visual limpo e profissional.' },
     { key: 'dark', cls: 'ad-dark', name: 'Dark / IA Futurista', tags: ['Dark', 'Gradiente', 'Glass'],
-      prompt: 'Gere o site no estilo dark futurista de IA: fundo escuro (#0a0a12), gradientes ciano-roxo (#34D7DD ate #8b5cf6), efeito glassmorphism, textos de destaque com gradiente, brilhos sutis, tipografia bold, cards translucidos com borda fina clara. Visual high-tech e premium.' },
+      prompt: 'Gere o site no estilo dark futurista de IA: fundo escuro (#0a0a12), gradientes ciano-roxo (#FFFFFF ate #B4B4B8), efeito glassmorphism, textos de destaque com gradiente, brilhos sutis, tipografia bold, cards translucidos com borda fina clara. Visual high-tech e premium.' },
     { key: 'food', cls: 'ad-food', name: 'Gastronomia Elegante', tags: ['Warm', 'Serif', 'Aconchego'],
       prompt: 'Gere o site no estilo gastronomia elegante: tons quentes creme e marrom (#fdf6ec e #6f4e37), tipografia serifada refinada (EB Garamond ou Playfair), imagens grandes de comida, layout aconchegante, botoes com cantos retos, sensacao artesanal e premium.' },
     { key: 'shop', cls: 'ad-shop', name: 'E-commerce Moderno', tags: ['Grid', 'CTA', 'Produtos'],
@@ -63,9 +63,9 @@
       "@media(max-width:560px){#aron-design-root .ad-grid{grid-template-columns:1fr}}",
       "#aron-design-root .ad-card{background:#13131f;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative}",
       "#aron-design-root .ad-card:hover{border-color:rgba(99,102,241,.5);transform:translateY(-3px)}",
-      "#aron-design-root .ad-card.sel{border-color:#6366f1;box-shadow:0 0 0 2px #6366f1}",
+      "#aron-design-root .ad-card.sel{border-color:#FFFFFF;box-shadow:0 0 0 2px #FFFFFF}",
       "#aron-design-root .ad-card.sel .ad-check{opacity:1;transform:scale(1)}",
-      "#aron-design-root .ad-check{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.5);transition:all .2s;z-index:3}",
+      "#aron-design-root .ad-check{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#FFFFFF,#B4B4B8);display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.5);transition:all .2s;z-index:3}",
       "#aron-design-root .ad-check svg{width:15px;height:15px}",
       "#aron-design-root .ad-thumb{height:148px;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.08)}",
       "#aron-design-root .ad-meta{padding:13px 15px}",
@@ -86,8 +86,8 @@
       "#aron-design-root .ad-tcards{display:flex;gap:6px}",
       "#aron-design-root .ad-tcards div{flex:1;height:24px;border-radius:5px}",
       // estilos
-      "#aron-design-root .ad-saas{background:#fff}#aron-design-root .ad-saas .ad-tlogo{background:#6366f1}#aron-design-root .ad-saas .ad-tlinks span{background:#475569}#aron-design-root .ad-saas .ad-th{background:#0f172a}#aron-design-root .ad-saas .ad-tp{background:#64748b}#aron-design-root .ad-saas .ad-tbtn{background:#6366f1}#aron-design-root .ad-saas .ad-tcards div{background:#f1f5f9;border:1px solid #e2e8f0}",
-      "#aron-design-root .ad-dark{background:linear-gradient(135deg,#0b1020,#111a33)}#aron-design-root .ad-dark .ad-tlogo{background:linear-gradient(90deg,#34D7DD,#8b5cf6)}#aron-design-root .ad-dark .ad-tlinks span{background:#94a3b8}#aron-design-root .ad-dark .ad-th{background:linear-gradient(90deg,#34D7DD,#a78bfa);width:85%}#aron-design-root .ad-dark .ad-tp{background:#64748b}#aron-design-root .ad-dark .ad-tbtn{background:linear-gradient(90deg,#6366f1,#8b5cf6)}#aron-design-root .ad-dark .ad-tcards div{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}",
+      "#aron-design-root .ad-saas{background:#fff}#aron-design-root .ad-saas .ad-tlogo{background:#FFFFFF}#aron-design-root .ad-saas .ad-tlinks span{background:#475569}#aron-design-root .ad-saas .ad-th{background:#0f172a}#aron-design-root .ad-saas .ad-tp{background:#64748b}#aron-design-root .ad-saas .ad-tbtn{background:#FFFFFF}#aron-design-root .ad-saas .ad-tcards div{background:#f1f5f9;border:1px solid #e2e8f0}",
+      "#aron-design-root .ad-dark{background:linear-gradient(135deg,#0b1020,#111a33)}#aron-design-root .ad-dark .ad-tlogo{background:linear-gradient(90deg,#FFFFFF,#B4B4B8)}#aron-design-root .ad-dark .ad-tlinks span{background:#94a3b8}#aron-design-root .ad-dark .ad-th{background:linear-gradient(90deg,#FFFFFF,#a78bfa);width:85%}#aron-design-root .ad-dark .ad-tp{background:#64748b}#aron-design-root .ad-dark .ad-tbtn{background:linear-gradient(90deg,#FFFFFF,#B4B4B8)}#aron-design-root .ad-dark .ad-tcards div{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}",
       "#aron-design-root .ad-food{background:#fdf6ec}#aron-design-root .ad-food .ad-tlogo{background:#6f4e37}#aron-design-root .ad-food .ad-tlinks span{background:#a98467}#aron-design-root .ad-food .ad-th{background:#3a2a1e;width:88%;height:13px}#aron-design-root .ad-food .ad-tp{background:#9c8466}#aron-design-root .ad-food .ad-tbtn{background:#6f4e37;border-radius:2px}#aron-design-root .ad-food .ad-tcards div{background:#f5e8d8}",
       "#aron-design-root .ad-shop{background:#fff}#aron-design-root .ad-shop .ad-tlogo{background:#111827}#aron-design-root .ad-shop .ad-tlinks span{background:#6b7280}#aron-design-root .ad-shop .ad-th{background:#111827;width:60%}#aron-design-root .ad-shop .ad-tp{background:#9ca3af}#aron-design-root .ad-shop .ad-tbtn{background:#10b981}#aron-design-root .ad-shop .ad-tcards div{background:#f9fafb;border:1px solid #e5e7eb;height:30px}",
       "#aron-design-root .ad-folio{background:#101014}#aron-design-root .ad-folio .ad-tlogo{background:#fbbf24}#aron-design-root .ad-folio .ad-tlinks span{background:#e5e7eb}#aron-design-root .ad-folio .ad-th{background:#fafafa;width:92%;height:15px}#aron-design-root .ad-folio .ad-th.s{background:#fbbf24;width:50%;height:15px}#aron-design-root .ad-folio .ad-tbtn{background:transparent;border:1.5px solid #fafafa}#aron-design-root .ad-folio .ad-tcards div{background:#1c1c22}",
@@ -96,7 +96,7 @@
       "#aron-design-root .ad-up{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px 18px;border-style:dashed;min-height:225px;gap:10px}",
       "#aron-design-root .ad-up:hover{background:rgba(99,102,241,.05)}",
       "#aron-design-root .ad-up .ad-ic{width:46px;height:46px;border-radius:12px;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center}",
-      "#aron-design-root .ad-up .ad-ic svg{width:24px;height:24px;color:#6366f1}",
+      "#aron-design-root .ad-up .ad-ic svg{width:24px;height:24px;color:#FFFFFF}",
       "#aron-design-root .ad-up h3{font-size:14px;font-weight:700;color:#f1f5f9}",
       "#aron-design-root .ad-up p{font-size:12px;color:rgba(241,245,249,.55);line-height:1.5}",
       // badge ativo (topo)

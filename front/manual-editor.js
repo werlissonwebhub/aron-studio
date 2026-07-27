@@ -35,8 +35,8 @@
     ["'Courier New', monospace", 'Courier New']
   ];
 
-  var OUTLINE_SEL = '2px solid #6366f1';
-  var OUTLINE_HOV = '2px dashed #8b5cf6';
+  var OUTLINE_SEL = '2px solid #FFFFFF';
+  var OUTLINE_HOV = '2px dashed #B4B4B8';
 
   var enabled = false;
   var iframe = null, idoc = null, iwin = null;
@@ -85,7 +85,7 @@
   function injectStyles() {
     if ($('ame-style')) return;
     var css = [
-      ":root{--ame-indigo:#6366f1;--ame-violet:#8b5cf6;--ame-cyan:#34D7DD;--ame-panel:#13131f;--ame-panel2:#1a1a28;--ame-border:rgba(255,255,255,.08);--ame-txt:#f1f5f9;--ame-dim:rgba(241,245,249,.55)}",
+      ":root{--ame-indigo:#FFFFFF;--ame-violet:#B4B4B8;--ame-cyan:#FFFFFF;--ame-panel:#13131f;--ame-panel2:#1a1a28;--ame-border:rgba(255,255,255,.08);--ame-txt:#f1f5f9;--ame-dim:rgba(241,245,249,.55)}",
       // pílula superior
       ".ame-pill{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-80px);z-index:2147483600;display:flex;align-items:center;flex-wrap:wrap;justify-content:center;max-width:94vw;gap:10px;background:var(--ame-panel);border:1px solid var(--ame-border);border-radius:14px;padding:8px 10px 8px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-family:'Inter',system-ui,sans-serif;transition:transform .3s cubic-bezier(.16,1,.3,1)}",
       ".ame-dev{display:flex;gap:3px;background:var(--ame-panel2);border:1px solid var(--ame-border);border-radius:9px;padding:3px}",
@@ -96,14 +96,14 @@
       ".ame-pill .ame-pill-txt{font-size:13px;font-weight:600;color:var(--ame-txt);display:flex;align-items:center;gap:8px}",
       ".ame-pill .ame-pill-txt b{color:var(--ame-violet)}",
       ".ame-pbtn{border:none;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}",
-      ".ame-pbtn.save{background:linear-gradient(135deg,var(--ame-indigo),var(--ame-violet));color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.35)}",
+      ".ame-pbtn.save{background:linear-gradient(135deg,var(--ame-indigo),var(--ame-violet));color:#fff;box-shadow:0 4px 14px rgba(255,255,255,.15)}",
       ".ame-pbtn.exit{background:var(--ame-panel2);color:var(--ame-txt);border:1px solid var(--ame-border)}",
       // painel
       ".ame-panel{position:fixed;top:0;right:0;height:100vh;width:300px;background:var(--ame-panel);border-left:1px solid var(--ame-border);z-index:2147483601;overflow-y:auto;font-family:'Inter',system-ui,sans-serif;color:var(--ame-txt);transform:translateX(105%);transition:transform .3s cubic-bezier(.16,1,.3,1);box-shadow:-12px 0 40px rgba(0,0,0,.4)}",
       ".ame-panel.open{transform:translateX(0)}",
       ".ame-panel::-webkit-scrollbar{width:8px}.ame-panel::-webkit-scrollbar-thumb{background:rgba(99,102,241,.4);border-radius:10px}",
       ".ame-head{padding:16px 18px;border-bottom:1px solid var(--ame-border);position:sticky;top:0;background:var(--ame-panel);z-index:3;display:flex;align-items:center;justify-content:space-between;gap:8px}",
-      ".ame-tag{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--ame-cyan);background:rgba(52,215,221,.1);padding:4px 10px;border-radius:7px;border:1px solid rgba(52,215,221,.25)}",
+      ".ame-tag{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--ame-cyan);background:rgba(255,255,255,.1);padding:4px 10px;border-radius:7px;border:1px solid rgba(52,215,221,.25)}",
       ".ame-x{background:var(--ame-panel2);border:1px solid var(--ame-border);color:var(--ame-txt);border-radius:8px;width:30px;height:30px;font-size:16px;cursor:pointer;flex:none}",
       ".ame-sec{padding:16px 18px;border-bottom:1px solid var(--ame-border)}",
       ".ame-sec-t{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ame-dim);margin-bottom:12px}",
@@ -158,7 +158,7 @@
     var pill = document.createElement('div');
     pill.className = 'ame-pill'; pill.id = 'ame-pill';
     pill.innerHTML =
-      '<span class="ame-pill-txt"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> <b>Edição manual</b> Clique num elemento</span>' +
+      '<span class="ame-pill-txt"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#B4B4B8" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> <b>Edição manual</b> Clique num elemento</span>' +
       '<div class="ame-dev" id="ame-dev">' +
         '<button data-dev="desktop" class="active" title="Desktop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>' +
         '<button data-dev="mobile" title="Mobile" style="display:none" class="md-only-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></button>' +

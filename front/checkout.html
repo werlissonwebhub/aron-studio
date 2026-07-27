@@ -468,6 +468,74 @@
             color: var(--secondary-text);
             margin-top: 10px;
         }
+    
+        :root {
+            --font-display: 'Space Grotesk', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-display) !important; font-weight: 700 !important; }
+        body, p, button, input { font-family: var(--font-body); }
+        .btn-primary-white, button.bg-white { background-color: #FFFFFF !important; color: #0A0A0A !important; font-weight: 700 !important; }
+        .btn-primary-white *, button.bg-white * { color: #0A0A0A !important; fill: #0A0A0A !important; stroke: #0A0A0A !important; }
+        .btn-primary-white:hover, button.bg-white:hover { background-color: #E4E4E7 !important; color: #0A0A0A !important; }
+    
+        /* --- AJUSTE 1: BOTÃO JOIN E BOTÕES BRANCOS SEMPRE COM TEXTO PRETO --- */
+        .btn-join, a.btn-join, button.btn-join,
+        .btn-primary-white, button.bg-white,
+        .btn-join *, a.btn-join *, button.btn-join *,
+        .btn-primary-white *, button.bg-white * {
+            color: #0A0A0A !important;
+            -webkit-text-fill-color: #0A0A0A !important;
+            fill: #0A0A0A !important;
+            stroke: #0A0A0A !important;
+        }
+
+        .btn-join:hover, a.btn-join:hover, button.btn-join:hover,
+        .btn-primary-white:hover, button.bg-white:hover,
+        .btn-join:hover *, a.btn-join:hover *, button.btn-join:hover *,
+        .btn-primary-white:hover *, button.bg-white:hover * {
+            background-color: #E4E4E7 !important;
+            color: #0A0A0A !important;
+            -webkit-text-fill-color: #0A0A0A !important;
+            fill: #0A0A0A !important;
+            stroke: #0A0A0A !important;
+        }
+
+        /* --- AJUSTE 3: REMOVER BORDA INFERIOR DA TOPBAR --- */
+        .topbar, nav.fixed, header.fixed {
+            border-bottom: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+</style>
+
+    <style>
+        /* Typography System - SpaceX/Grok Style */
+        h1, h2, h3, h4, h5, h6, .font-display,
+        .prospect-title, .sc-title, .how-title, .step-title,
+        .np-title {
+            font-family: 'Space Grotesk', sans-serif !important;
+        }
+
+        body, p, button, input, textarea, select, span, a,
+        .prospect-desc, .sc-lead, .sc-p, .how-sub, .step-desc,
+        .np-desc {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        /* Buttons Fix */
+        .btn-workspace, .btn-workspace *, 
+        .join-btn, .join-btn *,
+        .btn-join, .btn-join *,
+        .botao-branco, .botao-branco *,
+        button[style*="background: white"], button[style*="background: #FFFFFF"],
+        button[style*="background: white"] *, button[style*="background: #FFFFFF"] * {
+            color: #0A0A0A !important;
+            fill: #0A0A0A !important;
+            stroke: #0A0A0A !important;
+            -webkit-text-fill-color: #0A0A0A !important;
+        }
     </style>
 </head>
 
@@ -475,7 +543,7 @@
 
     <header class="header">
         <div class="logo">
-            <img src="/img/Aron-mark.png" alt="Aron Studio" style="height: 50px; width: auto; object-fit: contain;">
+            <img src="/img/aron-logo.png" alt="Aron Studio" style="height: 50px; width: auto; object-fit: contain;">
         </div>
         <a href="/chat" class="back-link">Voltar ao chat</a>
     </header>
@@ -604,13 +672,13 @@
                 line-height: 1.5;
             ">
                 <svg style="flex-shrink:0;margin-top:1px" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="#34D7DD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <line x1="12" y1="8" x2="12" y2="12" />
                     <line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
                 <div>
-                    <strong style="color:#34D7DD">O QR Code PIX aparece aqui na tela</strong> — você não precisa esperar
+                    <strong style="color:#FFFFFF">O QR Code PIX aparece aqui na tela</strong> — você não precisa esperar
                     nenhum email.<br>
                     Basta copiar o código ou escanear o QR Code diretamente pelo seu app de banco.
                 </div>
@@ -927,7 +995,7 @@
                 '<img src="data:image/png;base64,' + data.qr_code_base64 + '" style="width:240px;height:240px;border-radius:16px;background:#fff;padding:12px;margin:0 auto 20px;display:block;">' +
                 '<div style="display:flex;gap:8px;max-width:420px;margin:0 auto;">' +
                 '<input id="pix-code-input" value="' + data.qr_code + '" readonly style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,.7);font-size:12px;font-family:monospace;overflow:hidden;text-overflow:ellipsis;">' +
-                '<button onclick="const i=document.getElementById(\'pix-code-input\');i.select();document.execCommand(\'copy\');this.textContent=\'Copiado!\';" style="background:linear-gradient(135deg,#B349F5,#34D7DD);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">Copiar</button>' +
+                '<button onclick="const i=document.getElementById(\'pix-code-input\');i.select();document.execCommand(\'copy\');this.textContent=\'Copiado!\';" style="background: #FFFFFF; color: #0A0A0A;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;">Copiar</button>' +
                 '</div>' +
                 '<p style="color:rgba(255,255,255,.35);font-size:12px;margin-top:18px;">Assim que o pagamento for confirmado, seus creditos caem automaticamente. Pode levar alguns segundos.</p>' +
                 '</div>';
@@ -941,7 +1009,7 @@
                 '<div style="width:72px;height:72px;border-radius:50%;background:rgba(74,222,128,.12);border:2px solid #4ade80;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:34px;color:#4ade80;">&#10003;</div>' +
                 '<h3 style="color:#fff;font-size:22px;font-weight:800;margin-bottom:8px;">Pagamento aprovado!</h3>' +
                 '<p style="color:rgba(255,255,255,.55);font-size:14px;margin-bottom:24px;">Seus creditos ja foram adicionados. Bora criar!</p>' +
-                '<a href="/chat" style="display:inline-block;background:linear-gradient(135deg,#B349F5,#34D7DD);color:#fff;border-radius:12px;padding:12px 32px;font-weight:700;text-decoration:none;">Ir para o Studio</a>' +
+                '<a href="/chat" style="display:inline-block;background: #FFFFFF; color: #0A0A0A;color:#fff;border-radius:12px;padding:12px 32px;font-weight:700;text-decoration:none;">Ir para o Studio</a>' +
                 '</div>';
         }
 

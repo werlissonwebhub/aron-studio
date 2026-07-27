@@ -4,52 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aron Elite v1 — Crie sites e apps com IA em segundos | Gerador de sites com inteligência artificial</title>
+    <title>Aron elite v1 — Crie sites e apps profissionais com IA em segundos</title>
     <meta name="description"
-        content="Crie sites e aplicativos profissionais com IA em segundos. Descreva o que você precisa e a Aron gera o código completo, com design premium e pronto para publicar. Alternativa brasileira ao Lovable e v0.dev.">
+        content="O Aron Studio usa Inteligência Artificial para criar sites e apps profissionais em segundos. Descreva o que você precisa e a IA constrói para você.">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#09090b">
 
     <!-- Open Graph (WhatsApp, Instagram, LinkedIn, Facebook) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://aronstudio.com.br/">
-    <meta property="og:title" content="Aron Elite v1— Crie sites e apps com IA em segundos">
+    <meta property="og:title" content="Aron Studio — Crie sites e apps com IA em segundos">
     <meta property="og:description"
         content="Descreva o site que você precisa e a IA constrói para você. Rápido, profissional e sem precisar saber programar.">
-    <meta property="og:image" content="https://aronstudio.com.br/img/apple-touch-icon.png">
+    <meta property="og:image" content="https://aronstudio.com.br/img/hero.png">
     <meta property="og:locale" content="pt_BR">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Aron elite v1 — Crie sites com IA em segundos">
     <meta name="twitter:description" content="Descreva o site que você precisa e a IA constrói para você.">
-    <meta name="twitter:image" content="https://aronstudio.com.br/img/apple-touch-icon.png">
+    <meta name="twitter:image" content="https://aronstudio.com.br/img/hero.png">
 
     <!-- Favicon -->
-    <link rel="icon" href="/img/favicon-32.png" type="image/png">
-    <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+    <link rel="icon" href="img/studio-aron.png" type="image/png">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap"
-        rel="stylesheet">
-    <link
-        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    
+    
     <style>
         :root {
             --bg: #09090b;
-            --accent: #8A3FFC;
-            /* Roxo Neon */
-            --accent-light: #34D7DD;
-            /* Ciano Neon */
+            --ink-invert: #FFFFFF;   /* texto de destaque no fundo preto */
+            --graphite:   #B4B4B8;   /* texto secundário / apoio */
+            --graphite-2: #7A7A7E;   /* legendas, eyebrows, placeholders */
+            --accent:     #FFFFFF;   /* destaque primário limpo */
+            --accent-light: #B4B4B8; /* destaque secundário */
             --text-muted: #A1A1AA;
-            /* Texto Muted */
+            --font-display: 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
         }
 
         @property --glow-angle {
@@ -58,10 +55,20 @@
             inherits: false;
         }
 
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: var(--font-display);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        body, p, button, input, textarea, select, span, a {
+            font-family: var(--font-body);
+        }
+
         body {
             background: var(--bg);
             color: #fafafa;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
@@ -204,7 +211,7 @@
         /* Icon Gradient Utility */
         .icon-gradient {
             background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            -webkit-background-clip: text;
+            -webkit-background-clip: unset;
             -webkit-text-fill-color: transparent;
             display: inline-block;
         }
@@ -343,16 +350,67 @@
         }
 
         .nav-link:hover {
-            color: #34D7DD;
+            color: #FFFFFF;
         }
 
-        .join-btn {
-            transition: all 0.3s ease;
+        .join-btn, .btn-workspace {
+            position: relative;
+            z-index: 0;
+            background: transparent !important;
+            border: none;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .join-btn::before, .btn-workspace::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            z-index: -2;
+            background: conic-gradient(from var(--btn-beam), transparent 25%, #38bdf8, #c084fc, #f472b6, #fbbf24, transparent 50%);
+            animation: btn-beam-spin 3s linear infinite;
+        }
+
+        .join-btn::after, .btn-workspace::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            z-index: -1;
+            background: #FFFFFF;
+            transition: background 0.3s ease;
+        }
+
+        .join-btn { border-radius: 9999px; }
+        .join-btn::after { border-radius: 9999px; }
+
+        .btn-workspace {
+            padding: 14px 32px;
+            color: #0A0A0A;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border-radius: 14px;
+        }
+        .btn-workspace::after { border-radius: 12px; }
+
+        .join-btn:hover::after, .btn-workspace:hover::after {
+            background: #E4E4E7;
         }
 
         .join-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(138, 63, 252, 0.2);
+        }
+
+        .btn-workspace:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(52, 215, 221, 0.4), 0 0 50px rgba(138, 63, 252, 0.2);
+        }
+
+        .btn-workspace:active {
+            transform: translateY(0) scale(0.97);
         }
 
         /* --- HERO BUTTONS PREMIUM --- */
@@ -362,80 +420,41 @@
             inherits: false;
         }
 
-        .btn-workspace {
-            position: relative;
-            padding: 14px 32px;
-            background: linear-gradient(135deg, #34D7DD 0%, #8A3FFC 100%);
-            color: white;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            border-radius: 14px;
-            border: none;
-            cursor: pointer;
-            overflow: hidden;
-            z-index: 0;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn-workspace::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            z-index: -2;
-            border-radius: 16px;
-            background: conic-gradient(from var(--btn-beam), transparent 20%, #34D7DD 40%, #8A3FFC 60%, transparent 80%);
-            animation: btn-beam-spin 3s linear infinite;
-        }
-
-        .btn-workspace::after {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            z-index: -1;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #34D7DD 0%, #8A3FFC 100%);
-        }
-
         @keyframes btn-beam-spin {
-            from {
-                --btn-beam: 0deg;
-            }
-
-            to {
-                --btn-beam: 360deg;
-            }
+            from { --btn-beam: 0deg; }
+            to { --btn-beam: 360deg; }
         }
 
-        .btn-workspace:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(52, 215, 221, 0.5), 0 0 50px rgba(138, 63, 252, 0.2);
+        .title-metal {
+            background: linear-gradient(to right, #FFFFFF 15%, #E2E8F0 25%, #38bdf8 35%, #c084fc 45%, #f472b6 55%, #fbbf24 65%, #E2E8F0 75%, #FFFFFF 85%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-shine 6s linear infinite;
         }
-
-        .btn-workspace:active {
-            transform: translateY(0) scale(0.97);
+        @keyframes text-shine {
+            to { background-position: 200% center; }
         }
 
         .btn-docs {
             padding: 14px 32px;
             background: transparent;
-            color: rgba(255, 255, 255, 0.7);
+            color: #FFFFFF;
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             cursor: pointer;
             transition: all 0.3s ease-in-out;
         }
 
         .btn-docs:hover {
-            color: white;
-            border-color: #8A3FFC;
-            background: rgba(139, 92, 246, 0.08);
-            box-shadow: inset 0 0 12px rgba(138, 63, 252, 0.2), 0 0 15px rgba(138, 63, 252, 0.15);
+            color: #FFFFFF;
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.05);
             transform: translateY(-2px);
         }
 
@@ -472,7 +491,7 @@
             display: inline-block;
             width: 2px;
             height: 1.2em;
-            background-color: #34D7DD;
+            background-color: #FFFFFF;
             vertical-align: middle;
             animation: blink 1s step-end infinite;
             margin-left: 2px;
@@ -619,8 +638,8 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: #34D7DD;
-            box-shadow: 0 0 8px #34D7DD;
+            background: #FFFFFF;
+            box-shadow: 0 0 8px #FFFFFF;
             animation: pulseDot 1.6s ease-in-out infinite;
         }
 
@@ -639,7 +658,7 @@
         }
 
         .prospect-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: clamp(10px, 4vw, 30px);
             font-weight: 800;
             line-height: 1.08;
@@ -649,9 +668,9 @@
         }
 
         .prospect-title .grad {
-            background: linear-gradient(120deg, #7206ca, #34D7DD);
-            -webkit-background-clip: text;
-            background-clip: text;
+            background: linear-gradient(120deg, #7206ca, #FFFFFF);
+            -webkit-background-clip: unset;
+            background-clip: unset;
             -webkit-text-fill-color: transparent;
         }
 
@@ -686,7 +705,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #818cf8;
+            color: #B4B4B8;
         }
 
         .prospect-feature-icon svg {
@@ -716,7 +735,7 @@
             color: white;
             border: none;
             border-radius: 12px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -968,7 +987,7 @@
 
         .faq-item.open .faq-chev {
             transform: rotate(180deg);
-            color: #34D7DD;
+            color: #FFFFFF;
         }
 
         .faq-a {
@@ -1000,7 +1019,7 @@
             font-size: 11px;
             letter-spacing: 0.18em;
             text-transform: uppercase;
-            color: #34D7DD;
+            color: #FFFFFF;
             margin-bottom: 22px;
             padding: 6px 14px;
             border: 1px solid rgba(52, 215, 221, 0.25);
@@ -1012,8 +1031,8 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: #34D7DD;
-            box-shadow: 0 0 8px #34D7DD;
+            background: #FFFFFF;
+            box-shadow: 0 0 8px #FFFFFF;
             animation: npPulse 1.6s ease-in-out infinite;
         }
 
@@ -1042,9 +1061,9 @@
         }
 
         .np-grad {
-            background: linear-gradient(120deg, #8A3FFC, #34D7DD);
-            -webkit-background-clip: text;
-            background-clip: text;
+            background: linear-gradient(120deg, #FFFFFF, #FFFFFF);
+            -webkit-background-clip: unset;
+            background-clip: unset;
             -webkit-text-fill-color: transparent;
         }
 
@@ -1093,7 +1112,7 @@
         }
 
         .np-feat:hover .np-icon {
-            color: #34D7DD;
+            color: #FFFFFF;
             box-shadow: 0 0 20px -4px rgba(52, 215, 221, 0.4);
         }
 
@@ -1103,7 +1122,7 @@
         }
 
         .np-feat-txt h4 {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 0.98rem;
             font-weight: 600;
             color: #f1f5f9;
@@ -1127,20 +1146,30 @@
             }
         }
     </style>
+    </style>
     <style>
-        /* Fonte EB Garamond em todos os títulos e parágrafos */
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        p,
-        .prospect-title,
-        .prospect-desc,
-        .prospect-feature-text h4,
-        .prospect-feature-text p {
-            font-family: 'EB Garamond', Georgia, serif !important;
+        /* Typography System - Corporate Tech Style */
+        h1, h2, h3, h4, h5, h6, .font-display,
+        .prospect-title, .sc-title, .how-title, .step-title,
+        .np-title {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        body, p, button, input, textarea, select, span, a,
+        .prospect-desc, .sc-lead, .sc-p, .how-sub, .step-desc,
+        .np-desc {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        /* Buttons Fix */
+        .btn-workspace, .btn-workspace *, 
+        .join-btn, .join-btn *,
+        button[style*="background: white"], button[style*="background: #FFFFFF"],
+        button[style*="background: white"] *, button[style*="background: #FFFFFF"] * {
+            color: #0A0A0A !important;
+            fill: #0A0A0A !important;
+            stroke: #0A0A0A !important;
+            -webkit-text-fill-color: #0A0A0A !important;
         }
     </style>
     <style>
@@ -1186,7 +1215,7 @@
         }
 
         .how-title {
-            font-family: 'EB Garamond', serif;
+            font-family: 'Inter', sans-serif;
             font-size: clamp(34px, 5vw, 54px);
             font-weight: 700;
             line-height: 1.1;
@@ -1196,14 +1225,14 @@
         }
 
         .how-title .grad {
-            background: linear-gradient(120deg, #818cf8, #34D7DD);
+            background: linear-gradient(120deg, #B4B4B8, #FFFFFF);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .how-sub {
-            font-family: 'EB Garamond', serif;
+            font-family: 'Inter', sans-serif;
             font-size: 19px;
             line-height: 1.6;
             color: rgba(117, 115, 115, 0.6);
@@ -1228,30 +1257,31 @@
         .tilt-card {
             position: relative;
             border-radius: 20px;
-            background: linear-gradient(145deg, #15151f, #0d0d16);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #050505;
+            border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 22px;
             aspect-ratio: 4 / 3.2;
             transform-style: preserve-3d;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
             will-change: transform;
             overflow: hidden;
             cursor: pointer;
         }
 
         .tilt-card:hover {
-            border-color: rgba(99, 102, 241, 0.35);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .tilt-glare {
             position: absolute;
             inset: 0;
             border-radius: 20px;
-            background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.10), transparent 45%);
+            background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(56, 189, 248, 0.15) 0%, rgba(192, 132, 252, 0.1) 15%, rgba(244, 114, 182, 0.05) 30%, transparent 45%);
             opacity: 0;
             transition: opacity 0.3s;
             pointer-events: none;
             z-index: 5;
+            mix-blend-mode: screen;
         }
 
         .tilt-card:hover .tilt-glare {
@@ -1262,7 +1292,7 @@
             position: absolute;
             top: 16px;
             right: 18px;
-            font-family: 'EB Garamond', serif;
+            font-family: 'Inter', sans-serif;
             font-size: 34px;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.07);
@@ -1331,7 +1361,7 @@
             display: inline-block;
             width: 2px;
             height: 13px;
-            background: #818cf8;
+            background: #FFFFFF;
             vertical-align: middle;
             margin-left: 1px;
             animation: blink 1s step-end infinite;
@@ -1375,13 +1405,13 @@
             width: 30px;
             height: 30px;
             border-radius: 8px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #0A0A0A;
             transform: translateZ(15px);
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.5);
+            box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
         }
 
         .prompt-send svg {
@@ -1402,7 +1432,7 @@
         .build-hero {
             height: 38%;
             border-radius: 8px;
-            background: linear-gradient(120deg, #6366f1, #8b5cf6, #34D7DD);
+            background: linear-gradient(120deg, #38bdf8, #c084fc, #FFFFFF);
             margin-bottom: 10px;
             position: relative;
             overflow: hidden;
@@ -1473,11 +1503,11 @@
             align-items: center;
             gap: 6px;
             padding: 5px 10px;
-            background: rgba(99, 102, 241, 0.18);
-            border: 1px solid rgba(99, 102, 241, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             font-size: 10px;
-            color: #a5b4fc;
+            color: #FFFFFF;
             font-family: 'Inter', sans-serif;
             transform: translateZ(40px);
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
@@ -1487,8 +1517,8 @@
             width: 9px;
             height: 9px;
             border-radius: 50%;
-            border: 1.5px solid rgba(165, 180, 252, 0.3);
-            border-top-color: #a5b4fc;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #FFFFFF;
             animation: spin 0.8s linear infinite;
         }
 
@@ -1526,7 +1556,7 @@
         .pub-hero {
             height: 34%;
             border-radius: 8px;
-            background: linear-gradient(120deg, #34D7DD, #6366f1);
+            background: linear-gradient(120deg, #FFFFFF, #f472b6);
             margin-bottom: 10px;
             transform: translateZ(20px);
         }
@@ -1553,15 +1583,15 @@
             transform: translate(-50%, -50%) translateZ(55px);
             padding: 10px 22px;
             border-radius: 10px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
+            background: #FFFFFF;
+            color: #0A0A0A;
             font-size: 13px;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
             display: flex;
             align-items: center;
             gap: 7px;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.6);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
             white-space: nowrap;
         }
 
@@ -1615,18 +1645,18 @@
             font-weight: 700;
             letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: #818cf8;
+            color: #B4B4B8;
             font-family: 'Inter', sans-serif;
         }
 
         .step-label .ln {
             width: 24px;
             height: 1px;
-            background: rgba(129, 140, 248, 0.4);
+            background: rgba(180,180,184,0.5);
         }
 
         .step-title {
-            font-family: 'EB Garamond', serif;
+            font-family: 'Inter', sans-serif;
             font-size: 24px;
             font-weight: 700;
             color: #f1f5f9;
@@ -1634,7 +1664,7 @@
         }
 
         .step-desc {
-            font-family: 'EB Garamond', serif;
+            font-family: 'Inter', sans-serif;
             font-size: 16.5px;
             line-height: 1.55;
             color: rgba(241, 245, 249, 0.55);
@@ -1645,7 +1675,7 @@
             position: absolute;
             top: 90px;
             right: -22px;
-            color: rgba(129, 140, 248, 0.4);
+            color: rgba(180,180,184,0.5);
             font-size: 20px;
             z-index: 3;
         }
@@ -1702,7 +1732,7 @@
     </style>
 </head>
 
-<body class="selection:bg-purple-500/30">
+<body class="selection:bg-white/20">
 
     <!-- ATMOSPHERE -->
     <div class="aurora-container">
@@ -1711,22 +1741,19 @@
     </div>
 
     <!-- NAVBAR -->
-    <nav class="fixed top-0 w-full z-[100] flex justify-center pt-6 pointer-events-none">
-        <div id="topbar" class="pointer-events-auto h-11 topbar px-6 flex items-center space-x-10 rounded-full">
-            <div class="hidden md:flex items-center space-x-1 text-[10px] font-bold tracking-[0.2em] uppercase">
-                <a href="#hero" class="nav-link">Start</a>
-                <a href="#showcase" class="nav-link">Showcase</a>
-                <a href="#features" class="nav-link">Features</a>
-                <button onclick="toggleModal('login')" class="nav-link">Secure</button>
-            </div>
-            <button onclick="toggleModal('register')"
-                class="join-btn relative inline-flex overflow-hidden rounded-full p-[1px] active:scale-95 transition-all">
-                <span
-                    class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#a855f7_0%,#3b82f6_50%,#a855f7_100%)]"></span>
-                <span
-                    class="inline-flex h-full w-full items-center justify-center rounded-full bg-zinc-950 px-5 py-1.5 text-[10px] font-black tracking-widest uppercase text-white backdrop-blur-3xl hover:bg-zinc-900/90 transition-colors">
-                    Join
-                </span>
+    <nav class="fixed top-0 left-0 w-full z-[100] bg-[#09090b]/80 backdrop-blur-md border-b-0 pointer-events-auto px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center">
+            <img src="img/aron-mark.png" alt="Aron Logo" class="h-6 object-contain cursor-pointer" onclick="window.scrollTo(0,0)">
+        </div>
+        <div class="hidden md:flex items-center space-x-6 text-[11px] font-bold tracking-[0.15em] uppercase">
+            <a href="#hero" class="nav-link text-zinc-400 hover:text-white transition-colors">Start</a>
+            <a href="#showcase" class="nav-link text-zinc-400 hover:text-white transition-colors">Showcase</a>
+            <a href="#features" class="nav-link text-zinc-400 hover:text-white transition-colors">Features</a>
+            <button onclick="toggleModal('login')" class="nav-link text-zinc-400 hover:text-white transition-colors">Secure</button>
+        </div>
+        <div class="flex items-center">
+            <button onclick="toggleModal('register')" class="join-btn bg-white hover:bg-[#E4E4E7] text-[#0A0A0A] px-6 py-2 text-[11px] font-black tracking-widest uppercase rounded-full transition-colors">
+                Join
             </button>
         </div>
     </nav>
@@ -1737,19 +1764,18 @@
         style="z-index: 10;">
         <canvas id="dot-grid-canvas"></canvas>
 
-        <div class="reveal text-center space-y-12 relative z-10 w-full">
-            <div class="relative flex items-center justify-center">
-                <img src="img/Aron-logo.png" alt="Aron Logo"
-                    class="h-14 md:h-20 mt-5 mb-5 md:mt-8 md:mb-8 object-contain relative z-10">
+        <div class="reveal text-center relative z-10 w-full flex flex-col items-center">
+            <div class="relative flex items-center justify-center mb-8 w-full max-w-sm px-4">
+                <img src="img/Aron-logo.png" alt="Aron Logo" class="h-12 sm:h-16 md:h-20 object-contain relative z-10 drop-shadow-2xl opacity-90 hover:opacity-100 transition-opacity duration-300">
             </div>
-
-            <div class="space-y-6">
+            
+            <div class="space-y-6 mt-2 w-full">
                 <h1 class="text-[10px] font-black tracking-[0.6em] uppercase text-zinc-500/80">Intelligence that
                     Transcends
                 </h1>
                 <p
-                    class="text-4xl md:text-5xl font-black tracking-tighter max-w-4xl mx-auto leading-[1.05] text-[#8A3FFC]">
-                    The Future of the Web <br> <span class="text-[#34D7DD]">Engineering and Design.</span>
+                    class="text-4xl md:text-5xl font-black tracking-tighter max-w-4xl mx-auto leading-[1.05]">
+                    <span class="title-metal">The Future of the Web</span> <br> <span class="text-[#B4B4B8]">Engineering and Design.</span>
                 </p>
 
                 <p>CRIE SITES E APLICATIVOS COM IA EM SEGUNDOS</p>
@@ -1757,33 +1783,28 @@
                 <!-- Virtual Input Simulador -->
                 <div class="w-full max-w-3xl mx-auto mt-10 relative">
                     <div
-                        class="absolute -top-8 -left-8 w-[220px] h-[220px] bg-[#B349F5]/25 blur-[80px] rounded-full pointer-events-none animate-pulse">
-                    </div>
-                    <div class="absolute -bottom-8 -right-8 w-[180px] h-[180px] bg-[#34D7DD]/20 blur-[70px] rounded-full pointer-events-none animate-pulse"
-                        style="animation-delay:1.2s"></div>
-                    <div
-                        class="virtual-input-border bg-[rgba(10,10,12,0.7)] backdrop-blur-xl rounded-2xl p-2 flex flex-col shadow-2xl relative z-20">
+                        class="virtual-input-border bg-[rgba(10,10,12,0.7)] backdrop-blur-xl rounded-2xl p-2 flex flex-col shadow-2xl relative z-20 border border-white/5">
                         <div
                             class="px-5 py-4 w-full text-left font-sans text-base text-zinc-200 min-h-[70px] flex items-start">
                             <span id="virtual-typing-text"></span><span
-                                class="cursor-blink font-light text-[#34D7DD] -ml-1">|</span>
+                                class="cursor-blink font-light text-[#B4B4B8] -ml-1">|</span>
                         </div>
                         <div class="flex items-center justify-between px-2 pb-1 pt-2 w-full border-t border-white/5">
                             <div class="flex items-center space-x-1">
                                 <button
-                                    class="p-2 text-zinc-500 hover:text-[#34D7DD] transition-colors rounded-md hover:bg-white/5"><i
+                                    class="p-2 text-zinc-500 hover:text-[#B4B4B8] transition-colors rounded-md hover:bg-white/5"><i
                                         data-lucide="paperclip" class="h-4 w-4"></i></button>
                                 <button
-                                    class="p-2 text-zinc-500 hover:text-[#34D7DD] transition-colors rounded-md hover:bg-white/5"><i
+                                    class="p-2 text-zinc-500 hover:text-[#B4B4B8] transition-colors rounded-md hover:bg-white/5"><i
                                         data-lucide="mic" class="h-4 w-4"></i></button>
                             </div>
                             <div class="flex items-center space-x-3">
                                 <button
-                                    class="p-2 text-zinc-500 hover:text-[#8A3FFC] transition-colors rounded-md hover:bg-white/5">
+                                    class="p-2 text-zinc-500 hover:text-[#FFFFFF] transition-colors rounded-md hover:bg-white/5">
                                     <i data-lucide="layers" class="h-4 w-4"></i>
                                 </button>
                                 <button
-                                    class="p-2 bg-gradient-to-r from-[#8A3FFC] to-[#34D7DD] text-white hover:opacity-90 rounded-lg transition-colors shadow-sm cursor-default">
+                                    class="p-2 bg-white text-black hover:bg-gray-200 rounded-lg transition-colors shadow-sm cursor-pointer">
                                     <i data-lucide="arrow-right" class="h-4 w-4"></i>
                                 </button>
                             </div>
@@ -1794,37 +1815,37 @@
                     <div class="flex md:hidden overflow-x-auto gap-3 mt-6 relative z-20 pb-2" id="pills-mobile"
                         style="scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth;">
                         <button
-                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-cyan-500/20 active:bg-cyan-500/30 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
+                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
                             onclick="setVirtualText('App de Agendamento inteligente com calendário integrado e dark mode.')">App
                             de Agendamento</button>
                         <button
-                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-cyan-500/20 active:bg-cyan-500/30 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
+                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
                             onclick="setVirtualText('Um dashboard de vendas corporativo com gráficos em ciano e roxo.')">Dashboard
                             de Vendas</button>
                         <button
-                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-cyan-500/20 active:bg-cyan-500/30 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
+                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
                             onclick="setVirtualText('Landing Page para Curso de programação web com animações.')">Landing
                             Page para Curso</button>
                         <button
-                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-cyan-500/20 active:bg-cyan-500/30 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
+                            class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
                             onclick="setVirtualText('Sistema de Delivery focado em alta retenção e mobile-first.')">Sistema
                             de Delivery</button>
                     </div>
                     <div class="hidden md:flex flex-wrap justify-center gap-3 mt-6 relative z-20">
                         <button
-                            class="px-5 py-2 bg-white/5 hover:bg-cyan-500/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
+                            class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
                             onclick="setVirtualText('App de Agendamento inteligente com calendário integrado e dark mode.')">App
                             de Agendamento</button>
                         <button
-                            class="px-5 py-2 bg-white/5 hover:bg-cyan-500/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
+                            class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
                             onclick="setVirtualText('Um dashboard de vendas corporativo com gráficos em ciano e roxo.')">Dashboard
                             de Vendas</button>
                         <button
-                            class="px-5 py-2 bg-white/5 hover:bg-cyan-500/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
+                            class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
                             onclick="setVirtualText('Landing Page para Curso de programação web com animações.')">Landing
                             Page para Curso</button>
                         <button
-                            class="px-5 py-2 bg-white/5 hover:bg-cyan-500/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
+                            class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
                             onclick="setVirtualText('Sistema de Delivery focado em alta retenção e mobile-first.')">Sistema
                             de Delivery</button>
                     </div>
@@ -1846,10 +1867,8 @@
     <section id="showcase-criar" class="sc-wrap">
         <div class="sc-head">
             <div class="relative inline-flex overflow-hidden rounded-full p-[1px] mb-6">
-                <span
-                    class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#a855f7_0%,#3b82f6_50%,#a855f7_100%)]"></span>
-                <span
-                    class="inline-flex h-full w-full items-center justify-center rounded-full bg-zinc-950 px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase text-purple-300 backdrop-blur-3xl">
+                <span class="absolute inset-[-1000%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_25%,#38bdf8,#c084fc,#f472b6,#fbbf24,transparent_50%)]"></span>
+                <span class="inline-flex h-full w-full items-center justify-center rounded-full bg-zinc-950 px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase text-[#B4B4B8] backdrop-blur-3xl">
                     O que voce pode criar
                 </span>
             </div>
@@ -1861,12 +1880,12 @@
         <!-- BLOCO 1: SITES -->
         <div class="sc-block" data-sim="site">
             <div class="sc-copy">
-                <span class="sc-kicker" style="--k:#34D7DD">Sites Profissionais</span>
+                <span class="sc-kicker" style="--k:#FFFFFF">Sites Profissionais</span>
                 <h3 class="sc-h3">Do briefing ao site no ar</h3>
                 <p class="sc-p">Landing pages, portfolios e sites institucionais montados seção por seção, com design de
                     elite e animações cinematográficas.</p>
-                <div class="sc-feat"><span class="sc-dot" style="background:#34D7DD"></span>HTML, CSS e JS limpos</div>
-                <div class="sc-feat"><span class="sc-dot" style="background:#34D7DD"></span>Responsivo e otimizado</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>HTML, CSS e JS limpos</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>Responsivo e otimizado</div>
             </div>
             <div class="sc-mock">
                 <div class="sc-browser">
@@ -1896,12 +1915,12 @@
         <!-- BLOCO 2: APPS FULLSTACK -->
         <div class="sc-block sc-reverse" data-sim="app">
             <div class="sc-copy">
-                <span class="sc-kicker" style="--k:#8A3FFC">Apps Fullstack</span>
+                <span class="sc-kicker" style="--k:#FFFFFF">Apps Fullstack</span>
                 <h3 class="sc-h3">Login, banco e painel prontos</h3>
                 <p class="sc-p">Aplicativos completos com autenticação, banco de dados e multiusuário. Backend real com
                     Supabase, sem você tocar em infraestrutura.</p>
-                <div class="sc-feat"><span class="sc-dot" style="background:#8A3FFC"></span>Auth e permissões</div>
-                <div class="sc-feat"><span class="sc-dot" style="background:#8A3FFC"></span>Banco de dados real</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>Auth e permissões</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>Banco de dados real</div>
             </div>
             <div class="sc-mock">
                 <div class="sc-browser">
@@ -1929,12 +1948,12 @@
         <!-- BLOCO 3: DASHBOARDS -->
         <div class="sc-block" data-sim="dash">
             <div class="sc-copy">
-                <span class="sc-kicker" style="--k:#818cf8">Dashboards & SaaS</span>
+                <span class="sc-kicker" style="--k:#B4B4B8">Dashboards & SaaS</span>
                 <h3 class="sc-h3">Dados que ganham vida</h3>
                 <p class="sc-p">Painéis com métricas em tempo real, gráficos e tabelas. Interfaces de dados que
                     impressionam e funcionam de verdade.</p>
-                <div class="sc-feat"><span class="sc-dot" style="background:#818cf8"></span>Gráficos animados</div>
-                <div class="sc-feat"><span class="sc-dot" style="background:#818cf8"></span>Métricas ao vivo</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#B4B4B8"></span>Gráficos animados</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#B4B4B8"></span>Métricas ao vivo</div>
             </div>
             <div class="sc-mock">
                 <div class="sc-browser">
@@ -2018,7 +2037,7 @@
             font-size: 12px;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: #34D7DD;
+            color: #FFFFFF;
             margin-bottom: 18px;
             padding: 6px 14px;
             border: 1px solid rgba(52, 215, 221, 0.25);
@@ -2027,7 +2046,7 @@
         }
 
         .sc-title {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: clamp(2rem, 5vw, 3.2rem);
             font-weight: 700;
             line-height: 1.1;
@@ -2037,10 +2056,9 @@
         }
 
         .sc-grad {
-            background: linear-gradient(120deg, #34D7DD, #8A3FFC 60%, #B349F5);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #B4B4B8;
+            background: none;
+            -webkit-text-fill-color: #B4B4B8;
         }
 
         .sc-lead {
@@ -2091,7 +2109,7 @@
         }
 
         .sc-h3 {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: clamp(1.4rem, 3vw, 1.9rem);
             font-weight: 600;
             color: #fff;
@@ -2184,7 +2202,7 @@
             width: 60px;
             height: 14px;
             border-radius: 4px;
-            background: linear-gradient(90deg, #34D7DD, #8A3FFC);
+            background: linear-gradient(90deg, #FFFFFF, #FFFFFF);
         }
 
         .ms-links {
@@ -2229,7 +2247,7 @@
             width: 100px;
             height: 30px;
             border-radius: 8px;
-            background: linear-gradient(90deg, #34D7DD, #8A3FFC);
+            background: linear-gradient(90deg, #FFFFFF, #FFFFFF);
             opacity: 0;
             transform: translateY(10px);
             margin-top: 4px;
@@ -2303,7 +2321,7 @@
         }
 
         .ma-title {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 14px;
             color: #fff;
             font-weight: 600;
@@ -2402,7 +2420,7 @@
         }
 
         .md-val {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 22px;
             font-weight: 700;
             color: #fff;
@@ -2422,7 +2440,7 @@
         .md-bar {
             flex: 1;
             height: 0;
-            background: linear-gradient(180deg, #818cf8, #6366f1);
+            background: linear-gradient(180deg, #B4B4B8, #6366f1);
             border-radius: 5px 5px 0 0;
             transition: height 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
@@ -2443,7 +2461,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
             color: #fff;
             font-size: 14px;
         }
@@ -2470,15 +2488,15 @@
             justify-content: center;
             font-size: 28px;
             font-weight: 700;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .mg-cell.x {
-            color: #34D7DD;
+            color: #FFFFFF;
         }
 
         .mg-cell.o {
-            color: #B349F5;
+            color: #B4B4B8;
         }
 
         .mg-cell.win {
@@ -2672,10 +2690,8 @@
     <section class="how-section">
         <div class="how-head">
             <div class="relative inline-flex overflow-hidden rounded-full p-[1px] mb-[22px]">
-                <span
-                    class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#a855f7_0%,#3b82f6_50%,#a855f7_100%)]"></span>
-                <span
-                    class="inline-flex h-full w-full items-center justify-center rounded-full bg-zinc-950 px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase text-indigo-300 font-['Inter'] backdrop-blur-3xl">
+                <span class="absolute inset-[-1000%] animate-[spin_2.5s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_25%,#38bdf8,#c084fc,#f472b6,#fbbf24,transparent_50%)]"></span>
+                <span class="inline-flex h-full w-full items-center justify-center rounded-full bg-zinc-950 px-4 py-1.5 text-[11px] font-bold tracking-[0.2em] uppercase text-[#B4B4B8] backdrop-blur-3xl">
                     Como Funciona
                 </span>
             </div>
@@ -2795,7 +2811,7 @@
     <!-- FEATURES GRID ENTERPRISE -->
     <section id="features" class="pt-24 pb-32 px-6 max-w-5xl mx-auto relative" style="z-index: 5;">
         <div class="text-center mb-24 space-y-4">
-            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#34D7DD]">A Engenharia Detrás da Magia</h2>
+            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">A Engenharia Detrás da Magia</h2>
             <h3 class="text-4xl font-black tracking-tight text-white italic">Construído para Durar.</h3>
         </div>
 
@@ -2803,7 +2819,7 @@
             <!-- 1. Design Multimodal -->
             <div class="feature-card glow-border reveal">
                 <div class="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                    <i data-lucide="scan-eye" class="h-6 w-6 text-[#34D7DD]"></i>
+                    <i data-lucide="scan-eye" class="h-6 w-6 text-[#B4B4B8]"></i>
                 </div>
                 <div class="space-y-2">
                     <h5 class="text-xl font-medium text-white tracking-tight">Design Multimodal</h5>
@@ -2815,8 +2831,8 @@
 
             <!-- 2. Análise de Negócio -->
             <div class="feature-card glow-border reveal" style="transition-delay: 0.1s;">
-                <div class="h-12 w-12 rounded-xl bg-[#8A3FFC]/10 flex items-center justify-center">
-                    <i data-lucide="bar-chart-3" class="h-6 w-6 text-[#8A3FFC]"></i>
+                <div class="h-12 w-12 rounded-xl bg-[#FFFFFF]/10 flex items-center justify-center">
+                    <i data-lucide="bar-chart-3" class="h-6 w-6 text-[#FFFFFF]"></i>
                 </div>
                 <div class="space-y-2">
                     <h5 class="text-xl font-medium text-white tracking-tight">Análise de Negócio</h5>
@@ -2829,7 +2845,7 @@
             <!-- 3. Geração Atômica -->
             <div class="feature-card glow-border reveal" style="transition-delay: 0.2s;">
                 <div class="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                    <i data-lucide="puzzle" class="h-6 w-6 text-[#34D7DD]"></i>
+                    <i data-lucide="puzzle" class="h-6 w-6 text-[#B4B4B8]"></i>
                 </div>
                 <div class="space-y-2">
                     <h5 class="text-xl font-medium text-white tracking-tight">Geração Atômica</h5>
@@ -2841,8 +2857,8 @@
 
             <!-- 4. Sincronização de Preview -->
             <div class="feature-card glow-border reveal">
-                <div class="h-12 w-12 rounded-xl bg-[#8A3FFC]/10 flex items-center justify-center">
-                    <i data-lucide="refresh-ccw-dot" class="h-6 w-6 text-[#8A3FFC]"></i>
+                <div class="h-12 w-12 rounded-xl bg-[#FFFFFF]/10 flex items-center justify-center">
+                    <i data-lucide="refresh-ccw-dot" class="h-6 w-6 text-[#FFFFFF]"></i>
                 </div>
                 <div class="space-y-2">
                     <h5 class="text-xl font-medium text-white tracking-tight">Sync de Preview</h5>
@@ -2855,7 +2871,7 @@
             <!-- 5. Otimização de Performance -->
             <div class="feature-card glow-border reveal" style="transition-delay: 0.1s;">
                 <div class="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                    <i data-lucide="gauge" class="h-6 w-6 text-[#34D7DD]"></i>
+                    <i data-lucide="gauge" class="h-6 w-6 text-[#B4B4B8]"></i>
                 </div>
                 <div class="space-y-2">
                     <h5 class="text-xl font-medium text-white tracking-tight">Performance Max</h5>
@@ -2867,8 +2883,8 @@
 
             <!-- 6. Deploy Enterprise -->
             <div class="feature-card glow-border reveal" style="transition-delay: 0.2s;">
-                <div class="h-12 w-12 rounded-xl bg-[#8A3FFC]/10 flex items-center justify-center">
-                    <i data-lucide="shield-check" class="h-6 w-6 text-[#8A3FFC]"></i>
+                <div class="h-12 w-12 rounded-xl bg-[#FFFFFF]/10 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="h-6 w-6 text-[#FFFFFF]"></i>
                 </div>
                 <div class="space-y-2">
                     <h5 class="text-xl font-medium text-white tracking-tight">Deploy Enterprise</h5>
@@ -2884,44 +2900,33 @@
         <div class="container mx-auto relative z-10 max-w-6xl">
             <!-- Cabeçalho da Seção -->
             <div class="text-center mb-20 space-y-4 reveal">
-                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-cyan-400">Prospecção Inteligente</h2>
-                <h3 class="text-4xl md:text-5xl font-black tracking-tight text-[#8A3FFC] italic">Encontre clientes que
-                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">ainda não têm
-                        site</span></h3>
-                <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Nosso sistema varre o mercado e
-                    entrega leads reais, prontos para você abordar e fechar novos negócios de alto valor.</p>
+                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-white">Prospecção Inteligente</h2>
+                <h3 class="text-4xl md:text-5xl font-black tracking-tight text-[#FFFFFF] italic">Encontre clientes que <span class="text-white">ainda não têm site</span></h3>
+                <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Nosso sistema varre o mercado e entrega leads reais, prontos para você abordar e fechar novos negócios de alto valor.</p>
             </div>
 
             <div class="flex flex-col gap-16 lg:gap-24">
-
+                
                 <!-- PASSO 1 -->
                 <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
                     <!-- Texto -->
                     <div class="w-full lg:w-1/2 flex flex-col gap-6">
                         <div class="flex items-center gap-4">
-                            <div
-                                class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <div class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-white/20 bg-cyan-500/10 text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">1. Busca por cidade e
-                                categoria</h3>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">1. Busca por cidade e categoria</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Filtre por restaurantes, clínicas, salões de beleza e muito mais — em qualquer cidade do
-                            Brasil. Nossa IA mapeia o mercado regional em segundos de forma <span
-                                class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 font-bold">cirúrgica</span>.
+                            Filtre por restaurantes, clínicas, salões de beleza e muito mais — em qualquer cidade do Brasil. Nossa IA mapeia o mercado regional em segundos de forma <span class="text-white font-bold">cirúrgica</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
                     <div class="w-full lg:w-1/2">
-                        <div
-                            class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-cyan-500/40 hover:scale-[1.02]">
-                            <img src="img/prospect (1).png" alt="Busca por cidade e categoria"
-                                class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
+                        <div class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-white/40 hover:scale-[1.02]">
+                            <img src="img/prospect (1).png" alt="Busca por cidade e categoria" class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
                         </div>
                     </div>
                 </div>
@@ -2931,32 +2936,22 @@
                     <!-- Texto -->
                     <div class="w-full lg:w-1/2 flex flex-col gap-6">
                         <div class="flex items-center gap-4">
-                            <div
-                                class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-blue-500/30 bg-blue-500/10 text-blue-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <div class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-blue-500/30 bg-blue-500/10 text-blue-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                             </div>
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">2. Dados reais de
-                                contato</h3>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">2. Dados reais de contato</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Tenha acesso imediato ao nome da empresa, endereço físico estruturado, telefone comercial
-                            verificado e o link direto do WhatsApp pronto para você iniciar sua <span
-                                class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500 font-bold">abordagem
-                                comercial</span>.
+                            Tenha acesso imediato ao nome da empresa, endereço físico estruturado, telefone comercial verificado e o link direto do WhatsApp pronto para você iniciar sua <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-white font-bold">abordagem comercial</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
                     <div class="w-full lg:w-1/2">
-                        <div
-                            class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-blue-500/40 hover:scale-[1.02]">
-                            <img src="img/prospect (2).png" alt="Dados reais de contato"
-                                class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
+                        <div class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-blue-500/40 hover:scale-[1.02]">
+                            <img src="img/prospect (2).png" alt="Dados reais de contato" class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
                         </div>
                     </div>
                 </div>
@@ -2966,31 +2961,21 @@
                     <!-- Texto -->
                     <div class="w-full lg:w-1/2 flex flex-col gap-6">
                         <div class="flex items-center gap-4">
-                            <div
-                                class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            <div class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                             </div>
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">3. Detecta quem está
-                                vulnerável</h3>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">3. Detecta quem está vulnerável</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Nossa tecnologia analisa o ecossistema digital do lead em tempo real para identificar
-                            empresas que possuem apenas redes sociais ou que estão com o site fora do ar, gerando uma
-                            oportunidade perfeita de <span
-                                class="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500 font-bold">venda
-                                de alto valor</span>.
+                            Nossa tecnologia analisa o ecossistema digital do lead em tempo real para identificar empresas que possuem apenas redes sociais ou que estão com o site fora do ar, gerando uma oportunidade perfeita de <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500 font-bold">venda de alto valor</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
                     <div class="w-full lg:w-1/2">
-                        <div
-                            class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-amber-500/40 hover:scale-[1.02]">
-                            <img src="img/prospect (3).png" alt="Detecta quem está vulnerável"
-                                class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
+                        <div class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-amber-500/40 hover:scale-[1.02]">
+                            <img src="img/prospect (3).png" alt="Detecta quem está vulnerável" class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
                         </div>
                     </div>
                 </div>
@@ -3000,31 +2985,21 @@
                     <!-- Texto -->
                     <div class="w-full lg:w-1/2 flex flex-col gap-6">
                         <div class="flex items-center gap-4">
-                            <div
-                                class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            <div class="flex flex-shrink-0 items-center justify-center w-12 h-12 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">4. Gere o site com um
-                                clique</h3>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">4. Gere o site com um clique</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Achou o lead ideal? A inteligência artificial do Aron Elite v1 entra em ação
-                            instantaneamente criando uma proposta comercial viva: um site profissional pré-construído
-                            utilizando os <span
-                                class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-500 font-bold">dados
-                                reais coletados da empresa</span>.
+                            Achou o lead ideal? A inteligência artificial do Aron Elite v1 entra em ação instantaneamente criando uma proposta comercial viva: um site profissional pré-construído utilizando os <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-500 font-bold">dados reais coletados da empresa</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
                     <div class="w-full lg:w-1/2">
-                        <div
-                            class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-emerald-500/40 hover:scale-[1.02]">
-                            <img src="img/prospect (4).png" alt="Gere o site com um clique"
-                                class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
+                        <div class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-emerald-500/40 hover:scale-[1.02]">
+                            <img src="img/prospect (4).png" alt="Gere o site com um clique" class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
                         </div>
                     </div>
                 </div>
@@ -3091,7 +3066,7 @@
                             d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
                     </svg>
                     <span
-                        class="bg-gradient-to-r from-[#8A3FFC] to-[#34D7DD] text-transparent bg-clip-text font-bold text-lg tracking-tight">Gemini</span>
+                        class="bg-gradient-to-r from-[#FFFFFF] to-[#FFFFFF] text-transparent bg-clip-text font-bold text-lg tracking-tight">Gemini</span>
                 </div>
             </div>
         </div>
@@ -3102,14 +3077,15 @@
     <section id="editor-visual" class="py-32 px-6 relative overflow-hidden" style="z-index: 5;">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-20 space-y-4 reveal">
-                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#34D7DD]">Controle Total</h2>
+                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">Controle Total</h2>
                 <h3 class="text-4xl md:text-5xl font-black tracking-tight text-white italic">Editor Visual.<br>Sem uma
                     linha de código.</h3>
                 <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Clique em qualquer elemento do site
                     gerado e edite na hora. Texto, cores, imagens — tudo na ponta dos dedos.</p>
             </div>
             <!-- Mockup do editor -->
-            <div class="reveal rounded-2xl overflow-hidden border border-white/10 mb-16">
+            <div
+                class="reveal rounded-2xl overflow-hidden border border-white/10 mb-16">
                 <!-- Barra do editor -->
                 <div
                     style="background:#0c0c0f;border-bottom:1px solid rgba(255,255,255,0.06);padding:12px 16px;display:flex;align-items:center;gap:12px;">
@@ -3119,7 +3095,7 @@
                         ✏️ Edição manual · Clique num elemento para editar</div>
                     <div style="display:flex;gap:8px;">
                         <span
-                            style="padding:6px 14px;border-radius:8px;background:rgba(52,215,221,0.15);border:1px solid rgba(52,215,221,0.3);color:#34D7DD;font-size:12px;font-weight:600;">Salvar</span>
+                            style="padding:6px 14px;border-radius:8px;background:rgba(52,215,221,0.15);border:1px solid rgba(52,215,221,0.3);color:#FFFFFF;font-size:12px;font-weight:600;">Salvar</span>
                         <span
                             style="padding:6px 14px;border-radius:8px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-size:12px;">Sair</span>
                     </div>
@@ -3129,7 +3105,7 @@
                     <div class="editor-feature">
                         <div
                             style="width:44px;height:44px;border-radius:12px;background:rgba(179,73,245,0.1);border:1px solid rgba(179,73,245,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-                            <svg style="width:22px;height:22px;color:#B349F5;" fill="none" stroke="#B349F5"
+                            <svg style="width:22px;height:22px;color:#B4B4B8;" fill="none" stroke="#B4B4B8"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -3142,7 +3118,7 @@
                     <div class="editor-feature">
                         <div
                             style="width:44px;height:44px;border-radius:12px;background:rgba(52,215,221,0.1);border:1px solid rgba(52,215,221,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-                            <svg style="width:22px;height:22px;" fill="none" stroke="#34D7DD" viewBox="0 0 24 24">
+                            <svg style="width:22px;height:22px;" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
@@ -3155,7 +3131,7 @@
                     <div class="editor-feature">
                         <div
                             style="width:44px;height:44px;border-radius:12px;background:rgba(138,63,252,0.1);border:1px solid rgba(138,63,252,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
-                            <svg style="width:22px;height:22px;" fill="none" stroke="#8A3FFC" viewBox="0 0 24 24">
+                            <svg style="width:22px;height:22px;" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                             </svg>
@@ -3173,7 +3149,7 @@
     <!-- GALLERY SECTION -->
     <section id="gallery" class="py-32 relative overflow-hidden" style="z-index: 5;">
         <div class="max-w-7xl mx-auto px-6 text-center mb-20 reveal space-y-4">
-            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B349F5]">Criações Reais. veja o que ja foi
+            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">Criações Reais. veja o que ja foi
                 criado com a ARON</h2>
             <h3 class="text-4xl md:text-5xl font-black tracking-tight text-white italic">Sites que
                 Impressionam.<br>Gerados em Segundos.</h3>
@@ -3220,10 +3196,10 @@
     <section id="cta-final" class="py-32 px-6 relative overflow-hidden" style="z-index: 5;">
         <div class="max-w-4xl mx-auto text-center relative">
             <div class="relative z-10 space-y-8 reveal">
-                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B349F5]">Comece Agora</h2>
+                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">Comece Agora</h2>
                 <h3 class="text-4xl md:text-6xl font-black tracking-tight text-white italic leading-tight">Seu proximo
                     site esta a<br><span
-                        class="bg-gradient-to-r from-[#B349F5] to-[#34D7DD] text-transparent bg-clip-text">um prompt de
+                        class="bg-gradient-to-r from-[#B4B4B8] to-[#FFFFFF] text-transparent bg-clip-text">um prompt de
                         distancia.</span></h3>
                 <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Junte-se aos criadores que ja estao
                     construindo sites profissionais em minutos. Ganhe 20 creditos gratis ao criar sua conta.</p>
@@ -3236,9 +3212,15 @@
     <footer class="py-24 border-t border-white/5 bg-[#09090b] px-6">
         <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-16">
             <div class="space-y-8">
-                <img src="img/Aron-mark.png" class="h-20">
+                <img src="img/aron-mark.png" class="h-10">
                 <p class="text-[#A1A1AA] text-sm max-w-xs font-medium leading-relaxed">A infraestrutura neural para a
                     próxima geração de apps web. Alta fidelidade de ponta a ponta.</p>
+                <div class="flex items-center space-x-2">
+                    <div class="flex items-center px-4 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
+
+                        <span class="text-[10px] font-black text-green-500 uppercase tracking-widest">Operational
+                            System</span>
+                    </div>
                 </div>
             </div>
 
@@ -3246,17 +3228,17 @@
                 <div class="space-y-6">
                     <h6 class="text-xs font-black text-white uppercase tracking-[0.3em]">Produto</h6>
                     <ul class="text-[#A1A1AA] text-xs space-y-3 font-medium">
-                        <li><a href="#" class="hover:text-[#34D7DD] transition-all">Ecossistema Studio</a></li>
-                        <li><a href="#" class="hover:text-[#34D7DD] transition-all">Aron Engine</a></li>
-                        <li><a href="#" class="hover:text-[#34D7DD] transition-all">Cloud Infrastructure</a></li>
-                        <li><a href="#" class="hover:text-[#34D7DD] transition-all">Roadmap Enterprise</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Ecossistema Studio</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Aron Engine</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Cloud Infrastructure</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Roadmap Enterprise</a></li>
                     </ul>
                 </div>
                 <div class="space-y-6">
                     <h6 class="text-xs font-black text-white uppercase tracking-[0.3em]">Legal & Social</h6>
                     <ul class="text-[#A1A1AA] text-xs space-y-3 font-medium">
-                        <li><a href="#" class="hover:text-[#34D7DD] transition-all">Política de Privacidade</a></li>
-                        <li><a href="#" class="hover:text-[#34D7DD] transition-all">Termos de Serviço</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Política de Privacidade</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Termos de Serviço</a></li>
                         <li class="pt-4 flex space-x-5">
                             <i data-lucide="twitter" class="h-4 w-4 hover:text-white cursor-pointer"></i>
                             <i data-lucide="github" class="h-4 w-4 hover:text-white cursor-pointer"></i>
@@ -3344,12 +3326,12 @@
 
                 <div id="forgot-password-link" class="flex justify-end px-1 mt-[-8px]">
                     <button onclick="switchAuthTab('forgot')"
-                        class="text-[9px] text-zinc-600 hover:text-[#34D7DD] transition-all uppercase tracking-widest font-bold">Esqueci
+                        class="text-[9px] text-zinc-600 hover:text-[#B4B4B8] transition-all uppercase tracking-widest font-bold">Esqueci
                         minha senha</button>
                 </div>
 
                 <button id="auth-submit-btn" onclick="handleAuthAction(event)"
-                    class="w-full py-4 bg-gradient-to-r from-[#8A3FFC] to-[#34D7DD] text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-xl hover:shadow-[0_0_40px_rgba(138,63,252,0.4)] transition-all active:scale-95 mt-4">
+                    class="w-full py-4 bg-white text-[#0A0A0A] font-black text-[10px] uppercase tracking-[0.3em] rounded-xl transition-all hover:bg-zinc-200 active:scale-95 mt-4">
                     Autenticar
                 </button>
                 <p id="auth-error" class="text-[10px] text-red-500 font-bold text-center mt-2 hidden"></p>
@@ -3570,7 +3552,7 @@
             if (forgotLink) forgotLink.classList.add('hidden');
 
             title.textContent = 'Ative sua Conta';
-            errorEl.innerHTML = `Enviamos um link de ativação para:<br><b class="text-[#34D7DD]">${email}</b><br><br>Verifique sua caixa de entrada e clique no link para liberar seu acesso.`;
+            errorEl.innerHTML = `Enviamos um link de ativação para:<br><b class="text-[#B4B4B8]">${email}</b><br><br>Verifique sua caixa de entrada e clique no link para liberar seu acesso.`;
             errorEl.classList.remove('hidden', 'text-red-500');
             errorEl.classList.add('text-green-500', 'text-center', 'text-xs', 'leading-relaxed');
 
@@ -3852,15 +3834,32 @@
             draw() {
                 this.ctx.clearRect(0, 0, this.width, this.height);
 
+                const colors = [
+                    {r: 56, g: 189, b: 248}, // Cyan
+                    {r: 192, g: 132, b: 252}, // Purple
+                    {r: 244, g: 114, b: 182}, // Pink
+                    {r: 251, g: 191, b: 36}  // Gold
+                ];
+                const numColors = colors.length;
+
                 // Draw dynamic radial background glow centered at the mouse coordinates
                 if (this.mouse.x !== -1000) {
+                    const gPhase = (this.time * 0.2) % 1;
+                    const scaledGPhase = gPhase * numColors;
+                    const gIndex = Math.floor(scaledGPhase);
+                    const gC1 = colors[gIndex];
+                    const gC2 = colors[(gIndex + 1) % numColors];
+                    const gFactor = scaledGPhase - gIndex;
+                    const gcR = Math.round(gC1.r + (gC2.r - gC1.r) * gFactor);
+                    const gcG = Math.round(gC1.g + (gC2.g - gC1.g) * gFactor);
+                    const gcB = Math.round(gC1.b + (gC2.b - gC1.b) * gFactor);
+
                     const glow = this.ctx.createRadialGradient(
                         this.mouse.x, this.mouse.y, 0,
                         this.mouse.x, this.mouse.y, this.hoverRadius
                     );
-                    // Glowing purple to teal/cyan with transparency
-                    glow.addColorStop(0, 'rgba(138, 63, 252, 0.12)');
-                    glow.addColorStop(0.5, 'rgba(52, 215, 221, 0.04)');
+                    glow.addColorStop(0, `rgba(${gcR}, ${gcG}, ${gcB}, 0.12)`);
+                    glow.addColorStop(0.5, `rgba(${gcR}, ${gcG}, ${gcB}, 0.04)`);
                     glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
                     this.ctx.fillStyle = glow;
@@ -3897,22 +3896,16 @@
 
                         // Static baseline dots vs glowing active dots
                         if (totalIntensity > 0.02) {
-                            // Compute dynamic purple (138, 63, 252) to blue/cyan (52, 215, 221) transition
-                            // based on time and position
                             const colorPhase = (x / this.width * 0.5 + y / this.height * 0.5 + this.time * 0.2) % 1;
-
-                            let rColor, gColor, bColor;
-                            if (colorPhase < 0.5) {
-                                const factor = colorPhase * 2;
-                                rColor = Math.round(138 + (52 - 138) * factor);
-                                gColor = Math.round(63 + (215 - 63) * factor);
-                                bColor = Math.round(252 + (221 - 252) * factor);
-                            } else {
-                                const factor = (colorPhase - 0.5) * 2;
-                                rColor = Math.round(52 + (138 - 52) * factor);
-                                gColor = Math.round(215 + (63 - 215) * factor);
-                                bColor = Math.round(221 + (252 - 221) * factor);
-                            }
+                            const scaledPhase = colorPhase * numColors;
+                            const index = Math.floor(scaledPhase);
+                            const c1 = colors[index];
+                            const c2 = colors[(index + 1) % numColors];
+                            const factor = scaledPhase - index;
+                            
+                            const rColor = Math.round(c1.r + (c2.r - c1.r) * factor);
+                            const gColor = Math.round(c1.g + (c2.g - c1.g) * factor);
+                            const bColor = Math.round(c1.b + (c2.b - c1.b) * factor);
 
                             // Base gray color for non-lit dots: #333333 -> RGB (51, 51, 51)
                             const baseR = 51, baseG = 51, baseB = 51;
@@ -3986,7 +3979,7 @@
             function makeArc(start, end) {
                 const mid = start.clone().add(end).multiplyScalar(0.5).normalize().multiplyScalar(RADIUS * 1.35);
                 const curve = new THREE.QuadraticBezierCurve3(start, mid, end);
-                return new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(40)), new THREE.LineBasicMaterial({ color: 0x818cf8, transparent: true, opacity: 0.35 }));
+                return new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(40)), new THREE.LineBasicMaterial({ color: 0xB4B4B8, transparent: true, opacity: 0.35 }));
             }
             [[-3.73, -38.52], [-8.05, -34.88], [-30.03, -51.23], [-3.12, -60.02], [-15.79, -47.88]].forEach(([lat, lon]) => globe.add(makeArc(SP, latLong(lat, lon, RADIUS))));
             globe.rotation.x = 0.35; globe.rotation.y = -1.0;
