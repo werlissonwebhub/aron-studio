@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 
 <head>
@@ -13,7 +13,7 @@
     <!-- Open Graph (WhatsApp, Instagram, LinkedIn, Facebook) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://aronstudio.com.br/">
-    <meta property="og:title" content="Aron Studio — Crie sites e apps com IA em segundos">
+    <meta property="og:title" content="Aron Studio â€” Crie sites e apps com IA em segundos">
     <meta property="og:description"
         content="Descreva o site que você precisa e a IA constroi para você. Rapido, profissional e sem precisar saber programar.">
     <meta property="og:image" content="https://aronstudio.com.br/img/hero.png">
@@ -40,10 +40,10 @@
         :root {
             --bg: #09090b;
             --ink-invert: #FFFFFF;   /* texto de destaque no fundo preto */
-            --graphite:   #B4B4B8;   /* texto secundário / apoio */
+            --graphite:   #B4B4B8;   /* texto secundÃ¡rio / apoio */
             --graphite-2: #7A7A7E;   /* legendas, eyebrows, placeholders */
-            --accent:     #FFFFFF;   /* destaque primário limpo */
-            --accent-light: #B4B4B8; /* destaque secundário */
+            --accent:     #FFFFFF;   /* destaque primÃ¡rio limpo */
+            --accent-light: #B4B4B8; /* destaque secundÃ¡rio */
             --text-muted: #A1A1AA;
             --font-display: 'Inter', -apple-system, sans-serif;
             --font-body: 'Inter', -apple-system, sans-serif;
@@ -1671,7 +1671,7 @@
         }
 
         .step:not(:last-child)::after {
-            content: '→';
+            content: 'â†’';
             position: absolute;
             top: 90px;
             right: -22px;
@@ -1816,37 +1816,37 @@
                         style="scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth;">
                         <button
                             class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
-                            onclick="setVirtualText('App de Agendamento inteligente com calendário integrado e dark mode.')">App
+                            onclick="setVirtualText('App de Agendamento inteligente com calendÃ¡rio integrado e dark mode.')">App
                             de Agendamento</button>
                         <button
                             class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
-                            onclick="setVirtualText('Um dashboard de vendas corporativo com gráficos em ciano e roxo.')">Dashboard
+                            onclick="setVirtualText('Um dashboard de vendas corporativo com grÃ¡ficos em ciano e roxo.')">Dashboard
                             de Vendas</button>
                         <button
                             class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
-                            onclick="setVirtualText('Landing Page para Curso de programação web com animações.')">Landing
+                            onclick="setVirtualText('Landing Page para Curso de programaÃ§Ã£o web com animaÃ§Ãµes.')">Landing
                             Page para Curso</button>
                         <button
                             class="flex-shrink-0 px-5 py-2 bg-white/5 hover:bg-white/15 active:bg-white/20 text-zinc-300 rounded-full text-[13px] font-medium transition-all whitespace-nowrap"
-                            onclick="setVirtualText('Sistema de Delivery focado em alta retenção e mobile-first.')">Sistema
+                            onclick="setVirtualText('Sistema de Delivery focado em alta retenÃ§Ã£o e mobile-first.')">Sistema
                             de Delivery</button>
                     </div>
                     <div class="hidden md:flex flex-wrap justify-center gap-3 mt-6 relative z-20">
                         <button
                             class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
-                            onclick="setVirtualText('App de Agendamento inteligente com calendário integrado e dark mode.')">App
+                            onclick="setVirtualText('App de Agendamento inteligente com calendÃ¡rio integrado e dark mode.')">App
                             de Agendamento</button>
                         <button
                             class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
-                            onclick="setVirtualText('Um dashboard de vendas corporativo com gráficos em ciano e roxo.')">Dashboard
+                            onclick="setVirtualText('Um dashboard de vendas corporativo com grÃ¡ficos em ciano e roxo.')">Dashboard
                             de Vendas</button>
                         <button
                             class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
-                            onclick="setVirtualText('Landing Page para Curso de programação web com animações.')">Landing
+                            onclick="setVirtualText('Landing Page para Curso de programaÃ§Ã£o web com animaÃ§Ãµes.')">Landing
                             Page para Curso</button>
                         <button
                             class="px-5 py-2 bg-white/5 hover:bg-white/15 text-zinc-300 rounded-full text-[13px] font-medium transition-all"
-                            onclick="setVirtualText('Sistema de Delivery focado em alta retenção e mobile-first.')">Sistema
+                            onclick="setVirtualText('Sistema de Delivery focado em alta retenÃ§Ã£o e mobile-first.')">Sistema
                             de Delivery</button>
                     </div>
                 </div>
@@ -1856,7 +1856,7 @@
                         Iniciar Workspace
                     </button>
                     <button onclick="window.open('https://github.com/aronstudio', '_blank')" class="btn-docs">
-                        Documentação
+                        DocumentaÃ§Ã£o
                     </button>
                 </div>
             </div>
@@ -1873,7 +1873,7 @@
                 </span>
             </div>
             <h2 class="sc-title">Descreva. <span class="sc-grad">A Aron constroi.</span></h2>
-            <p class="sc-lead">Sites, aplicativos fullstack, dashboards e jogos — com codigo real, design premium e tudo
+            <p class="sc-lead">Sites, aplicativos fullstack, dashboards e jogos â€” com codigo real, design premium e tudo
                 funcionando de verdade. Veja acontecer.</p>
         </div>
 
@@ -1882,8 +1882,8 @@
             <div class="sc-copy">
                 <span class="sc-kicker" style="--k:#FFFFFF">Sites Profissionais</span>
                 <h3 class="sc-h3">Do briefing ao site no ar</h3>
-                <p class="sc-p">Landing pages, portfolios e sites institucionais montados seção por seção, com design de
-                    elite e animações cinematográficas.</p>
+                <p class="sc-p">Landing pages, portfolios e sites institucionais montados seÃ§Ã£o por seÃ§Ã£o, com design de
+                    elite e animaÃ§Ãµes cinematogrÃ¡ficas.</p>
                 <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>HTML, CSS e JS limpos</div>
                 <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>Responsivo e otimizado</div>
             </div>
@@ -1917,9 +1917,9 @@
             <div class="sc-copy">
                 <span class="sc-kicker" style="--k:#FFFFFF">Apps Fullstack</span>
                 <h3 class="sc-h3">Login, banco e painel prontos</h3>
-                <p class="sc-p">Aplicativos completos com autenticação, banco de dados e multiusuário. Backend real com
-                    Supabase, sem você tocar em infraestrutura.</p>
-                <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>Auth e permissões</div>
+                <p class="sc-p">Aplicativos completos com autenticaÃ§Ã£o, banco de dados e multiusuÃ¡rio. Backend real com
+                    Supabase, sem vocÃª tocar em infraestrutura.</p>
+                <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>Auth e permissÃµes</div>
                 <div class="sc-feat"><span class="sc-dot" style="background:#FFFFFF"></span>Banco de dados real</div>
             </div>
             <div class="sc-mock">
@@ -1930,15 +1930,15 @@
                     <div class="sc-screen" id="mock-app">
                         <div class="ma-panel">
                             <div class="ma-head"><span class="ma-title">Provisionando</span><span class="ma-badge"
-                                    id="ma-badge">•••</span></div>
+                                    id="ma-badge">â€¢â€¢â€¢</span></div>
                             <div class="ma-row" data-row="0"><span class="ma-tbl">clientes</span><span class="ma-count"
                                     data-target="128">0</span></div>
                             <div class="ma-row" data-row="1"><span class="ma-tbl">agendamentos</span><span
                                     class="ma-count" data-target="342">0</span></div>
                             <div class="ma-row" data-row="2"><span class="ma-tbl">pagamentos</span><span
                                     class="ma-count" data-target="89">0</span></div>
-                            <div class="ma-foot"><span class="ma-check" data-check="0">○ Login e cadastro</span><span
-                                    class="ma-check" data-check="1">○ Backup automatico</span></div>
+                            <div class="ma-foot"><span class="ma-check" data-check="0">â—‹ Login e cadastro</span><span
+                                    class="ma-check" data-check="1">â—‹ Backup automatico</span></div>
                         </div>
                     </div>
                 </div>
@@ -1950,10 +1950,10 @@
             <div class="sc-copy">
                 <span class="sc-kicker" style="--k:#B4B4B8">Dashboards & SaaS</span>
                 <h3 class="sc-h3">Dados que ganham vida</h3>
-                <p class="sc-p">Painéis com métricas em tempo real, gráficos e tabelas. Interfaces de dados que
+                <p class="sc-p">PainÃ©is com mÃ©tricas em tempo real, grÃ¡ficos e tabelas. Interfaces de dados que
                     impressionam e funcionam de verdade.</p>
-                <div class="sc-feat"><span class="sc-dot" style="background:#B4B4B8"></span>Gráficos animados</div>
-                <div class="sc-feat"><span class="sc-dot" style="background:#B4B4B8"></span>Métricas ao vivo</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#B4B4B8"></span>GrÃ¡ficos animados</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#B4B4B8"></span>MÃ©tricas ao vivo</div>
             </div>
             <div class="sc-mock">
                 <div class="sc-browser">
@@ -1987,11 +1987,11 @@
         <div class="sc-block sc-reverse" data-sim="game">
             <div class="sc-copy">
                 <span class="sc-kicker" style="--k:#10b981">Jogos Interativos</span>
-                <h3 class="sc-h3">Lógica de jogo de verdade</h3>
-                <p class="sc-p">Jogos com física, pontuação e som reais. Do jogo da velha ao arcade completo — jogáveis
-                    de verdade, não só visual.</p>
-                <div class="sc-feat"><span class="sc-dot" style="background:#10b981"></span>Física e colisão</div>
-                <div class="sc-feat"><span class="sc-dot" style="background:#10b981"></span>Placar e áudio</div>
+                <h3 class="sc-h3">LÃ³gica de jogo de verdade</h3>
+                <p class="sc-p">Jogos com fÃ­sica, pontuaÃ§Ã£o e som reais. Do jogo da velha ao arcade completo â€” jogÃ¡veis
+                    de verdade, nÃ£o sÃ³ visual.</p>
+                <div class="sc-feat"><span class="sc-dot" style="background:#10b981"></span>FÃ­sica e colisÃ£o</div>
+                <div class="sc-feat"><span class="sc-dot" style="background:#10b981"></span>Placar e Ã¡udio</div>
             </div>
             <div class="sc-mock">
                 <div class="sc-browser">
@@ -2630,7 +2630,7 @@
                         screen.querySelectorAll('.ma-check').forEach(function (ch, idx) {
                             setTimeout(function () {
                                 ch.classList.add('on');
-                                ch.textContent = ch.textContent.replace('○', '✓');
+                                ch.textContent = ch.textContent.replace('â—‹', 'âœ“');
                             }, idx * 300);
                         });
                     }, 1200);
@@ -2696,7 +2696,7 @@
                 </span>
             </div>
             <h2 class="how-title">Do prompt ao site <span class="grad">no ar</span></h2>
-            <p class="how-sub">Três passos simples. Sem código, sem complicação — só descrever, ver nascer e publicar.
+            <p class="how-sub">TrÃªs passos simples. Sem cÃ³digo, sem complicaÃ§Ã£o â€” sÃ³ descrever, ver nascer e publicar.
             </p>
         </div>
         <div class="how-grid">
@@ -2710,7 +2710,7 @@
                             <div class="browser-body"
                                 style="display:flex;flex-direction:column;justify-content:center;">
                                 <div class="prompt-box">
-                                    <div class="prompt-text">Crie uma landing page para minha cafeteria, com cardápio,
+                                    <div class="prompt-text">Crie uma landing page para minha cafeteria, com cardÃ¡pio,
                                         fotos e contato<span class="prompt-cursor"></span></div>
                                     <div class="prompt-row">
                                         <div class="prompt-tools">
@@ -2742,7 +2742,7 @@
                 </div>
                 <div class="step-label"><span class="ln"></span> Passo 01</div>
                 <h3 class="step-title">Descreva sua ideia</h3>
-                <p class="step-desc">Digite o que você quer criar em linguagem natural. Anexe imagens ou referências se
+                <p class="step-desc">Digite o que vocÃª quer criar em linguagem natural. Anexe imagens ou referÃªncias se
                     quiser.</p>
             </div>
             <div class="step">
@@ -2811,8 +2811,8 @@
     <!-- FEATURES GRID ENTERPRISE -->
     <section id="features" class="pt-24 pb-32 px-6 max-w-5xl mx-auto relative" style="z-index: 5;">
         <div class="text-center mb-24 space-y-4">
-            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">A Engenharia Detrás da Magia</h2>
-            <h3 class="text-4xl font-black tracking-tight text-white italic">Construído para Durar.</h3>
+            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">A Engenharia DetrÃ¡s da Magia</h2>
+            <h3 class="text-4xl font-black tracking-tight text-white italic">ConstruÃ­do para Durar.</h3>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
@@ -2900,9 +2900,9 @@
         <div class="container mx-auto relative z-10 max-w-6xl">
             <!-- Cabe -->
             <div class="text-center mb-20 space-y-4 reveal">
-                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-white">Prospecção Inteligente</h2>
-                <h3 class="text-4xl md:text-5xl font-black tracking-tight text-[#FFFFFF] italic">Encontre clientes que <span class="text-white">ainda não têm site</span></h3>
-                <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Nosso sistema varre o mercado e entrega leads reais, prontos para você abordar e fechar novos negócios de alto valor.</p>
+                <h2 class="text-xs font-black tracking-[0.6em] uppercase text-white">ProspecÃ§Ã£o Inteligente</h2>
+                <h3 class="text-4xl md:text-5xl font-black tracking-tight text-[#FFFFFF] italic">Encontre clientes que <span class="text-white">ainda nÃ£o tÃªm site</span></h3>
+                <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Nosso sistema varre o mercado e entrega leads reais, prontos para vocÃª abordar e fechar novos negÃ³cios de alto valor.</p>
             </div>
 
             <div class="flex flex-col gap-16 lg:gap-24">
@@ -2920,7 +2920,7 @@
                             <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">1. Busca por cidade e categoria</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Filtre por restaurantes, clínicas, salões de beleza e muito mais — em qualquer cidade do Brasil. Nossa IA mapeia o mercado regional em segundos de forma <span class="text-white font-bold">cirúrgica</span>.
+                            Filtre por restaurantes, clÃ­nicas, salÃµes de beleza e muito mais â€” em qualquer cidade do Brasil. Nossa IA mapeia o mercado regional em segundos de forma <span class="text-white font-bold">cirÃºrgica</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
@@ -2945,7 +2945,7 @@
                             <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">2. Dados reais de contato</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Tenha acesso imediato ao nome da empresa, endereço físico estruturado, telefone comercial verificado e o link direto do WhatsApp pronto para você iniciar sua <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-white font-bold">abordagem comercial</span>.
+                            Tenha acesso imediato ao nome da empresa, endereÃ§o fÃ­sico estruturado, telefone comercial verificado e o link direto do WhatsApp pronto para vocÃª iniciar sua <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-white font-bold">abordagem comercial</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
@@ -2966,16 +2966,16 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>
                             </div>
-                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">3. Detecta quem está vulnerável</h3>
+                            <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">3. Detecta quem estÃ¡ vulnerÃ¡vel</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Nossa tecnologia analisa o ecossistema digital do lead em tempo real para identificar empresas que possuem apenas redes sociais ou que estão com o site fora do ar, gerando uma oportunidade perfeita de <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500 font-bold">venda de alto valor</span>.
+                            Nossa tecnologia analisa o ecossistema digital do lead em tempo real para identificar empresas que possuem apenas redes sociais ou que estÃ£o com o site fora do ar, gerando uma oportunidade perfeita de <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-500 font-bold">venda de alto valor</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
                     <div class="w-full lg:w-1/2">
                         <div class="group relative rounded-2xl border border-zinc-800 bg-zinc-900/20 backdrop-blur-md p-2 transition-all duration-500 hover:border-amber-500/40 hover:scale-[1.02]">
-                            <img src="img/prospect (3).png" alt="Detecta quem está vulnerável" class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
+                            <img src="img/prospect (3).png" alt="Detecta quem estÃ¡ vulnerÃ¡vel" class="w-full h-auto rounded-xl object-cover border border-zinc-800/50">
                         </div>
                     </div>
                 </div>
@@ -2993,7 +2993,7 @@
                             <h3 class="text-2xl lg:text-3xl font-bold text-white tracking-tight">4. Gere o site com um clique</h3>
                         </div>
                         <p class="text-zinc-400 text-lg leading-relaxed">
-                            Achou o lead ideal? A inteligência artificial do Aron Elite v1 entra em ação instantaneamente criando uma proposta comercial viva: um site profissional pré-construído utilizando os <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-500 font-bold">dados reais coletados da empresa</span>.
+                            Achou o lead ideal? A inteligÃªncia artificial do Aron Elite v1 entra em aÃ§Ã£o instantaneamente criando uma proposta comercial viva: um site profissional prÃ©-construÃ­do utilizando os <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-500 font-bold">dados reais coletados da empresa</span>.
                         </p>
                     </div>
                     <!-- Imagem -->
@@ -3012,7 +3012,7 @@
     <section id="tech-stack" class="pt-10 pb-24 border-b border-white/5 bg-[#09090b] relative z-10 overflow-hidden">
         <div class="max-w-5xl mx-auto px-6 text-center">
             <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 mb-10">Impulsionado pelos modelos
-                de linguagem mais avançados do planeta.</h4>
+                de linguagem mais avanÃ§ados do planeta.</h4>
             <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-90">
                 <!-- Vercel -->
                 <div
@@ -3079,9 +3079,9 @@
             <div class="text-center mb-20 space-y-4 reveal">
                 <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">Controle Total</h2>
                 <h3 class="text-4xl md:text-5xl font-black tracking-tight text-white italic">Editor Visual.<br>Sem uma
-                    linha de código.</h3>
+                    linha de cÃ³digo.</h3>
                 <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Clique em qualquer elemento do site
-                    gerado e edite na hora. Texto, cores, imagens — tudo na ponta dos dedos.</p>
+                    gerado e edite na hora. Texto, cores, imagens â€” tudo na ponta dos dedos.</p>
             </div>
             <!-- Mockup do editor -->
             <div
@@ -3092,7 +3092,7 @@
 
                     <div
                         style="flex:1;background:rgba(255,255,255,0.05);border-radius:6px;padding:6px 12px;font-size:12px;color:rgba(255,255,255,0.3);font-family:monospace;">
-                        ✏️ Edição manual · Clique num elemento para editar</div>
+                        âœï¸ EdiÃ§Ã£o manual Â· Clique num elemento para editar</div>
                     <div style="display:flex;gap:8px;">
                         <span
                             style="padding:6px 14px;border-radius:8px;background:rgba(52,215,221,0.15);border:1px solid rgba(52,215,221,0.3);color:#FFFFFF;font-size:12px;font-weight:600;">Salvar</span>
@@ -3111,9 +3111,9 @@
                                     d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
                         </div>
-                        <h4 style="color:#fff;font-weight:700;margin-bottom:8px;font-size:15px;">Edição Instantânea</h4>
+                        <h4 style="color:#fff;font-weight:700;margin-bottom:8px;font-size:15px;">EdiÃ§Ã£o InstantÃ¢nea</h4>
                         <p style="color:rgba(255,255,255,0.4);font-size:13px;line-height:1.6;">Clique em qualquer texto
-                            e edite diretamente no site, sem tocar em código.</p>
+                            e edite diretamente no site, sem tocar em cÃ³digo.</p>
                     </div>
                     <div class="editor-feature">
                         <div
@@ -3139,7 +3139,7 @@
                         <h4 style="color:#fff;font-weight:700;margin-bottom:8px;font-size:15px;">Cores fotos e Fundos
                         </h4>
                         <p style="color:rgba(255,255,255,0.4);font-size:13px;line-height:1.6;">Altere backgrounds,
-                            fontes e bordas com cliques simples e salvamento automático.</p>
+                            fontes e bordas com cliques simples e salvamento automÃ¡tico.</p>
                     </div>
                 </div>
             </div>
@@ -3149,14 +3149,14 @@
     <!-- GALLERY SECTION -->
     <section id="gallery" class="py-32 relative overflow-hidden" style="z-index: 5;">
         <div class="max-w-7xl mx-auto px-6 text-center mb-20 reveal space-y-4">
-            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">Criações Reais. veja o que ja foi
+            <h2 class="text-xs font-black tracking-[0.6em] uppercase text-[#B4B4B8]">CriaÃ§Ãµes Reais. veja o que ja foi
                 criado com a ARON</h2>
             <h3 class="text-4xl md:text-5xl font-black tracking-tight text-white italic">Sites que
                 Impressionam.<br>Gerados em Segundos.</h3>
             <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Do e-commerce ao SaaS, da landing page ao
-                portfólio — a IA cria, você publica.</p>
+                portfÃ³lio â€” a IA cria, vocÃª publica.</p>
         </div>
-        <!-- Linha 1 — esquerda para direita -->
+        <!-- Linha 1 â€” esquerda para direita -->
         <div class="relative overflow-hidden mb-5">
             <div class="gallery-fade-l"></div>
             <div class="gallery-fade-r"></div>
@@ -3170,10 +3170,10 @@
                 <img src="img/barber-2.png" class="gallery-img" alt="barber-cort">
                 <img src="img/cloud-1.png" class="gallery-img" alt="Dashboard SaaS">
                 <img src="img/cloud-2.png" class="gallery-img" alt="Dashboard
-                <img src="img/cloud-3.png" class="gallery-img" alt="Dashboard">
+                <img src=" img/cloud-3.png" class="gallery-img" alt="Dashboard">
             </div>
         </div>
-        <!-- Linha 2 — direita para esquerda -->
+        <!-- Linha 2 â€” direita para esquerda -->
         <div class="relative overflow-hidden">
             <div class="gallery-fade-l"></div>
             <div class="gallery-fade-r"></div>
@@ -3203,7 +3203,7 @@
                         distancia.</span></h3>
                 <p class="text-zinc-400 max-w-xl mx-auto text-lg leading-relaxed">Junte-se aos criadores que ja estao
                     construindo sites profissionais em minutos. Ganhe 20 creditos gratis ao criar sua conta.</p>
-                <p class="text-zinc-600 text-sm">Sem cartao de credito · 20 creditos gratis · Cancele quando quiser</p>
+                <p class="text-zinc-600 text-sm">Sem cartao de credito Â· 20 creditos gratis Â· Cancele quando quiser</p>
             </div>
         </div>
     </section>
@@ -3214,7 +3214,7 @@
             <div class="space-y-8">
                 <img src="img/Aron-mark.png" class="h-10">
                 <p class="text-[#A1A1AA] text-sm max-w-xs font-medium leading-relaxed">A infraestrutura neural para a
-                    próxima geração de apps web. Alta fidelidade de ponta a ponta.</p>
+                    prÃ³xima geraÃ§Ã£o de apps web. Alta fidelidade de ponta a ponta.</p>
                 <div class="flex items-center space-x-2">
                     <div class="flex items-center px-4 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
 
@@ -3237,8 +3237,8 @@
                 <div class="space-y-6">
                     <h6 class="text-xs font-black text-white uppercase tracking-[0.3em]">Legal & Social</h6>
                     <ul class="text-[#A1A1AA] text-xs space-y-3 font-medium">
-                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Política de Privacidade</a></li>
-                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Termos de Serviço</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">PolÃ­tica de Privacidade</a></li>
+                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Termos de ServiÃ§o</a></li>
                         <li class="pt-4 flex space-x-5">
                             <i data-lucide="twitter" class="h-4 w-4 hover:text-white cursor-pointer"></i>
                             <i data-lucide="github" class="h-4 w-4 hover:text-white cursor-pointer"></i>
@@ -3251,7 +3251,7 @@
         <div
             class="max-w-7xl mx-auto mt-24 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center opacity-40">
             <div class="text-[9px] font-black text-zinc-600 uppercase tracking-[0.4em]">
-                © 2026 Aron Elite v1. Built for Elite Engineers.
+                Â© 2026 Aron Elite v1. Built for Elite Engineers.
             </div>
             <div class="text-[9px] font-black text-zinc-600 uppercase tracking-[0.4em]">
                 Powered by CWD futuristic solutions company
@@ -3340,7 +3340,7 @@
             <div class="text-center">
                 <button onclick="toggleModal()"
                     class="text-[9px] text-zinc-800 uppercase tracking-[0.4em] hover:text-white transition-all font-black">Encerrar
-                    Sessão</button>
+                    SessÃ£o</button>
             </div>
         </div>
     </div>
@@ -3415,7 +3415,7 @@
             const isForgot = document.getElementById('auth-title').textContent === 'Recuperar Acesso';
 
             if (!email || (!password && !isForgot)) {
-                errorEl.textContent = "Preencha os campos obrigatórios.";
+                errorEl.textContent = "Preencha os campos obrigatÃ³rios.";
                 errorEl.classList.remove('hidden', 'text-green-500');
                 errorEl.classList.add('text-red-500');
                 return;
@@ -3428,7 +3428,7 @@
                 submitBtn.textContent = "Enviando...";
                 try {
                     await auth.sendPasswordResetEmail(email);
-                    errorEl.textContent = "E-mail de recuperação enviado! Verifique sua caixa de entrada.";
+                    errorEl.textContent = "E-mail de recuperaÃ§Ã£o enviado! Verifique sua caixa de entrada.";
                     errorEl.classList.remove('hidden', 'text-red-500');
                     errorEl.classList.add('text-green-500');
                     setTimeout(() => switchAuthTab('login'), 3000);
@@ -3448,32 +3448,32 @@
             try {
                 let user;
                 if (isRegister) {
-                    console.log(">>> [AUTH] Iniciando criação de conta para:", email);
+                    console.log(">>> [AUTH] Iniciando criaÃ§Ã£o de conta para:", email);
                     const result = await auth.createUserWithEmailAndPassword(email, password);
                     user = result.user;
 
                     console.log(">>> [AUTH] Conta criada com sucesso no Firebase. UID:", user.uid);
 
                     try {
-                        // Configuração para retorno após verificação
+                        // ConfiguraÃ§Ã£o para retorno apÃ³s verificaÃ§Ã£o
                         const actionCodeSettings = {
                             url: window.location.origin + '/chat.html',
                             handleCodeInApp: true,
                         };
 
-                        // Tentar enviar e-mail de verificação com configurações
+                        // Tentar enviar e-mail de verificaÃ§Ã£o com configuraÃ§Ãµes
                         await user.sendEmailVerification(actionCodeSettings);
-                        console.log(">>> [AUTH] E-mail de verificação disparado.");
+                        console.log(">>> [AUTH] E-mail de verificaÃ§Ã£o disparado.");
 
                         // UI de Sucesso Elegante
                         showVerificationModal(email);
                     } catch (emailErr) {
                         console.error(">>> [AUTH] FALHA AO ENVIAR E-MAIL:", emailErr);
 
-                        // ALERTA CRÍTICO PARA DEBUG
-                        alert("ERRO NO ENVIO DE E-MAIL:\n" + emailErr.message + "\n\nVerifique se o domínio está autorizado no console do Firebase.");
+                        // ALERTA CRÃTICO PARA DEBUG
+                        alert("ERRO NO ENVIO DE E-MAIL:\n" + emailErr.message + "\n\nVerifique se o domÃ­nio estÃ¡ autorizado no console do Firebase.");
 
-                        // REMOVIDA EXCLUSÃO PREVENTIVA (Conforme pedido)
+                        // REMOVIDA EXCLUSÃƒO PREVENTIVA (Conforme pedido)
                         // await user.delete();
 
                         // Tentamos prosseguir para mostrar o modal de qualquer forma
@@ -3488,19 +3488,19 @@
                 console.error(">>> [AUTH] ERRO:", error.code, error.message);
 
                 if (error.code === 'auth/email-already-in-use') {
-                    // FALLBACK: Tentar logar automaticamente se já existe
-                    console.warn(">>> [AUTH] Usuário já existe. Tentando login automático...");
+                    // FALLBACK: Tentar logar automaticamente se jÃ¡ existe
+                    console.warn(">>> [AUTH] UsuÃ¡rio jÃ¡ existe. Tentando login automÃ¡tico...");
                     try {
                         const result = await auth.signInWithEmailAndPassword(email, password);
                         await handleAuthSuccess(result.user);
                         return;
                     } catch (loginErr) {
-                        errorEl.textContent = "Este e-mail já está em uso e a senha está incorreta.";
+                        errorEl.textContent = "Este e-mail jÃ¡ estÃ¡ em uso e a senha estÃ¡ incorreta.";
                     }
                 } else if (error.code === 'auth/too-many-requests') {
                     errorEl.textContent = "Muitas tentativas. Tente novamente em alguns minutos.";
                 } else if (error.code === 'auth/weak-password') {
-                    errorEl.textContent = "A senha é muito fraca (mínimo 6 caracteres).";
+                    errorEl.textContent = "A senha Ã© muito fraca (mÃ­nimo 6 caracteres).";
                 } else {
                     errorEl.textContent = error.message;
                 }
@@ -3552,7 +3552,7 @@
             if (forgotLink) forgotLink.classList.add('hidden');
 
             title.textContent = 'Ative sua Conta';
-            errorEl.innerHTML = `Enviamos um link de ativação para:<br><b class="text-[#B4B4B8]">${email}</b><br><br>Verifique sua caixa de entrada e clique no link para liberar seu acesso.`;
+            errorEl.innerHTML = `Enviamos um link de ativaÃ§Ã£o para:<br><b class="text-[#B4B4B8]">${email}</b><br><br>Verifique sua caixa de entrada e clique no link para liberar seu acesso.`;
             errorEl.classList.remove('hidden', 'text-red-500');
             errorEl.classList.add('text-green-500', 'text-center', 'text-xs', 'leading-relaxed');
 
@@ -3663,7 +3663,7 @@
 
         // Virtual Showcase Input Typing Logic
         const virtualInputPhrases = [
-            'Um dashboard de vendas com gráficos em ciano e roxo...',
+            'Um dashboard de vendas com grÃ¡ficos em ciano e roxo...',
             'Landing page estilo Apple para um novo fone Bluetooth...',
             'Aplicativo web financeiro com dashboard interativo...'
         ];
@@ -3725,7 +3725,7 @@
         }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
         document.querySelectorAll('.stagger-slide-up').forEach(el => staggerObserver.observe(el));
 
-        // Topbar Scroll Detection — Neon line activation
+        // Topbar Scroll Detection â€” Neon line activation
         const topbar = document.getElementById('topbar');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {

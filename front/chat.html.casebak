@@ -4474,7 +4474,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                       aiRow.id = 'ai-response-row';
                       aiRow.innerHTML = `
                         <div class="aron-avatar" style="background:transparent;padding:2px;">
-                           <img src="img/Aron-mark.png" 
+                           <img src="img/aron-mark.png" 
                                 alt="Aron" 
                                 style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
                          </div>
