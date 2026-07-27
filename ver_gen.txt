@@ -1,0 +1,8 @@
+250:                     contents=contents,
+318: async def generate_stream_endpoint(
+327: async def generate_api_endpoint(
+389:     system_instruction = """
+405:                     contents=f"{system_instruction}\n\nPROMPT: {body.prompt}",
+476:                     contents=f"{CLARIFY_INSTRUCTION}\n\nPEDIDO DO USUARIO: {body.prompt}",
+531:     system_instruction = """
+552:                     contents=f"{system_instruction}\n\nHTML: {body.html}",

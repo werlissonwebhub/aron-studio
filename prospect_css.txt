@@ -1,0 +1,17 @@
+        /* === Prospeccao lado esquerdo repaginado === */
+        .prospect-text { position: relative; z-index: 2; }
+        .np-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #34D7DD; margin-bottom: 22px; padding: 6px 14px; border: 1px solid rgba(52,215,221,0.25); border-radius: 100px; background: rgba(52,215,221,0.05); }
+        .np-pulse { width: 6px; height: 6px; border-radius: 50%; background: #34D7DD; box-shadow: 0 0 8px #34D7DD; animation: npPulse 1.6s ease-in-out infinite; }
+        @keyframes npPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.4); } }
+        .np-title { font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; color: #f1f5f9; margin-bottom: 18px; }
+        .np-grad { background: linear-gradient(120deg, #8A3FFC, #34D7DD); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .np-desc { font-size: 1rem; line-height: 1.7; color: rgba(241,245,249,0.55); margin-bottom: 34px; max-width: 460px; }
+        .np-features { display: flex; flex-direction: column; gap: 10px; }
+        .np-feat { display: flex; align-items: flex-start; gap: 16px; padding: 14px 16px; border-radius: 14px; border: 1px solid transparent; transition: background 0.3s, border-color 0.3s, transform 0.3s; }
+        .np-feat:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); transform: translateX(4px); }
+        .np-icon { width: 42px; height: 42px; flex-shrink: 0; border-radius: 11px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(138,63,252,0.15), rgba(52,215,221,0.1)); border: 1px solid rgba(138,63,252,0.25); color: #a78bfa; transition: color 0.3s, box-shadow 0.3s; }
+        .np-feat:hover .np-icon { color: #34D7DD; box-shadow: 0 0 20px -4px rgba(52,215,221,0.4); }
+        .np-icon svg { width: 20px; height: 20px; }
+        .np-feat-txt h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.98rem; font-weight: 600; color: #f1f5f9; margin: 0 0 4px 0; }
+        .np-feat-txt p { font-size: 0.86rem; line-height: 1.55; color: rgba(241,245,249,0.5); margin: 0; }
+        @media (max-width: 900px) { .np-title { font-size: 1.6rem; } .np-feat { padding: 12px; } }

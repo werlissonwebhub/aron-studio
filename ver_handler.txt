@@ -1,0 +1,89 @@
+142: async def _generate_handler(request: Request, body: GenerationRequest, verified_uid: str):
+143:     if DEV_MODE:
+144:         await validate_user(body.user_id)
+145:     else:
+146:         if verified_uid != body.user_id:
+147:             raise HTTPException(
+148:                 status_code=403,
+149:                 detail="user_id no body nao confere com o token autenticado."
+150:             )
+151: 
+152:     model_alias = getattr(body, 'model_alias', 'gemini')
+153:     credit_cost = 3 if model_alias in PREMIUM_MODELS else 1
+154: 
+155:     # Bloquear modelos premium para plano Free/Starter ANTES de gastar tokens de API.
+156:     if model_alias in PREMIUM_MODELS:
+157:         async with aiosqlite.connect(DB_NAME) as db_check:
+158:             async with db_check.execute(
+159:                 "SELECT plan FROM users WHERE id = ?", (body.user_id,)
+160:             ) as cursor:
+161:                 row = await cursor.fetchone()
+162:                 user_plan = row[0] if row else "free"
+163:         if user_plan in ("free", "starter"):
+164:             raise HTTPException(
+165:                 status_code=403,
+166:                 detail="Modelo premium disponivel apenas nos planos Pro e Ultra. Upgrade necessario!"
+167:             )
+168: 
+169:     if not await check_credit_availability(body.user_id, credit_cost):
+170:         raise HTTPException(status_code=403, detail="Saldo insuficiente. Adquira mais creditos para continuar.")
+171: 
+172:     async def event_stream():
+173:         full_text = ""
+174:         try:
+175:             yield f'data: {json.dumps({"type": "start"})}\n\n'
+176: 
+177:             mode_instruction = _get_mode_instruction(body.mode)
+178:             full_prompt = f"{SYSTEM_PROMPT}{mode_instruction}\n\n--- PEDIDO DO USUARIO ---\n{body.prompt}"
+179:             # model_alias e credit_cost ja foram calculados e validados antes do stream comecar
+180: 
+181:             # Processar imagem de referencia (se houver)
+182:             clone_instr = ""
+183:             img_b64 = None
+184:             mime = "image/jpeg"
+185:             if getattr(body, 'image_data', None):
+186:                 clone_instr = (
+187:                     "TAREFA CRITICA: CLONAGEM VISUAL EXATA DA IMAGEM DE REFERENCIA ANEXADA.\n"
+188:                     "Analise cada detalhe da imagem e recrie em HTML+CSS identico ao original.\n"
+189:                     "REGRAS OBRIGATORIAS:\n"
+190:                     "1. CORES DE FUNDO: extraia e use o hexadecimal EXATO do fundo da pagina e de cada secao.\n"
+191:                     "2. CORES DE TEXTO: se algum texto tem cor diferente do preto/branco (ex: verde, azul, gradiente), "
+192:                     "replique essa cor EXATAMENTE. Textos coloridos sao um elemento de design critico.\n"
+193:                     "3. TEXTOS: reproduza EXATAMENTE o texto visivel, palavra por palavra, no mesmo tamanho e peso.\n"
+194:                     "4. LAYOUT: replique a estrutura na MESMA ordem e posicionamento (colunas, grid, alinhamento).\n"
+195:                     "5. IMAGENS: para cada imagem ou foto na referencia, use esta URL confiavel: "
+196:                     "https://picsum.photos/seed/[palavra-tema]/800/600 "
+197:                     "onde [palavra-tema] e uma palavra em ingles que descreve o conteudo (ex: food, nature, product). "
+198:                     "NUNCA use source.unsplash.com pois esta fora do ar.\n"
+199:                     "6. BOTOES: replique cor, formato (arredondado/quadrado), tamanho e texto dos botoes.\n"
+200:                     "7. ESPACAMENTO: respeite proporcoes, padding e margens visiveis na imagem.\n"
+201:                     "PROIBIDO: inventar cores, mudar textos, reordenar secoes, usar URLs de imagem que nao sejam picsum.photos.\n\n"
+202:                 )
+203:                 full_prompt = clone_instr + full_prompt
+204:                 img_str = body.image_data
+205:                 if ',' in img_str:
+206:                     header_part, img_b64 = img_str.split(',', 1)
+207:                     mime = header_part.split(':')[1].split(';')[0] if ':' in header_part else 'image/jpeg'
+208:                 else:
+209:                     img_b64, mime = img_str, 'image/jpeg'
+210: 
+211:             # ── Roteamento por modelo ──────────────────────────────
+212:             if model_alias.startswith('claude') and claude_client:
+213:                 # Claude Sonnet — streaming via SDK Anthropic
+214:                 user_content = f"--- PEDIDO DO USUARIO ---\n{body.prompt}"
+215:                 if clone_instr:
+216:                     user_content = clone_instr + user_content
+217:                 if img_b64:
+218:                     claude_content = [
+219:                         {"type": "image", "source": {"type": "base64", "media_type": mime, "data": img_b64}},
+220:                         {"type": "text", "text": user_content}
+221:                     ]
+222:                 else:
+223:                     claude_content = [{"type": "text", "text": user_content}]
+224: 
+225:                 async with claude_client.messages.stream(
+226:                     model=CLAUDE_MODEL,
+227:                     max_tokens=15000,
+228:                     system=SYSTEM_PROMPT + _get_mode_instruction(body.mode),
+229:                     messages=[{"role": "user", "content": claude_content}]
+230:                 ) as stream:

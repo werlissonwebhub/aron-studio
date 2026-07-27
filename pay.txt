@@ -1,0 +1,228 @@
+1: import os
+2: import aiosqlite
+3: import hmac
+4: import hashlib
+5: from fastapi import APIRouter, HTTPException, Request, Header, Depends
+6: from pydantic import BaseModel
+7: import mercadopago
+8: from typing import Optional
+9: 
+10: from config import DB_NAME
+11: from security import verify_firebase_token, DEV_MODE
+12: 
+13: router = APIRouter()
+14: 
+15: class PixCreateRequest(BaseModel):
+16:     plan_id: str
+17:     user_id: str
+18: 
+19: PLANS = {
+20:     "PLAN_STARTER": {"title": "Starter", "price": 29.90, "credits": 50},
+21:     "PLAN_PRO":     {"title": "Pro",     "price": 59.90, "credits": 150},
+22:     "PLAN_ULTRA":   {"title": "Ultra",   "price": 99.90, "credits": 99999},
+23: }
+24: 
+25: def get_mp_client():
+26:     token = os.getenv("MP_ACCESS_TOKEN")
+27:     return mercadopago.SDK(token if token else "TEST-TOKEN")
+28: 
+29: @router.post("/create")
+30: async def create_pix_payment(request: PixCreateRequest, x_idempotency_key: Optional[str] = Header(None), verified_uid: str = Depends(verify_firebase_token)):
+31:     if not DEV_MODE and verified_uid != request.user_id:
+32:         raise HTTPException(status_code=403, detail="user_id no body nao confere com o token autenticado.")
+33:     if request.plan_id not in PLANS:
+34:         raise HTTPException(status_code=400, detail="Plano invalido")
+35:     plan = PLANS[request.plan_id]
+36:     user_email = "unknown@email.com"
+37:     async with aiosqlite.connect(DB_NAME) as db:
+38:         async with db.execute("SELECT email FROM users WHERE id = ?", (request.user_id,)) as cursor:
+39:             row = await cursor.fetchone()
+40:             if row and row[0]:
+41:                 user_email = row[0]
+42:     if not os.getenv("MP_ACCESS_TOKEN"):
+43:         mock_id = "mock_" + os.urandom(4).hex()
+44:         async with aiosqlite.connect(DB_NAME) as db:
+45:             await db.execute(
+46:                 "INSERT INTO payment_attempts (payment_id, user_id, user_email, status, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)",
+47:                 (mock_id, request.user_id, user_email, "pending"))
+48:             await db.commit()
+49:         return {"qr_code_64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "qr_code": "mock-pix-code", "payment_id": mock_id}
+50:     mp = get_mp_client()
+51:     payment_data = {"transaction_amount": float(plan["price"]), "description": f"Aron Studio - {plan['title']}", "payment_method_id": "pix", "payer": {"email": user_email}, "metadata": {"user_id": request.user_id, "plan_id": request.plan_id}}
+52:     request_options = mercadopago.config.RequestOptions()
+53:     if x_idempotency_key:
+54:         request_options.custom_headers = {"x-idempotency-key": x_idempotency_key}
+55:     try:
+56:         resp = mp.payment().create(payment_data, request_options)
+57:         data = resp.get("response", {})
+58:         if "id" not in data:
+59:             raise Exception(f"Falha MP: {resp}")
+60:         payment_id = str(data["id"])
+61:         async with aiosqlite.connect(DB_NAME) as db:
+62:             await db.execute("INSERT INTO payment_attempts (payment_id, user_id, user_email, status, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)", (payment_id, request.user_id, user_email, "pending"))
+63:             await db.commit()
+64:         return {"qr_code_64": data.get("point_of_interaction", {}).get("transaction_data", {}).get("qr_code_base64", ""), "qr_code": data.get("point_of_interaction", {}).get("transaction_data", {}).get("qr_code", ""), "payment_id": payment_id}
+65:     except Exception as e:
+66:         raise HTTPException(status_code=500, detail=str(e))
+67: 
+68: @router.get("/status/{payment_id}")
+69: async def get_payment_status(payment_id: str, verified_uid: str = Depends(verify_firebase_token)):
+70:     async with aiosqlite.connect(DB_NAME) as db:
+71:         async with db.execute("SELECT status, user_id FROM payment_attempts WHERE payment_id = ?", (payment_id,)) as cursor:
+72:             row = await cursor.fetchone()
+73:             if not row:
+74:                 return {"status": "not_found"}
+75:             if not DEV_MODE and row[1] != verified_uid:
+76:                 raise HTTPException(status_code=403, detail="Acesso negado")
+77:             return {"status": row[0]}
+78: 
+79: 
+80: 
+81: class ProcessPaymentRequest(BaseModel):
+82:     plan_id: str
+83:     user_id: str
+84:     formData: dict
+85: 
+86: @router.post("/process")
+87: async def process_payment(request: ProcessPaymentRequest, verified_uid: str = Depends(verify_firebase_token)):
+88:     """Processa o pagamento do Payment Brick (PIX, cartao, boleto)."""
+89:     if not DEV_MODE and verified_uid != request.user_id:
+90:         raise HTTPException(status_code=403, detail="user_id no body nao confere com o token autenticado.")
+91:     if request.plan_id not in PLANS:
+92:         raise HTTPException(status_code=400, detail="Plano invalido")
+93:     plan = PLANS[request.plan_id]
+94:     mp = get_mp_client()
+95: 
+96:     payment_data = dict(request.formData)
+97:     payment_data["transaction_amount"] = float(plan["price"])
+98:     payment_data["description"] = f"Aron Elite V1 - {plan['title']}"
+99:     payment_data["metadata"] = {"user_id": request.user_id, "plan_id": request.plan_id}
+100:     payment_data.setdefault("payer", {})
+101: 
+102:     try:
+103:         result = mp.payment().create(payment_data)
+104:         resp = result.get("response", {})
+105:         status = resp.get("status")
+106:         p_id = resp.get("id")
+107: 
+108:         # Registrar tentativa
+109:         async with aiosqlite.connect(DB_NAME) as db:
+110:             await db.execute(
+111:                 "INSERT OR REPLACE INTO payment_attempts (payment_id, user_id, plan_id, status) VALUES (?, ?, ?, ?)",
+112:                 (str(p_id), request.user_id, request.plan_id, status or "pending"),
+113:             )
+114:             await db.commit()
+115: 
+116:         out = {"status": status, "payment_id": p_id, "status_detail": resp.get("status_detail")}
+117: 
+118:         # PIX: devolver QR Code
+119:         poi = resp.get("point_of_interaction") or {}
+120:         tdata = poi.get("transaction_data") or {}
+121:         if tdata.get("qr_code"):
+122:             out["qr_code"] = tdata.get("qr_code")
+123:             out["qr_code_base64"] = tdata.get("qr_code_base64")
+124:             out["ticket_url"] = tdata.get("ticket_url")
+125: 
+126:         # Boleto
+127:         tdetails = resp.get("transaction_details") or {}
+128:         if tdetails.get("external_resource_url"):
+129:             out["boleto_url"] = tdetails.get("external_resource_url")
+130: 
+131:         return out
+132:     except Exception as e:
+133:         print(f">>> [PAYMENT] Erro ao processar: {e}")
+134:         raise HTTPException(status_code=500, detail="Erro ao processar pagamento")
+135: 
+136: class PreferenceRequest(BaseModel):
+137:     plan_id: str
+138:     user_id: str
+139: 
+140: @router.post("/preference")
+141: async def create_preference(request: PreferenceRequest, verified_uid: str = Depends(verify_firebase_token)):
+142:     if not DEV_MODE and verified_uid != request.user_id:
+143:         raise HTTPException(status_code=403, detail="user_id no body nao confere com o token autenticado.")
+144:     if request.plan_id not in PLANS:
+145:         raise HTTPException(status_code=400, detail="Plano invalido")
+146:     plan = PLANS[request.plan_id]
+147:     user_email = "pagador@email.com"
+148:     async with aiosqlite.connect(DB_NAME) as db:
+149:         async with db.execute("SELECT email FROM users WHERE id = ?", (request.user_id,)) as cursor:
+150:             row = await cursor.fetchone()
+151:             if row and row[0]:
+152:                 user_email = row[0]
+153:     if not os.getenv("MP_ACCESS_TOKEN"):
+154:         mock_id = "mock_pref_" + os.urandom(4).hex()
+155:         return {"preference_id": mock_id, "init_point": f"https://www.mercadopago.com.br/checkout/v1/redirect?pref_id={mock_id}"}
+156:     mp = get_mp_client()
+157:     pref_data = {"items": [{"title": f"Aron Studio - {plan['title']}", "quantity": 1, "unit_price": float(plan["price"]), "currency_id": "BRL"}], "payer": {"email": user_email}, "payment_methods": {"installments": 12}, "back_urls": {"success": "/checkout?status=success", "failure": "/checkout?status=failure", "pending": "/checkout?status=pending"}, "auto_return": "approved", "metadata": {"user_id": request.user_id, "plan_id": request.plan_id}}
+158:     try:
+159:         result = mp.preference().create(pref_data)
+160:         data = result.get("response", {})
+161:         if "id" not in data:
+162:             raise HTTPException(status_code=500, detail="Falha ao criar preferencia MP")
+163:         return {"preference_id": data["id"], "init_point": data.get("init_point", "")}
+164:     except HTTPException:
+165:         raise
+166:     except Exception as e:
+167:         raise HTTPException(status_code=500, detail=str(e))
+168: 
+169: @router.post("/webhook")
+170: async def mp_webhook(request: Request, x_signature: Optional[str] = Header(None), x_request_id: Optional[str] = Header(None)):
+171:     try:
+172:         body = await request.json()
+173:     except Exception:
+174:         body = {}
+175:     try:
+176:         action = request.query_params.get("action") or request.query_params.get("topic") or body.get("action")
+177:         payment_id = request.query_params.get("data.id") or request.query_params.get("id")
+178:         if not payment_id and "data" in body:
+179:             payment_id = body.get("data", {}).get("id")
+180:         if not payment_id or action not in ("payment.created", "payment.updated"):
+181:             return {"status": "ignored"}
+182: 
+183:         secret = os.getenv("MP_WEBHOOK_SECRET")
+184:         if secret:
+185:             if not x_signature:
+186:                 raise HTTPException(status_code=403, detail="Assinatura ausente no webhook")
+187:             parts = dict(p.split("=") for p in x_signature.split(",") if "=" in p)
+188:             ts, v1 = parts.get("ts"), parts.get("v1")
+189:             if not ts or not v1:
+190:                 raise HTTPException(status_code=403, detail="Formato de assinatura invalido")
+191:             manifest = f"id:{payment_id};request-id:{x_request_id};ts:{ts};"
+192:             hmac_calc = hmac.new(secret.encode(), manifest.encode(), hashlib.sha256).hexdigest()
+193:             if not hmac.compare_digest(hmac_calc, v1):
+194:                 raise HTTPException(status_code=403, detail="Assinatura invalida")
+195: 
+196:         p_id = str(payment_id)
+197:         async with aiosqlite.connect(DB_NAME) as db:
+198:             async with db.execute("SELECT 1 FROM processed_payments WHERE payment_id = ?", (p_id,)) as cursor:
+199:                 if await cursor.fetchone():
+200:                     return {"status": "already_processed"}
+201:             if not os.getenv("MP_ACCESS_TOKEN"):
+202:                 user_id, credits_to_add = "user_1", 150
+203:             else:
+204:                 mp = get_mp_client()
+205:                 info = mp.payment().get(payment_id)
+206:                 if info.get("status") != 200:
+207:                     return {"status": "error fetching payment"}
+208:                 pdata = info["response"]
+209:                 if pdata.get("status") != "approved":
+210:                     return {"status": "not_approved"}
+211:                 meta = pdata.get("metadata", {})
+212:                 user_id = meta.get("user_id", "user_1")
+213:                 credits_to_add = PLANS.get(meta.get("plan_id", ""), {}).get("credits", 0)
+214:             await db.execute("INSERT INTO processed_payments (payment_id, processed_at) VALUES (?, CURRENT_TIMESTAMP)", (p_id,))
+215:             await db.execute("UPDATE payment_attempts SET status = 'approved' WHERE payment_id = ?", (p_id,))
+216:             if credits_to_add > 0:
+217:                 await db.execute("UPDATE users SET credits = credits + ? WHERE id = ?", (credits_to_add, user_id))
+218:                 plan_id = meta.get("plan_id", "")
+219:                 plan_tier = "starter" if "STARTER" in plan_id else "pro" if "PRO" in plan_id else "ultra" if "ULTRA" in plan_id else "free"
+220:                 await db.execute("UPDATE users SET plan = ? WHERE id = ?", (plan_tier, user_id))
+221:                 print(f">>> [PAYMENT] Plano {plan_tier} ativado para {user_id}")
+222:             await db.commit()
+223:         return {"status": "success"}
+224:     except HTTPException:
+225:         raise
+226:     except Exception as e:
+227:         print(f"Erro no webhook: {e}")
+228:         return {"status": "ok"}

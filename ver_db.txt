@@ -1,0 +1,5 @@
+5: import aiosqlite
+157:         async with aiosqlite.connect(DB_NAME) as db_check:
+159:                 "SELECT plan FROM users WHERE id = ?", (body.user_id,)
+293:             debito_ok = await consume_credit(body.user_id, body.chat_id, credit_cost)
+298:             yield f'data: {json.dumps({"type": "done", "html_base64": encoded, "user_id": body.user_id, "chat_id": body.chat_id, "credits_charged": credit_cost})}\n\n'

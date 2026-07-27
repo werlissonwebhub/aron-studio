@@ -1,0 +1,39 @@
+1: from typing import Optional
+2: from pydantic import BaseModel
+3: 
+4: class AuthRequest(BaseModel):
+5:     user_id: str
+6:     email: Optional[str] = None
+7:     display_name: Optional[str] = None
+8:     photo_url: Optional[str] = None
+9:     email_verified: bool = False
+10: 
+11: class ChatInitRequest(BaseModel):
+12:     first_prompt: str
+13:     mode: str
+14:     user_id: Optional[str] = None
+15: 
+16: class GenerationRequest(BaseModel):
+17:     chat_id: str
+18:     prompt: str
+19:     user_id: str
+20:     mode: str = "assistant"
+21:     model_alias: str = "claude-sonnet-4-6"
+22:     image_data: Optional[str] = None
+23: 
+24: class ProjectModel(BaseModel):
+25:     chat_id: str
+26:     user_id: str
+27:     full_code: str
+28: 
+29: class ExtractionRequest(BaseModel):
+30:     html: str
+31:     user_id: str
+32: 
+33: class PlanRequest(BaseModel):
+34:     prompt: str
+35:     user_id: str
+36: 
+37: class RefundRequest(BaseModel):
+38:     user_id: str
+39:     reason: str

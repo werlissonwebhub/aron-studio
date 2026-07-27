@@ -1,0 +1,46 @@
+4500:                         // A partir daqui usar htmlBase64 no lugar de data.html_base64
+4501:                         // (chamar confirm-render, renderizar preview, salvar projeto — igual ao original)
+4502:                         
+4503:                         // Envia conteúdo direto para o preview e oculta balão de chat
+4504:                         processProjectData({ html_base64: htmlBase64 });
+4505: 
+4506:                         // Oculta chat (previewContainer já será ativado pelo performTransition)
+4507:                         if (chatMessages) chatMessages.classList.add('hidden');
+4508: 
+4509:                         // ── FIM DO BLOCO SSE ──────────────────────────────────
+4510: 
+4511:                         // Atualizar card da IA com mensagem de conclusão
+4512:                         const statusLine = document.getElementById('ai-status-line');
+4513:                         const stepList2 = document.getElementById('ai-step-list');
+4514: 
+4515:                         // Marcar todos os steps como concluídos
+4516:                         if (stepList2) {
+4517:                           Array.from(stepList2.children).forEach(s => s.classList.add('done', 'visible'));
+4518:                         }
+4519: 
+4520:                         // Substituir status por mensagem de conclusão + botão
+4521:                         if (statusLine) {
+4522:                           statusLine.innerHTML = `
+4523:                             <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+4524:                               <div style="color:#e4e4e7;font-size:13px;font-weight:600;margin-bottom:2px;">Pronto! Aqui esta o que criei:</div>
+4525:                               <div>${(function(){ try { return resumirProjetoLista(atob(htmlBase64)); } catch(e){ return '<div style="color:#a1a1aa;font-size:13px">Projeto criado com sucesso!</div>'; } })()}</div>
+4526:                               <button class="aron-preview-btn" onclick="(function(){
+4527:                                 var pc = document.getElementById('preview-container');
+4528:                                 if(pc){ pc.classList.add('active'); pc.style.display='block'; }
+4529:                                 var cm = document.getElementById('chat-messages');
+4530:                                 if(cm){ cm.style.display='none'; }
+4531:                               })()">
+4532:                                 ▶ Pré-visualizar projeto
+4533:                               </button>
+4534:                             </div>
+4535:                           `;
+4536:                         }
+4537: 
+4538:                         if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+4539: 
+4540:                         performTransition();
+4541: 
+4542:                         // Ocultar thinking-panel após o preview renderizar
+4543:                         setTimeout(() => {
+4544:                             const _tp = document.getElementById('thinking-panel');
+4545:                             if (_tp) _tp.style.display = 'none';
