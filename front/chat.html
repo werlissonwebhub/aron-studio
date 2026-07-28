@@ -3405,7 +3405,7 @@
                                 <div id="model-selector-container" class="relative">
                                     <button type="button" id="model-selector-btn" onclick="toggleModelMenu()"
                                         class="flex items-center px-2 py-1 bg-surface-800 rounded text-[10px] font-mono text-surface-400 border border-surface-700 hover:bg-surface-700 transition-all">
-                                        <span id="current-model-name">gemini 3.6 flash</span>
+                                        <span id="current-model-name">Gemini 3.6 flash</span>
                                         <i data-lucide="chevron-down" class="h-3 w-3 ml-1"></i>
                                     </button>
 
@@ -3520,7 +3520,7 @@
 
             window.selectModel = (alias, name) => {
                 currentModel = alias;
-                document.getElementById('current-model-name').innerText = alias === 'gemini' ? 'gemini 3.6 flash ': name;
+                document.getElementById('current-model-name').innerText = alias === 'gemini' ? 'Gemini 3.6 flash ': name;
                 const btn = document.getElementById('model-selector-btn');
                 btn.classList.remove('glow-gemini', 'glow-gpt', 'glow-claude');
 
