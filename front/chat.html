@@ -2248,7 +2248,7 @@
                         aiRow.className = 'aron-msg-row';
                         aiRow.innerHTML = `
                             <div class="aron-avatar" style="background:transparent;padding:2px;">
-                                <img src="img/bolha-aron.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
+                                <img src="img/Aron-mark.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
                             </div>
                             <div class="aron-bubble font-sans" style="background:#13131f; border:1px solid rgba(99,102,241,0.2); border-radius:4px 14px 14px 14px; padding:12px 14px; font-size:13px; color:rgba(241,245,249,0.85); line-height:1.6; max-width:85%;">
                                 <div style="color:#10b981; font-weight:bold; font-size:12px; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
@@ -3561,7 +3561,12 @@
                     }
                 };
 
-                if (removeImgBtn) removeImgBtn.onclick = () => { window.clearAttachedImage(); };
+                if (removeImgBtn) {
+                    const _fecharRef = (ev) => { ev.preventDefault(); ev.stopPropagation(); window.clearAttachedImage(); };
+                    removeImgBtn.onclick = _fecharRef;
+                    removeImgBtn.addEventListener('touchend', _fecharRef, { passive: false });
+                    removeImgBtn.style.touchAction = 'manipulation';
+                }
 
                 window.renderImagePreviews = () => {
                     const pc = document.getElementById('image-preview-container');
@@ -5173,6 +5178,8 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 }
 
                 document.addEventListener('submit', (e) => {
+                    // Nao sequestrar eventos do anexo de imagem (destrava o mobile)
+                    if (e.target && e.target.closest && e.target.closest('#image-preview-container')) return;
                     e.preventDefault();
                     e.stopPropagation();
                     e.stopImmediatePropagation();
@@ -5887,7 +5894,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                             aiRow.className = 'aron-msg-row';
                             aiRow.innerHTML = `
                                 <div class="aron-avatar" style="background:transparent;padding:2px;">
-                                    <img src="img/aron-logo-v2.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
+                                    <img src="img/Aron-mark.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
                                 </div>
                                 <div class="aron-bubble font-sans" style="background:#13131f; border:1px solid rgba(99,102,241,0.2); border-radius:4px 14px 14px 14px; padding:12px 14px; font-size:13px; color:rgba(241,245,249,0.85); line-height:1.6; max-width:85%;">
                                     <div style="color:#10b981; font-weight:bold; font-size:12px; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
