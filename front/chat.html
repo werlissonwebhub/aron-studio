@@ -3486,8 +3486,8 @@
     const pc = document.getElementById('image-preview-container');
     const pi = document.getElementById('image-preview');
     const clip = document.getElementById('clip-btn');
-    if (pi) pi.src = data;
-    if (pc) pc.classList.remove('hidden');
+    if (pi) { if (data) pi.src = data; else pi.removeAttribute('src'); }
+    if (pc) { if (data) pc.classList.remove('hidden'); else pc.classList.add('hidden'); }
     if (clip) { clip.classList.remove('text-surface-400'); clip.classList.add('text-[#FFFFFF]','bg-[#FFFFFF]/10','shadow-[0_0_15px_rgba(52,215,221,0.5)]'); }
 };
             let lastUsedPrompt = ""; // Cache do último prompt para re-tentativa sem custo
@@ -4949,7 +4949,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     skip.onclick = function() { submitClarifyAnswers(true); };
                     box.appendChild(skip);
                     row.appendChild(box);
-                    chatMessages.appendChild(row);
+                    (targetEl || chatMessages).appendChild(row);
                 }
                 function submitClarifyAnswers(skip) {
                     const st = window.__clarifyState;
@@ -8014,6 +8014,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                 // Captura rejeições de Promise não tratadas
                 window.onunhandledrejection = function (event) {
+                    if (event && event.reason && ((event.reason.name === 'AbortError') || /play\(\)|pause\(\)|interrupted|aborted/i.test(event.reason.message || ''))) return;
                     console.error('🚨 [UNHANDLED PROMISE]', event.reason);
                     emergencyReset();
                 };
@@ -8220,6 +8221,204 @@ window.sendEditorChatMessage = async function() {
     } catch (e) {}
     return response;
   };
+})();
+</script>
+<script>
+/* ===== CARD DE FEEDBACK (estrelas + comentario) ===== */
+window.renderFeedbackCard = function (chatId, targetEl) {
+    var chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+    if (document.getElementById('aron-feedback-card')) return; // nao duplicar
+
+    var row = document.createElement('div');
+    row.className = 'aron-msg-row';
+    row.id = 'aron-feedback-card';
+    var starsHtml = '';
+    for (var i = 1; i <= 5; i++) {
+        starsHtml += '<span class="aron-fb-star" data-v="' + i + '" style="font-size:28px;cursor:pointer;color:#3f3f46;transition:color .15s;line-height:1;padding:2px;">\u2605</span>';
+    }
+    row.innerHTML =
+        '<div class="aron-avatar" style="background:transparent;padding:2px;">' +
+          '<img src="img/Aron-mark.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">' +
+        '</div>' +
+        '<div class="aron-bubble" style="background:#13131f;border:1px solid rgba(99,102,241,0.2);border-radius:4px 14px 14px 14px;padding:16px;max-width:90%;width:100%;">' +
+          '<div style="color:#e4e4e7;font-size:13px;font-weight:600;margin-bottom:12px;">O que voc\u00ea achou do resultado?</div>' +
+          '<div id="aron-fb-stars" style="display:flex;gap:4px;margin-bottom:14px;">' + starsHtml + '</div>' +
+          '<textarea id="aron-fb-comment" placeholder="Conte o que funcionou ou o que faltou (opcional)..." rows="2" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#f1f5f9;font-size:13px;padding:10px 12px;outline:none;resize:none;font-family:Inter,sans-serif;margin-bottom:12px;box-sizing:border-box;"></textarea>' +
+          '<button id="aron-fb-submit" style="padding:9px 20px;background:#FFFFFF;color:#0A0A0A;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;opacity:0.4;pointer-events:none;">Enviar feedback</button>' +
+          '<div id="aron-fb-done" style="display:none;color:#10b981;font-size:13px;font-weight:600;">\u2713 Obrigado pelo seu feedback!</div>' +
+        '</div>';
+    chatMessages.appendChild(row);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    var rating = 0;
+    var stars = row.querySelectorAll('.aron-fb-star');
+    var submitBtn = row.querySelector('#aron-fb-submit');
+
+    function paint(v) {
+        stars.forEach(function (s) {
+            s.style.color = (parseInt(s.getAttribute('data-v'), 10) <= v) ? '#fbbf24' : '#3f3f46';
+        });
+    }
+    stars.forEach(function (s) {
+        s.addEventListener('mouseenter', function () { paint(parseInt(s.getAttribute('data-v'), 10)); });
+        s.addEventListener('mouseleave', function () { paint(rating); });
+        s.addEventListener('click', function () {
+            rating = parseInt(s.getAttribute('data-v'), 10);
+            paint(rating);
+            submitBtn.style.opacity = '1';
+            submitBtn.style.pointerEvents = 'auto';
+        });
+    });
+
+    submitBtn.addEventListener('click', async function () {
+        if (!rating) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        var comment = (row.querySelector('#aron-fb-comment').value || '').trim();
+        var userId = localStorage.getItem('aron_user_id') || '';
+        var base = (window.API_URL || (typeof API_URL !== 'undefined' ? API_URL : ''));
+        try {
+            await apiFetch(base + '/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId,
+                    chat_id: chatId || window.currentChatId || '',
+                    rating: rating,
+                    comment: comment
+                })
+            });
+        } catch (e) { console.error('feedback:', e); }
+        // Estado de agradecimento (mesmo se a API falhar, nao trava a UX)
+        var s1 = row.querySelector('#aron-fb-stars');
+        var c1 = row.querySelector('#aron-fb-comment');
+        if (s1) s1.style.display = 'none';
+        if (c1) c1.style.display = 'none';
+        submitBtn.style.display = 'none';
+        row.querySelector('#aron-fb-done').style.display = 'block';
+        if (window.__aronFeedbackEnviado) window.__aronFeedbackEnviado();
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+};
+</script>
+<script>
+/* ===== FEEDBACK v2: botao Avaliar + modal like/dislike + comentario ===== */
+(function () {
+    var jaAvaliou = false;
+    var THUMBS_UP = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
+    var THUMBS_DOWN = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>';
+    var STAR = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+
+    function fab() { return document.getElementById('aron-avaliar-fab'); }
+
+    function criarFab() {
+        if (fab()) return;
+        var b = document.createElement('button');
+        b.id = 'aron-avaliar-fab';
+        b.type = 'button';
+        b.innerHTML = STAR + '<span style="margin-left:7px;">Avaliar</span>';
+        b.style.cssText = [
+            'position:fixed','bottom:120px','left:50%','transform:translateX(-50%)','z-index:99998',
+            'padding:10px 18px','background:#FFFFFF','color:#0A0A0A','border:none',
+            'border-radius:999px','font-family:Inter,sans-serif','font-size:13px',
+            'font-weight:600','cursor:pointer','box-shadow:0 4px 20px rgba(0,0,0,0.35)',
+            'display:none','align-items:center','transition:transform .15s'
+        ].join(';');
+        b.onmouseenter = function () { b.style.transform = 'translateX(-50%) scale(1.05)'; };
+        b.onmouseleave = function () { b.style.transform = 'translateX(-50%) scale(1)'; };
+        b.addEventListener('click', abrir);
+        document.body.appendChild(b);
+    }
+    function mostrarFab() { var b = fab(); if (b && !jaAvaliou) b.style.display = 'inline-flex'; }
+    function esconderFab() { var b = fab(); if (b) b.style.display = 'none'; }
+
+    function abrir() {
+        if (document.getElementById('aron-fb-overlay')) return;
+        var voto = 0; // 5 = curtiu, 1 = nao curtiu
+
+        var overlay = document.createElement('div');
+        overlay.id = 'aron-fb-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;';
+
+        var box = document.createElement('div');
+        box.style.cssText = 'position:relative;max-width:420px;width:100%;background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px;font-family:Inter,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
+
+        box.innerHTML =
+            '<button id="aron-fb-x" type="button" style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.06);color:#a1a1aa;font-size:15px;cursor:pointer;">\u2715</button>' +
+            '<div style="color:#f4f4f5;font-size:15px;font-weight:600;margin-bottom:4px;">O que voc\u00ea achou do resultado?</div>' +
+            '<div style="color:#a1a1aa;font-size:12px;margin-bottom:16px;">Sua opini\u00e3o ajuda a Aron a melhorar.</div>' +
+            '<div style="display:flex;gap:12px;margin-bottom:16px;">' +
+              '<button id="aron-fb-like" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;transition:all .15s;">' + THUMBS_UP + '<span style="font-size:12px;font-weight:600;">Curti</span></button>' +
+              '<button id="aron-fb-dislike" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;transition:all .15s;">' + THUMBS_DOWN + '<span style="font-size:12px;font-weight:600;">N\u00e3o curti</span></button>' +
+            '</div>' +
+            '<textarea id="aron-fb-comment" rows="3" placeholder="Conte o que funcionou ou o que faltou (opcional)..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#f1f5f9;font-size:13px;padding:11px 13px;outline:none;resize:none;font-family:Inter,sans-serif;box-sizing:border-box;margin-bottom:14px;"></textarea>' +
+            '<button id="aron-fb-send" type="button" style="width:100%;padding:11px;background:#FFFFFF;color:#0A0A0A;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;opacity:0.45;pointer-events:none;">Enviar feedback</button>' +
+            '<div id="aron-fb-thanks" style="display:none;text-align:center;color:#10b981;font-size:14px;font-weight:600;padding:8px 0;">\u2713 Obrigado pelo seu feedback!</div>';
+
+        overlay.appendChild(box);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) fechar(); });
+        document.body.appendChild(overlay);
+
+        var like = box.querySelector('#aron-fb-like');
+        var dislike = box.querySelector('#aron-fb-dislike');
+        var sendBtn = box.querySelector('#aron-fb-send');
+
+        function selecionar(qual) {
+            voto = (qual === 'like') ? 5 : 1;
+            like.style.borderColor = (qual === 'like') ? '#10b981' : 'rgba(255,255,255,0.1)';
+            like.style.color = (qual === 'like') ? '#10b981' : '#d4d4d8';
+            like.style.background = (qual === 'like') ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)';
+            dislike.style.borderColor = (qual === 'dislike') ? '#f43f5e' : 'rgba(255,255,255,0.1)';
+            dislike.style.color = (qual === 'dislike') ? '#f43f5e' : '#d4d4d8';
+            dislike.style.background = (qual === 'dislike') ? 'rgba(244,63,94,0.1)' : 'rgba(255,255,255,0.04)';
+            sendBtn.style.opacity = '1';
+            sendBtn.style.pointerEvents = 'auto';
+        }
+        like.addEventListener('click', function () { selecionar('like'); });
+        dislike.addEventListener('click', function () { selecionar('dislike'); });
+        box.querySelector('#aron-fb-x').addEventListener('click', fechar);
+
+        sendBtn.addEventListener('click', async function () {
+            if (!voto) return;
+            sendBtn.disabled = true; sendBtn.textContent = 'Enviando...';
+            var comment = (box.querySelector('#aron-fb-comment').value || '').trim();
+            var userId = localStorage.getItem('aron_user_id') || '';
+            var base = window.API_URL || (typeof API_URL !== 'undefined' ? API_URL : '');
+            try {
+                await apiFetch(base + '/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        chat_id: window.currentChatId || '',
+                        rating: voto,
+                        comment: comment
+                    })
+                });
+            } catch (e) { console.error('feedback:', e); }
+            like.style.display = 'none'; dislike.style.display = 'none';
+            box.querySelector('#aron-fb-comment').style.display = 'none';
+            sendBtn.style.display = 'none';
+            box.querySelector('#aron-fb-thanks').style.display = 'block';
+            jaAvaliou = true;
+            setTimeout(function () { fechar(); esconderFab(); }, 1400);
+        });
+    }
+
+    function fechar() { var o = document.getElementById('aron-fb-overlay'); if (o) o.remove(); }
+
+    function vigiar() {
+        var pc = document.getElementById('preview-container');
+        if (!pc) { setTimeout(vigiar, 800); return; }
+        criarFab();
+        new MutationObserver(function () {
+            if (pc.classList.contains('active')) mostrarFab(); else esconderFab();
+        }).observe(pc, { attributes: true, attributeFilter: ['class'] });
+        if (pc.classList.contains('active')) mostrarFab();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', vigiar);
+    else vigiar();
 })();
 </script>
 <script src="manual-editor.js?v=5"></script>
