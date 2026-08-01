@@ -37,3 +37,9 @@ class PlanRequest(BaseModel):
 class RefundRequest(BaseModel):
     user_id: str
     reason: str
+
+class FeedbackIn(BaseModel):
+    user_id: str = ""
+    chat_id: str = ""
+    rating: int
+    comment: str = ""

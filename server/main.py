@@ -31,6 +31,7 @@ from payments import router as payments_router
 from routes.auth import router as auth_router
 from routes.projects import router as projects_router
 from routes.generation import router as generation_router
+from routes.feedback import router as feedback_router
 from routes.deploy import router as deploy_router
 from routes.prospecting import router as prospecting_router
 
@@ -139,6 +140,7 @@ app.include_router(generation_router)
 app.include_router(deploy_router)
 app.include_router(prospecting_router)
 app.include_router(payments_router, prefix="/api/payments")
+app.include_router(feedback_router)
 
 
 # =================================================================

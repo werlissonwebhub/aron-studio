@@ -8303,82 +8303,149 @@ window.renderFeedbackCard = function (chatId, targetEl) {
 };
 </script>
 <script>
-/* ===== FEEDBACK v2: botao Avaliar + modal like/dislike + comentario ===== */
+/* ===== FEEDBACK v3: barra (Avaliar + Estrutura) abaixo do preview ===== */
 (function () {
     var jaAvaliou = false;
-    var THUMBS_UP = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
-    var THUMBS_DOWN = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>';
-    var STAR = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    var STAR = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    var LAYERS = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>';
+    var UP = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
+    var DOWN = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>';
 
-    function fab() { return document.getElementById('aron-avaliar-fab'); }
+    function barra() { return document.getElementById('aron-avaliar-fab'); }
 
-    function criarFab() {
-        if (fab()) return;
-        var b = document.createElement('button');
-        b.id = 'aron-avaliar-fab';
-        b.type = 'button';
-        b.innerHTML = STAR + '<span style="margin-left:7px;">Avaliar</span>';
-        b.style.cssText = [
-            'position:fixed','bottom:120px','left:50%','transform:translateX(-50%)','z-index:99998',
-            'padding:10px 18px','background:#FFFFFF','color:#0A0A0A','border:none',
-            'border-radius:999px','font-family:Inter,sans-serif','font-size:13px',
-            'font-weight:600','cursor:pointer','box-shadow:0 4px 20px rgba(0,0,0,0.35)',
-            'display:none','align-items:center','transition:transform .15s'
-        ].join(';');
-        b.onmouseenter = function () { b.style.transform = 'translateX(-50%) scale(1.05)'; };
-        b.onmouseleave = function () { b.style.transform = 'translateX(-50%) scale(1)'; };
-        b.addEventListener('click', abrir);
-        document.body.appendChild(b);
+    function criarBarra() {
+        if (barra()) return;
+        var wrap = document.createElement('div');
+        wrap.id = 'aron-avaliar-fab';
+        wrap.style.cssText = 'display:none;gap:10px;justify-content:center;align-items:center;padding:12px 0 4px;width:100%;flex-shrink:0;';
+
+        function botao(label, icon, onClick) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.innerHTML = icon + '<span style="margin-left:7px;">' + label + '</span>';
+            b.style.cssText = 'display:inline-flex;align-items:center;padding:9px 18px;background:#FFFFFF;color:#0A0A0A;border:none;border-radius:999px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);transition:transform .15s;';
+            b.onmouseenter = function () { b.style.transform = 'scale(1.05)'; };
+            b.onmouseleave = function () { b.style.transform = 'scale(1)'; };
+            b.addEventListener('click', onClick);
+            return b;
+        }
+        wrap.appendChild(botao('Avaliar', STAR, abrirFeedback));
+        wrap.appendChild(botao('Estrutura', LAYERS, abrirEstrutura));
+
+        var pc = document.getElementById('preview-container');
+        if (pc && pc.parentNode) {
+            pc.insertAdjacentElement('afterend', wrap);  // ABAIXO do preview
+        } else {
+            wrap.style.position = 'fixed';
+            wrap.style.bottom = '20px';
+            wrap.style.left = '0';
+            wrap.style.zIndex = '99998';
+            document.body.appendChild(wrap);
+        }
     }
-    function mostrarFab() { var b = fab(); if (b && !jaAvaliou) b.style.display = 'inline-flex'; }
-    function esconderFab() { var b = fab(); if (b) b.style.display = 'none'; }
+    function mostrar() { var w = barra(); if (w && !jaAvaliou) w.style.display = 'flex'; }
+    function esconder() { var w = barra(); if (w) w.style.display = 'none'; }
 
-    function abrir() {
+    /* ---------- MODAL DE ESTRUTURA (arvore de secoes) ---------- */
+    function extrairEstrutura(html) {
+        var doc = new DOMParser().parseFromString(html || '', 'text/html');
+        var ICON = [
+            [/(header|topo|navbar|menu)/, '\u2261'], [/(hero|banner|destaque)/, '\u25c6'],
+            [/(service|servico|feature|recurso)/, '\u2726'], [/(depoiment|testimonial|review|avalia)/, '\u2605'],
+            [/(gallery|galeria|portfolio)/, '\u25a6'], [/(price|preco|plano)/, '$'],
+            [/(contact|contato|fale)/, '\u2709'], [/(about|sobre|quem)/, '\u2139'],
+            [/(footer|rodape)/, '\u2581'], [/(faq|duvida|pergunta)/, '?']
+        ];
+        function icone(txt) {
+            txt = (txt || '').toLowerCase();
+            for (var i = 0; i < ICON.length; i++) { if (ICON[i][0].test(txt)) return ICON[i][1]; }
+            return '\u25b8';
+        }
+        var els = doc.querySelectorAll('header, nav, main, section, article, footer, [class*="section"], [class*="-block"]');
+        var seen = [], out = [];
+        els.forEach(function (el) {
+            if (seen.indexOf(el) >= 0) return; seen.push(el);
+            var tag = el.tagName.toLowerCase();
+            var id = el.id || '';
+            var cls = (el.className || '').toString();
+            var h = el.querySelector('h1,h2,h3');
+            var titulo = h ? h.textContent.trim().replace(/\s+/g, ' ').slice(0, 45) : '';
+            var nome = titulo || id || (cls.split(' ')[0]) || tag;
+            out.push({ icon: icone(id + ' ' + cls + ' ' + titulo + ' ' + tag), nome: nome, tag: tag });
+        });
+        return out;
+    }
+
+    function abrirEstrutura() {
+        if (document.getElementById('aron-estrutura-overlay')) return;
+        var html = window.fullHtml || '';
+        var itens = extrairEstrutura(html);
+
+        var overlay = document.createElement('div');
+        overlay.id = 'aron-estrutura-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;';
+
+        var lista = itens.length
+            ? itens.map(function (it) {
+                return '<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(255,255,255,0.03);margin-bottom:6px;">' +
+                       '<span style="font-size:16px;color:#a78bfa;width:22px;text-align:center;">' + it.icon + '</span>' +
+                       '<span style="flex:1;color:#e4e4e7;font-size:13px;">' + it.nome + '</span>' +
+                       '<span style="color:#71717a;font-size:11px;font-family:monospace;">&lt;' + it.tag + '&gt;</span>' +
+                       '</div>';
+              }).join('')
+            : '<div style="color:#a1a1aa;font-size:13px;text-align:center;padding:20px;">Nao consegui ler a estrutura do site.</div>';
+
+        var box = document.createElement('div');
+        box.style.cssText = 'position:relative;max-width:460px;width:100%;max-height:80vh;overflow-y:auto;background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px;font-family:Inter,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
+        box.innerHTML =
+            '<button id="aron-est-x" type="button" style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.06);color:#a1a1aa;font-size:15px;cursor:pointer;">\u2715</button>' +
+            '<div style="color:#f4f4f5;font-size:15px;font-weight:600;margin-bottom:4px;">Estrutura do site</div>' +
+            '<div style="color:#a1a1aa;font-size:12px;margin-bottom:16px;">' + itens.length + ' blocos identificados no que a Aron gerou.</div>' +
+            lista;
+        overlay.appendChild(box);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+        box.querySelector('#aron-est-x').addEventListener('click', function () { overlay.remove(); });
+        document.body.appendChild(overlay);
+    }
+
+    /* ---------- MODAL DE FEEDBACK (curtir/nao curtir + comentario) ---------- */
+    function abrirFeedback() {
         if (document.getElementById('aron-fb-overlay')) return;
-        var voto = 0; // 5 = curtiu, 1 = nao curtiu
-
+        var voto = 0;
         var overlay = document.createElement('div');
         overlay.id = 'aron-fb-overlay';
         overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;';
-
         var box = document.createElement('div');
         box.style.cssText = 'position:relative;max-width:420px;width:100%;background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px;font-family:Inter,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
-
         box.innerHTML =
             '<button id="aron-fb-x" type="button" style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.06);color:#a1a1aa;font-size:15px;cursor:pointer;">\u2715</button>' +
             '<div style="color:#f4f4f5;font-size:15px;font-weight:600;margin-bottom:4px;">O que voc\u00ea achou do resultado?</div>' +
             '<div style="color:#a1a1aa;font-size:12px;margin-bottom:16px;">Sua opini\u00e3o ajuda a Aron a melhorar.</div>' +
             '<div style="display:flex;gap:12px;margin-bottom:16px;">' +
-              '<button id="aron-fb-like" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;transition:all .15s;">' + THUMBS_UP + '<span style="font-size:12px;font-weight:600;">Curti</span></button>' +
-              '<button id="aron-fb-dislike" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;transition:all .15s;">' + THUMBS_DOWN + '<span style="font-size:12px;font-weight:600;">N\u00e3o curti</span></button>' +
+              '<button id="aron-fb-like" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;">' + UP + '<span style="font-size:12px;font-weight:600;">Curti</span></button>' +
+              '<button id="aron-fb-dislike" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;">' + DOWN + '<span style="font-size:12px;font-weight:600;">N\u00e3o curti</span></button>' +
             '</div>' +
             '<textarea id="aron-fb-comment" rows="3" placeholder="Conte o que funcionou ou o que faltou (opcional)..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#f1f5f9;font-size:13px;padding:11px 13px;outline:none;resize:none;font-family:Inter,sans-serif;box-sizing:border-box;margin-bottom:14px;"></textarea>' +
             '<button id="aron-fb-send" type="button" style="width:100%;padding:11px;background:#FFFFFF;color:#0A0A0A;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;opacity:0.45;pointer-events:none;">Enviar feedback</button>' +
             '<div id="aron-fb-thanks" style="display:none;text-align:center;color:#10b981;font-size:14px;font-weight:600;padding:8px 0;">\u2713 Obrigado pelo seu feedback!</div>';
-
         overlay.appendChild(box);
-        overlay.addEventListener('click', function (e) { if (e.target === overlay) fechar(); });
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
         document.body.appendChild(overlay);
 
         var like = box.querySelector('#aron-fb-like');
         var dislike = box.querySelector('#aron-fb-dislike');
         var sendBtn = box.querySelector('#aron-fb-send');
-
-        function selecionar(qual) {
-            voto = (qual === 'like') ? 5 : 1;
-            like.style.borderColor = (qual === 'like') ? '#10b981' : 'rgba(255,255,255,0.1)';
-            like.style.color = (qual === 'like') ? '#10b981' : '#d4d4d8';
-            like.style.background = (qual === 'like') ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)';
-            dislike.style.borderColor = (qual === 'dislike') ? '#f43f5e' : 'rgba(255,255,255,0.1)';
-            dislike.style.color = (qual === 'dislike') ? '#f43f5e' : '#d4d4d8';
-            dislike.style.background = (qual === 'dislike') ? 'rgba(244,63,94,0.1)' : 'rgba(255,255,255,0.04)';
-            sendBtn.style.opacity = '1';
-            sendBtn.style.pointerEvents = 'auto';
+        function sel(q) {
+            voto = (q === 'like') ? 5 : 1;
+            like.style.borderColor = q === 'like' ? '#10b981' : 'rgba(255,255,255,0.1)';
+            like.style.color = q === 'like' ? '#10b981' : '#d4d4d8';
+            dislike.style.borderColor = q === 'dislike' ? '#f43f5e' : 'rgba(255,255,255,0.1)';
+            dislike.style.color = q === 'dislike' ? '#f43f5e' : '#d4d4d8';
+            sendBtn.style.opacity = '1'; sendBtn.style.pointerEvents = 'auto';
         }
-        like.addEventListener('click', function () { selecionar('like'); });
-        dislike.addEventListener('click', function () { selecionar('dislike'); });
-        box.querySelector('#aron-fb-x').addEventListener('click', fechar);
-
+        like.addEventListener('click', function () { sel('like'); });
+        dislike.addEventListener('click', function () { sel('dislike'); });
+        box.querySelector('#aron-fb-x').addEventListener('click', function () { overlay.remove(); });
         sendBtn.addEventListener('click', async function () {
             if (!voto) return;
             sendBtn.disabled = true; sendBtn.textContent = 'Enviando...';
@@ -8387,14 +8454,8 @@ window.renderFeedbackCard = function (chatId, targetEl) {
             var base = window.API_URL || (typeof API_URL !== 'undefined' ? API_URL : '');
             try {
                 await apiFetch(base + '/api/feedback', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        chat_id: window.currentChatId || '',
-                        rating: voto,
-                        comment: comment
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, chat_id: window.currentChatId || '', rating: voto, comment: comment })
                 });
             } catch (e) { console.error('feedback:', e); }
             like.style.display = 'none'; dislike.style.display = 'none';
@@ -8402,20 +8463,18 @@ window.renderFeedbackCard = function (chatId, targetEl) {
             sendBtn.style.display = 'none';
             box.querySelector('#aron-fb-thanks').style.display = 'block';
             jaAvaliou = true;
-            setTimeout(function () { fechar(); esconderFab(); }, 1400);
+            setTimeout(function () { overlay.remove(); esconder(); }, 1400);
         });
     }
-
-    function fechar() { var o = document.getElementById('aron-fb-overlay'); if (o) o.remove(); }
 
     function vigiar() {
         var pc = document.getElementById('preview-container');
         if (!pc) { setTimeout(vigiar, 800); return; }
-        criarFab();
+        criarBarra();
         new MutationObserver(function () {
-            if (pc.classList.contains('active')) mostrarFab(); else esconderFab();
+            if (pc.classList.contains('active')) mostrar(); else esconder();
         }).observe(pc, { attributes: true, attributeFilter: ['class'] });
-        if (pc.classList.contains('active')) mostrarFab();
+        if (pc.classList.contains('active')) mostrar();
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', vigiar);
     else vigiar();

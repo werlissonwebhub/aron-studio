@@ -24,9 +24,9 @@ client = genai.Client(
     http_options=types.HttpOptions(api_version="v1alpha")
 )
 
-MODEL_NAME = "gemini-3.5-flash"
+MODEL_NAME = "gemini-3.6-flash"
 
-# Gemini 3.5 Flash pensa por padrao (thinking nativo) --
+# Gemini 3. Flash pensa por padrao (thinking nativo) --
 # nao precisa de ThinkingConfig explicito. O modelo ja raciocina internamente
 # antes de responder, especialmente em codigo complexo.
 GENERATION_CONFIG = types.GenerateContentConfig(
