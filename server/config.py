@@ -10,7 +10,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 # =================================================================
 # BANCO DE DADOS
 # =================================================================
-WELCOME_CREDITS = 20  # Creditos de boas-vindas para novos usuarios
+WELCOME_CREDITS = 10  # Creditos de boas-vindas para novos usuarios
 DB_NAME = os.environ.get("DB_NAME", os.path.abspath(os.path.join(os.path.dirname(__file__), "aron_studio.db")))
 
 # =================================================================
