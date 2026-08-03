@@ -150,6 +150,11 @@ app.include_router(feedback_router)
 async def google_verification():
     return FileResponse("../front/google022d0f40a84805e0.html")
     
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse("../front/img/favicon-32.png")
+
+
 @app.get("/chat")
 async def get_chat_page():
     return FileResponse("../front/chat.html")
