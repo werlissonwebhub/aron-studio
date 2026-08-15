@@ -99,6 +99,13 @@ def _get_mode_instruction(mode: str) -> str:
     if mode == "site":
         return SITE_MODE_INSTRUCTION
     return ""
+ARON_BADGE = '<a href="https://aronstudio.com.br?ref=badge" target="_blank" rel="noopener" style="position:fixed;bottom:16px;right:16px;z-index:2147483647;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(10,10,10,0.9);backdrop-filter:blur(8px);color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:12px;font-weight:600;text-decoration:none;border-radius:999px;box-shadow:0 4px 20px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.12);"><span style="opacity:0.7;">Criado com</span><img src="https://aronstudio.com.br/img/criado-com-Aron.png" alt="Aron" style="height:14px;width:auto;" /></a>'
+
+def _inject_aron_badge(html: str) -> str:
+    if "</body>" in html:
+        return html.replace("</body>", ARON_BADGE + "</body>", 1)
+    return html + ARON_BADGE
+
 def _inject_color_fallbacks(html: str) -> str:
     all_classes = ' '.join(re.findall(r'class="([^"]*)"', html))
     css_rules = set()
@@ -341,6 +348,17 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
 
             import base64 as _b64
             extracted = _inject_color_fallbacks(extracted)
+
+            # Marca d'agua "Criado com Aron" apenas para usuarios do plano free
+            try:
+                async with aiosqlite.connect(DB_NAME) as _dbp:
+                    async with _dbp.execute("SELECT plan FROM users WHERE id = ?", (body.user_id,)) as _pc:
+                        _pr = await _pc.fetchone()
+                if (_pr[0] if _pr else "free") == "free":
+                    extracted = _inject_aron_badge(extracted)
+            except Exception as _e:
+                print("badge check falhou:", _e)
+
             encoded = _b64.b64encode(extracted.encode("utf-8")).decode("utf-8")
 
             # Debito do credito acontece AQUI, no servidor, logo que a geracao
