@@ -159,6 +159,14 @@ async def favicon():
 async def get_chat_page():
     return FileResponse("../front/chat.html")
 
+@app.get("/privacidade")
+async def get_privacidade_page():
+    return FileResponse("../front/privacidade.html")
+
+@app.get("/termos")
+async def get_termos_page():
+    return FileResponse("../front/termos.html")
+
 @app.get("/checkout")
 async def get_checkout_page():
     return FileResponse("../front/checkout.html")
