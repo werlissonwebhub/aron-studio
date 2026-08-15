@@ -1724,6 +1724,95 @@
         }
     </style>
     <style>
+        /* --- TECH STACK LOGO MARQUEE CAROUSEL --- */
+        .tech-marquee-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .tech-marquee-track {
+            display: flex;
+            align-items: center;
+            width: max-content;
+            gap: 2rem;
+            animation: techMarqueeScroll 30s linear infinite;
+        }
+
+        .tech-marquee-wrapper:hover .tech-marquee-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes techMarqueeScroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .tech-logo-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tech-logo-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .tech-logo-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            transition: transform 0.35s ease;
+            display: block;
+        }
+
+        .tech-logo-card:hover .tech-logo-icon {
+            transform: scale(1.12);
+        }
+
+        .tech-fade-left {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 140px;
+            background: linear-gradient(to right, #09090b 20%, transparent 100%);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .tech-fade-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 140px;
+            background: linear-gradient(to left, #09090b 20%, transparent 100%);
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+    <style>
         .comment-avatar-img {
             width: 100%;
             height: 100%;
@@ -1857,9 +1946,7 @@
                     <button onclick="toggleModal()" class="btn-workspace">
                         Iniciar Workspace
                     </button>
-                    <button onclick="window.open('https://github.com/aronstudio', '_blank')" class="btn-docs">
-                        Documentação
-                    </button>
+
                 </div>
             </div>
         </div>
@@ -2817,80 +2904,114 @@
             <h3 class="text-4xl font-black tracking-tight text-white italic">Construído para Durar.</h3>
         </div>
 
+        <style>
+.glow-border-rainbow {
+    position: relative;
+    z-index: 0;
+    border-radius: 24px;
+    background: #ffffff;
+}
+
+.glow-border-rainbow::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    border-radius: 24px;
+    background: conic-gradient(from var(--glow-angle), #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff, #ff0000);
+    animation: rotate-glow 4s linear infinite;
+}
+
+.feature-card-rainbow {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feature-card-rainbow:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+</style>
+
         <div class="grid md:grid-cols-3 gap-6">
             <!-- 1. Design Multimodal -->
-            <div class="feature-card glow-border reveal">
-                <div class="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                    <i data-lucide="scan-eye" class="h-6 w-6 text-[#B4B4B8]"></i>
+            <div class="feature-card-rainbow glow-border-rainbow reveal" style="transition-delay: 0s;">
+                <div class="h-12 w-12 rounded-xl bg-black/5 flex items-center justify-center">
+                    <i data-lucide="scan-eye" class="h-6 w-6 text-black"></i>
                 </div>
                 <div class="space-y-2">
-                    <h5 class="text-xl font-medium text-white tracking-tight">Design Multimodal</h5>
-                    <p class="text-xs text-[#A1A1AA] leading-relaxed font-medium min-h-[40px]"
+                    <h5 class="text-xl font-bold text-black tracking-tight">Design Multimodal</h5>
+                    <p class="text-sm text-black leading-relaxed font-semibold min-h-[40px]"
                         data-autotype="Analise visual instantanea de layouts, transformando referencias em codigo estruturado.">
                     </p>
                 </div>
             </div>
 
             <!-- 2. Analise de negocio -->
-            <div class="feature-card glow-border reveal" style="transition-delay: 0.1s;">
-                <div class="h-12 w-12 rounded-xl bg-[#FFFFFF]/10 flex items-center justify-center">
-                    <i data-lucide="bar-chart-3" class="h-6 w-6 text-[#FFFFFF]"></i>
+            <div class="feature-card-rainbow glow-border-rainbow reveal" style="transition-delay: 0.1s;">
+                <div class="h-12 w-12 rounded-xl bg-black/5 flex items-center justify-center">
+                    <i data-lucide="bar-chart-3" class="h-6 w-6 text-black"></i>
                 </div>
                 <div class="space-y-2">
-                    <h5 class="text-xl font-medium text-white tracking-tight">Analise de negocio</h5>
-                    <p class="text-xs text-[#A1A1AA] leading-relaxed font-medium min-h-[40px]"
+                    <h5 class="text-xl font-bold text-black tracking-tight">Analise de negocio</h5>
+                    <p class="text-sm text-black leading-relaxed font-semibold min-h-[40px]"
                         data-autotype="Entendimento semantico profundo das necessidades da sua startup para gerar fluxos logicos.">
                     </p>
                 </div>
             </div>
 
             <!-- 3. Geração Atomica -->
-            <div class="feature-card glow-border reveal" style="transition-delay: 0.2s;">
-                <div class="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                    <i data-lucide="puzzle" class="h-6 w-6 text-[#B4B4B8]"></i>
+            <div class="feature-card-rainbow glow-border-rainbow reveal" style="transition-delay: 0.2s;">
+                <div class="h-12 w-12 rounded-xl bg-black/5 flex items-center justify-center">
+                    <i data-lucide="puzzle" class="h-6 w-6 text-black"></i>
                 </div>
                 <div class="space-y-2">
-                    <h5 class="text-xl font-medium text-white tracking-tight">GeraçAo Atomica</h5>
-                    <p class="text-xs text-[#A1A1AA] leading-relaxed font-medium min-h-[40px]"
+                    <h5 class="text-xl font-bold text-black tracking-tight">GeraçAo Atomica</h5>
+                    <p class="text-sm text-black leading-relaxed font-semibold min-h-[40px]"
                         data-autotype="Componentes puristas montados um a um, garantindo modularidade e reuso absoluto.">
                     </p>
                 </div>
             </div>
 
             <!-- 4. Sincronizaçã objetivo Preview -->
-            <div class="feature-card glow-border reveal">
-                <div class="h-12 w-12 rounded-xl bg-[#FFFFFF]/10 flex items-center justify-center">
-                    <i data-lucide="refresh-ccw-dot" class="h-6 w-6 text-[#FFFFFF]"></i>
+            <div class="feature-card-rainbow glow-border-rainbow reveal" style="transition-delay: 0s;">
+                <div class="h-12 w-12 rounded-xl bg-black/5 flex items-center justify-center">
+                    <i data-lucide="refresh-ccw-dot" class="h-6 w-6 text-black"></i>
                 </div>
                 <div class="space-y-2">
-                    <h5 class="text-xl font-medium text-white tracking-tight">Sync de Preview</h5>
-                    <p class="text-xs text-[#A1A1AA] leading-relaxed font-medium min-h-[40px]"
+                    <h5 class="text-xl font-bold text-black tracking-tight">Sync de Preview</h5>
+                    <p class="text-sm text-black leading-relaxed font-semibold min-h-[40px]"
                         data-autotype="Sincronização imediata entre prompt e tela, eliminando o tempo de espera no feedback visual.">
                     </p>
                 </div>
             </div>
 
             <!-- 5. Otimização de Performance -->
-            <div class="feature-card glow-border reveal" style="transition-delay: 0.1s;">
-                <div class="h-12 w-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                    <i data-lucide="gauge" class="h-6 w-6 text-[#B4B4B8]"></i>
+            <div class="feature-card-rainbow glow-border-rainbow reveal" style="transition-delay: 0.1s;">
+                <div class="h-12 w-12 rounded-xl bg-black/5 flex items-center justify-center">
+                    <i data-lucide="gauge" class="h-6 w-6 text-black"></i>
                 </div>
                 <div class="space-y-2">
-                    <h5 class="text-xl font-medium text-white tracking-tight">Performance Max</h5>
-                    <p class="text-xs text-[#A1A1AA] leading-relaxed font-medium min-h-[40px]"
+                    <h5 class="text-xl font-bold text-black tracking-tight">Performance Max</h5>
+                    <p class="text-sm text-black leading-relaxed font-semibold min-h-[40px]"
                         data-autotype="Codigo otimizado para atingir o Lighthouse 100 de forma nativa e sem Configurações extras.">
                     </p>
                 </div>
             </div>
 
             <!-- 6. Deploy Enterprise -->
-            <div class="feature-card glow-border reveal" style="transition-delay: 0.2s;">
-                <div class="h-12 w-12 rounded-xl bg-[#FFFFFF]/10 flex items-center justify-center">
-                    <i data-lucide="shield-check" class="h-6 w-6 text-[#FFFFFF]"></i>
+            <div class="feature-card-rainbow glow-border-rainbow reveal" style="transition-delay: 0.2s;">
+                <div class="h-12 w-12 rounded-xl bg-black/5 flex items-center justify-center">
+                    <i data-lucide="shield-check" class="h-6 w-6 text-black"></i>
                 </div>
                 <div class="space-y-2">
-                    <h5 class="text-xl font-medium text-white tracking-tight">Deploy Enterprise</h5>
-                    <p class="text-xs text-[#A1A1AA] leading-relaxed font-medium min-h-[40px]"
+                    <h5 class="text-xl font-bold text-black tracking-tight">Deploy Enterprise</h5>
+                    <p class="text-sm text-black leading-relaxed font-semibold min-h-[40px]"
                         data-autotype="Infraestrutura Edge global e segura, pronta para suportar milhões de requisições instantaneamente.">
                     </p>
                 </div>
@@ -3007,73 +3128,111 @@
                 </div>
 
             </div>
-        </div>
-    </section>
 
-    <!-- TECH STACK SHOWCASE / POWERED BY -->
-    <section id="tech-stack" class="pt-10 pb-24 border-b border-white/5 bg-[#09090b] relative z-10 overflow-hidden">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 mb-10">Impulsionado pelos modelos
-                de linguagem mais avançados do planeta.</h4>
-            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-90">
-                <!-- Vercel -->
-                <div
-                    class="flex items-center space-x-2 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] cursor-pointer">
-                    <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"
-                        aria-label="Vercel">
-                        <path d="m12 1.608 12 20.784H0Z" />
-                    </svg>
-                    <span class="text-white font-bold text-lg tracking-tight">Vercel</span>
-                </div>
-
-                <!-- Github -->
-                <div
-                    class="flex items-center space-x-2 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] cursor-pointer">
-                    <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"
-                        aria-label="GitHub">
-                        <path
-                            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                    </svg>
-                    <span class="text-white font-bold text-lg tracking-tight">GitHub</span>
-                </div>
-
-                <!-- OpenAI -->
-                <div
-                    class="flex items-center space-x-2 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 hover:drop-shadow-[0_0_15px_rgba(16,163,127,0.6)] cursor-pointer">
-                    <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"
-                        aria-label="OpenAI">
-                        <path
-                            d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
-                    </svg>
-                    <span class="text-[#10a37f] font-bold text-lg tracking-tight">OpenAI</span>
-                </div>
-
-                <!-- Anthropic -->
-                <div
-                    class="flex items-center space-x-2 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 hover:drop-shadow-[0_0_15px_rgba(217,119,87,0.6)] cursor-pointer">
-                    <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"
-                        aria-label="Anthropic">
-                        <path
-                            d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" />
-                    </svg>
-                    <span class="text-[#d97757] font-serif font-bold text-lg tracking-tight">Anthropic</span>
-                </div>
-
-                <!-- Gemini -->
-                <div
-                    class="flex items-center space-x-2 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 hover:drop-shadow-[0_0_15px_rgba(138,63,252,0.6)] cursor-pointer">
-                    <svg class="brand-logo-icon" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"
-                        aria-label="Gemini">
-                        <path
-                            d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
-                    </svg>
-                    <span
-                        class="bg-gradient-to-r from-[#FFFFFF] to-[#FFFFFF] text-transparent bg-clip-text font-bold text-lg tracking-tight">Gemini</span>
+            <!-- VÍDEO SHOWCASE EM LOOP (3D FLOATING / SEM FUNDO) -->
+            <div class="mt-12 lg:mt-16 flex justify-center items-center reveal">
+                <div class="w-full max-w-lg lg:max-w-xl mx-auto flex items-center justify-center">
+                    <video 
+                        id="prospect-video-loop"
+                        src="video/VID_20260814_004700.mp4" 
+                        autoplay 
+                        loop 
+                        muted 
+                        playsinline 
+                        preload="metadata"
+                        class="w-full h-auto object-contain block bg-transparent"
+                        style="mix-blend-mode: screen;"
+                    >
+                        Seu navegador não suporta a reprodução de vídeo.
+                    </video>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- TECH STACK SHOWCASE / POWERED BY -->
+    <section id="tech-stack" class="pt-12 pb-24 border-b border-white/5 bg-[#09090b] relative z-10 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 text-center mb-8">
+            <h4 class="text-[11px] md:text-xs font-black uppercase tracking-[0.35em] text-zinc-500">
+                Impulsionado pelos modelos de linguagem mais avançados do planeta
+            </h4>
+        </div>
+
+        <!-- INFINITE MARQUEE CAROUSEL -->
+        <div class="tech-marquee-wrapper">
+            <div class="tech-fade-left"></div>
+            <div class="tech-fade-right"></div>
+
+            <div class="tech-marquee-track">
+                <!-- SET 1 -->
+                <!-- OpenAI -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="OpenAI">
+                        <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                    </svg>
+                    <span class="text-white font-bold text-xl tracking-tight">OpenAI</span>
+                </div>
+
+                <!-- Anthropic -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="Anthropic">
+                        <path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" />
+                    </svg>
+                    <span class="text-white font-serif font-bold text-xl tracking-tight">Anthropic</span>
+                </div>
+
+                <!-- Google Gemini -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="Gemini">
+                        <path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
+                    </svg>
+                    <span class="text-white font-bold text-xl tracking-tight">Gemini</span>
+                </div>
+
+                <!-- Vercel -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="Vercel">
+                        <path d="m12 1.608 12 20.784H0Z" />
+                    </svg>
+                    <span class="text-white font-bold text-xl tracking-tight">Vercel</span>
+                </div>
+
+                <!-- SET 2 (DUPLICATE FOR SMOOTH INFINITE LOOP) -->
+                <!-- OpenAI -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="OpenAI">
+                        <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                    </svg>
+                    <span class="text-white font-bold text-xl tracking-tight">OpenAI</span>
+                </div>
+
+                <!-- Anthropic -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="Anthropic">
+                        <path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" />
+                    </svg>
+                    <span class="text-white font-serif font-bold text-xl tracking-tight">Anthropic</span>
+                </div>
+
+                <!-- Google Gemini -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="Gemini">
+                        <path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
+                    </svg>
+                    <span class="text-white font-bold text-xl tracking-tight">Gemini</span>
+                </div>
+
+                <!-- Vercel -->
+                <div class="flex items-center gap-3 px-6 py-2 opacity-60 hover:opacity-100 hover:scale-105 transition-all cursor-pointer">
+                    <svg class="w-8 h-8 transition-transform" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-label="Vercel">
+                        <path d="m12 1.608 12 20.784H0Z" />
+                    </svg>
+                    <span class="text-white font-bold text-xl tracking-tight">Vercel</span>
+                </div>
+            </div>
+        </div>
+    
+    </section>
 
     <!-- EDITOR MANUAL SECTION -->
     <section id="editor-visual" class="py-32 px-6 relative overflow-hidden" style="z-index: 5;">
@@ -3240,8 +3399,8 @@
                 <div class="space-y-6">
                     <h6 class="text-xs font-black text-white uppercase tracking-[0.3em]">Legal & Social</h6>
                     <ul class="text-[#A1A1AA] text-xs space-y-3 font-medium">
-                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Política de Privacidade</a></li>
-                        <li><a href="#" class="hover:text-[#B4B4B8] transition-all">Termos de Serviço</a></li>
+                        <li><a href="http://localhost:8000/privacidade" class="hover:text-[#B4B4B8] transition-all">Privacidade</a></li>
+                        <li><a href="http://localhost:8000/termos" class="hover:text-[#B4B4B8] transition-all">Termos de Uso</a></li>
                         <li class="pt-4 flex space-x-5 text-[#B4B4B8]">
                             <i class="fa-brands fa-twitter text-xl hover:text-white cursor-pointer transition-colors"></i>
                             <i class="fa-brands fa-instagram text-xl hover:text-white cursor-pointer transition-colors"></i>
@@ -3644,6 +3803,21 @@
             });
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Prospect Video Viewport Optimization
+        const prospectVideo = document.getElementById('prospect-video-loop');
+        if (prospectVideo) {
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        prospectVideo.play().catch(() => {});
+                    } else {
+                        prospectVideo.pause();
+                    }
+                });
+            }, { threshold: 0.15 });
+            videoObserver.observe(prospectVideo);
+        }
 
         // Typewriter Effect Logic
         const typeTargets = document.querySelectorAll('[data-autotype]');
@@ -4050,6 +4224,33 @@
             lucide.createIcons();
         }
     </script>
+<!-- Banner de Cookies (LGPD) -->
+<div id="aron-cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:99990;background:rgba(10,10,10,0.97);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.1);padding:16px 20px;font-family:system-ui,-apple-system,sans-serif;">
+  <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:14px;justify-content:space-between;">
+    <p style="color:#d4d4d8;font-size:13px;line-height:1.5;margin:0;flex:1;min-width:240px;">
+      Usamos cookies para melhorar sua experiência e manter sua sessão. Ao continuar, você concorda com nossa
+      <a href="/privacidade" style="color:#60a5fa;text-decoration:underline;">Política de Privacidade</a>.
+    </p>
+    <div style="display:flex;gap:8px;flex-shrink:0;">
+      <button id="aron-cookie-reject" style="padding:9px 18px;background:transparent;color:#a1a1aa;border:1px solid rgba(255,255,255,0.15);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Recusar</button>
+      <button id="aron-cookie-accept" style="padding:9px 18px;background:#fff;color:#0a0a0a;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Aceitar</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='aron_cookie_consent';
+  function get(){ try{return localStorage.getItem(KEY);}catch(e){return null;} }
+  function set(v){ try{localStorage.setItem(KEY,v);}catch(e){} }
+  var banner=document.getElementById('aron-cookie-banner');
+  if(!get() && banner){ banner.style.display='block'; }
+  var a=document.getElementById('aron-cookie-accept');
+  var r=document.getElementById('aron-cookie-reject');
+  if(a) a.addEventListener('click',function(){ set('accepted'); banner.style.display='none'; });
+  if(r) r.addEventListener('click',function(){ set('rejected'); banner.style.display='none'; });
+})();
+</script>
+
 </body>
 </html>
 
