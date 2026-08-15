@@ -283,6 +283,15 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
 
             else:
                 # Gemini — streaming padrao
+                # Mapeamento dinamico: cada alias aponta para seu modelo real
+                GEMINI_ALIAS_MAP = {
+                    'gemini': MODEL_NAME,            # default = gemini-3.7-flash
+                    'gemini-3.7-flash': 'gemini-3.7-flash',
+                    'gemini-3.6-flash': 'gemini-3.6-flash',
+                    'gemini-3.5-flash': 'gemini-3.5-flash',
+                }
+                resolved_model = GEMINI_ALIAS_MAP.get(model_alias, MODEL_NAME)
+
                 if images_parts:
                     _parts = []
                     for _ib64, _im in images_parts:
@@ -293,7 +302,7 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
                     contents = full_prompt
 
                 async for chunk in await client.aio.models.generate_content_stream(
-                    model=MODEL_NAME,
+                    model=resolved_model,
                     contents=contents,
                     config=GENERATION_CONFIG,
                 ):
