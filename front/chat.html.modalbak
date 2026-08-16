@@ -49,7 +49,7 @@
 
         const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
             ? 'http://127.0.0.1:8000'
-            : 'https://api.aronstudio.com.br';
+            : 'https://aron-studio-api.onrender.com';
 
         // apiFetch: igual ao fetch normal, mas sempre tenta anexar o token do
         // Firebase no header Authorization. Usar em toda chamada pra rota
@@ -113,7 +113,7 @@
             const finalName = backendName || user.displayName || (user.email ? user.email.split('@')[0] : "Explorador");
 
             if (nameEl) nameEl.textContent = finalName;
-            updateWelcomeGreeting(finalName);
+            if (window.updateWelcomeGreeting) window.updateWelcomeGreeting(finalName);
             if (emailEl) emailEl.textContent = user.email || "Plano Free";
 
             if (avatarImg) {
@@ -442,7 +442,7 @@
         }
         .custom-select-option.selected {
           background: rgba(99,102,241,0.15);
-          color: #818cf8;
+          color: #B4B4B8;
           font-weight: 500;
         }
 
@@ -502,19 +502,19 @@
         }
 
         .aurora-1 {
-            background: radial-gradient(circle, #ffffff 0%, #B349F5 45%, transparent 70%);
+            background: radial-gradient(circle, #34D7DD 0%, #8A3FFC 45%, transparent 70%);
             animation-delay: 0s;
             width: 500px;
         }
 
         .aurora-2 {
-            background: radial-gradient(circle, #34D7DD 0%, #B349F5 50%, transparent 75%);
+            background: radial-gradient(circle, #FF3366 0%, #FFD700 50%, transparent 75%);
             animation-delay: -4s;
             width: 400px;
         }
 
         .aurora-3 {
-            background: radial-gradient(circle, #B349F5 0%, #09090b 60%, transparent 80%);
+            background: radial-gradient(circle, #8A3FFC 0%, #34D7DD 60%, transparent 80%);
             animation-delay: -8s;
             width: 600px;
         }
@@ -599,13 +599,13 @@
 
             0%,
             100% {
-                background-color: #3b82f6;
+                background-color: #FFFFFF;
                 box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
                 transform: scale(1);
             }
 
             50% {
-                background-color: #a855f7;
+                background-color: #FFFFFF;
                 box-shadow: 0 0 12px rgba(168, 85, 247, 0.8);
                 transform: scale(1.2);
             }
@@ -696,7 +696,7 @@
         .glow-gemini {
             box-shadow: 0 0 15px rgba(52, 215, 221, 0.3);
             border-color: rgba(52, 215, 221, 0.5) !important;
-            color: #34D7DD !important;
+            color: #FFFFFF !important;
         }
 
         .glow-gpt {
@@ -759,7 +759,7 @@
             inset: 0;
             border-radius: 16px;
             padding: 1px;
-            background: linear-gradient(135deg, #B349F5 0%, #34D7DD 50%, #B349F5 100%);
+            background: linear-gradient(135deg, #B4B4B8 0%, #FFFFFF 50%, #B4B4B8 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -825,7 +825,88 @@
             width: 3px;
             height: 24px;
             border-radius: 0 4px 4px 0;
-            background: linear-gradient(180deg, #B349F5, #34D7DD);
+            background: linear-gradient(180deg, #B4B4B8, #FFFFFF);
+        }
+
+        /* ============ settings-modal MOBILE ============ */
+        /* No celular a sidebar (200px fixos) espremia o conteudo.
+           Aqui empilhamos: abas horizontais em cima, conteudo embaixo. */
+        @media (max-width: 768px) {
+            .settings-modal {
+                width: 100%;
+                max-width: 96vw;
+                max-height: 88vh;
+                flex-direction: column;
+            }
+
+            .settings-sidebar {
+                width: 100%;
+                flex-direction: row;
+                align-items: center;
+                gap: 2px;
+                padding: 10px 8px;
+                border-right: none;
+                border-bottom: 1px solid #1e1e22;
+                overflow-x: auto;
+                overflow-y: hidden;
+                flex-shrink: 0;
+                scrollbar-width: none;
+            }
+
+            .settings-sidebar::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* Titulo "Configuracoes" some no mobile (economiza espaco) */
+            .settings-sidebar > .px-5.mb-6 {
+                display: none;
+            }
+
+            .settings-tab-btn {
+                width: auto;
+                flex-shrink: 0;
+                padding: 8px 12px;
+                font-size: 12px;
+                gap: 6px;
+                border-radius: 8px;
+                white-space: nowrap;
+            }
+
+            /* Barra de destaque vira embaixo, nao na lateral */
+            .settings-tab-btn.active::before {
+                left: 10%;
+                right: 10%;
+                top: auto;
+                bottom: 0;
+                transform: none;
+                width: auto;
+                height: 2px;
+                border-radius: 2px 2px 0 0;
+                background: linear-gradient(90deg, #B4B4B8, #FFFFFF);
+            }
+
+            /* Botao Salvar: sai da sidebar e vira barra fixa embaixo */
+            .settings-sidebar > .flex-1 {
+                display: none;
+            }
+
+            .settings-sidebar > .px-5.mt-4 {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: 0;
+                padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+                background: #0c0c0f;
+                border-top: 1px solid #1e1e22;
+                z-index: 20;
+            }
+
+            /* Espaco para a barra do Salvar nao cobrir o conteudo */
+            .settings-content,
+            .settings-panel {
+                padding-bottom: 76px;
+            }
         }
 
         .settings-panel {
@@ -910,7 +991,7 @@
         }
 
         .toggle-switch input:checked~.toggle-track {
-            background: linear-gradient(135deg, #B349F5, #34D7DD);
+            background: #FFFFFF; color: #0A0A0A;
             border-color: transparent;
             box-shadow: 0 0 16px rgba(52, 215, 221, 0.3);
         }
@@ -992,7 +1073,7 @@
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: linear-gradient(90deg, #34D7DD, #B349F5);
+            background: linear-gradient(90deg, #FFFFFF, #B4B4B8);
             outline: none;
             transition: opacity 0.2s;
         }
@@ -1004,7 +1085,7 @@
             height: 22px;
             border-radius: 50%;
             background: #fff;
-            border: 2px solid #B349F5;
+            border: 2px solid #B4B4B8;
             cursor: pointer;
             box-shadow: 0 0 12px rgba(179, 73, 245, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
             transition: all 0.2s;
@@ -1020,7 +1101,7 @@
             height: 22px;
             border-radius: 50%;
             background: #fff;
-            border: 2px solid #B349F5;
+            border: 2px solid #B4B4B8;
             cursor: pointer;
             box-shadow: 0 0 12px rgba(179, 73, 245, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
         }
@@ -1082,7 +1163,7 @@
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #34D7DD, #B349F5);
+            background: linear-gradient(135deg, #FFFFFF, #B4B4B8);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1092,14 +1173,14 @@
         /* Settings button active glow */
         #settings-btn.settings-active {
             background: rgba(52, 215, 221, 0.08) !important;
-            color: #34D7DD !important;
+            color: #FFFFFF !important;
             border: 1px solid rgba(52, 215, 221, 0.25);
             box-shadow: 0 0 18px rgba(52, 215, 221, 0.15);
         }
 
         #settings-btn.settings-active i,
         #settings-btn.settings-active svg {
-            color: #34D7DD !important;
+            color: #FFFFFF !important;
         }
 
         /* Account avatar gradient */
@@ -1107,7 +1188,7 @@
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #B349F5, #34D7DD);
+            background: #FFFFFF; color: #0A0A0A;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1153,7 +1234,7 @@
             inset: 0;
             border-radius: 20px;
             padding: 1px;
-            background: linear-gradient(135deg, #B349F5 0%, #34D7DD 50%, #B349F5 100%);
+            background: linear-gradient(135deg, #B4B4B8 0%, #FFFFFF 50%, #B4B4B8 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -1198,7 +1279,7 @@
         .error-progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #B349F5, #34D7DD);
+            background: linear-gradient(90deg, #B4B4B8, #FFFFFF);
             border-radius: 2px;
             animation: error-countdown 30s linear forwards;
         }
@@ -1225,7 +1306,7 @@
             left: 10%;
             width: 80%;
             height: 2px;
-            background: linear-gradient(90deg, #34D7DD, #B349F5);
+            background: linear-gradient(90deg, #FFFFFF, #B4B4B8);
             box-shadow: 0 0 8px rgba(52, 215, 221, 0.6);
             border-radius: 2px;
         }
@@ -1252,7 +1333,7 @@
             width: 50px;
             height: 50px;
             border: 3px solid rgba(255, 255, 255, 0.05);
-            border-top: 3px solid #8B5CF6;
+            border-top: 3px solid #FFFFFF;
             border-radius: 50%;
             animation: spin-smooth 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite, colorCycle 2.4s ease-in-out infinite;
         }
@@ -1261,13 +1342,13 @@
 
             0%,
             100% {
-                border-top-color: #8B5CF6;
-                filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.6));
+                border-top-color: #FFFFFF;
+                filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
             }
 
             50% {
-                border-top-color: #06B6D4;
-                filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.6));
+                border-top-color: #FFFFFF;
+                filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
             }
         }
 
@@ -1396,28 +1477,30 @@
         }
         .aron-avatar {
           width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          background: #FFFFFF; color: #0A0A0A;
           display: flex; align-items: center; justify-content: center;
           font-size: 13px; font-weight: 700; color: white;
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .aron-bubble {
-          background: #13131f;
-          border: 1px solid rgba(99,102,241,0.2);
-          border-radius: 4px 16px 16px 16px;
-          padding: 14px 18px;
-          max-width: 85%;
+          background: transparent;
+          border: none;
+          border-radius: 0;
+          padding: 4px 0;
+          max-width: 90%;
           font-size: 14px;
           line-height: 1.7;
           color: rgba(241,245,249,0.9);
           font-family: 'Inter', sans-serif;
         }
         .user-bubble {
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          background: transparent;
           border: none;
-          border-radius: 16px 4px 16px 16px;
-          color: #fff;
+          border-radius: 0;
+          color: rgba(241,245,249,0.92);
           margin-left: auto;
+          padding: 6px 0;
+          text-align: right;
         }
         .aron-step-list {
           margin-top: 10px;
@@ -1469,7 +1552,7 @@
             border-right-color: rgba(56,189,248,0.2);
           }
           66% {
-            border-top-color: #8b5cf6;
+            border-top-color: #B4B4B8;
             border-right-color: rgba(139,92,246,0.2);
           }
         }
@@ -1486,7 +1569,7 @@
         }
         .aron-status-line .pulse-dot {
           width: 6px; height: 6px;
-          background: #6366f1;
+          background: #FFFFFF;
           border-radius: 50%;
           animation: stepPulse 1s infinite;
         }
@@ -1496,8 +1579,7 @@
           gap: 6px;
           margin-top: 12px;
           padding: 8px 16px;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
-          color: white;
+          background: #FFFFFF; color: #0A0A0A;
           border: none;
           border-radius: 8px;
           font-size: 13px;
@@ -1544,7 +1626,7 @@
           height: 10px;
           border-radius: 50%;
           border: 2px solid rgba(107,114,128,0.2);
-          border-top: 2px solid #6366f1;
+          border-top: 2px solid #FFFFFF;
           animation: dotSpin 0.85s linear infinite,
                      dotColorCycle 3s ease-in-out infinite;
         }
@@ -1635,7 +1717,7 @@
 .deploy-url-text {
   flex: 1;
   font-size: 12px;
-  color: #818cf8;
+  color: #B4B4B8;
   font-family: 'JetBrains Mono', monospace;
   word-break: break-all;
   line-height: 1.5;
@@ -1645,7 +1727,7 @@
   border: 1px solid rgba(99,102,241,0.3);
   border-radius: 6px;
   padding: 6px 10px;
-  color: #818cf8;
+  color: #B4B4B8;
   font-size: 11px;
   cursor: pointer;
   white-space: nowrap;
@@ -1663,7 +1745,7 @@
 .deploy-open-btn {
   flex: 1;
   padding: 13px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: #FFFFFF; color: #0A0A0A;
   color: white;
   border: none;
   border-radius: 10px;
@@ -1737,8 +1819,7 @@
   width: 100%;
   margin-top: 12px;
   padding: 10px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white;
+  background: #FFFFFF; color: #0A0A0A;
   border: none;
   border-radius: 8px;
   font-size: 13px;
@@ -1766,9 +1847,58 @@
 }
 .prospect-save-btn:hover {
   border-color: rgba(99,102,241,0.3);
-  color: #818cf8;
+  color: #B4B4B8;
 }
     @keyframes aron-spin { to { transform: rotate(360deg); } }
+
+        /* ===== Equalizador de voz (gravacao por microfone) ===== */
+        #aron-voice-bars {
+            display: none;
+            align-items: center;
+            gap: 3px;
+            height: 26px;
+            padding: 0 10px;
+        }
+
+        #aron-voice-bars.on {
+            display: flex;
+        }
+
+        #aron-voice-bars .vb {
+            width: 3px;
+            min-height: 3px;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(180deg, #FFFFFF, #FFFFFF);
+            transition: height 70ms linear;
+        }
+
+        #aron-voice-label {
+            display: none;
+            align-items: center;
+            gap: 7px;
+            font-size: 11px;
+            color: #FFFFFF;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        #aron-voice-label.on {
+            display: flex;
+        }
+
+        #aron-voice-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: aron-rec-pulse 1.1s ease-in-out infinite;
+        }
+
+        @keyframes aron-rec-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .35; transform: scale(.8); }
+        }
 </style>
 <style>
   /* Barras de rolagem escuras no Editor Visual */
@@ -1798,6 +1928,35 @@
 </style>
     <meta name="robots" content="noindex, nofollow">
     <meta name="description" content="Área do usuário da Aron Studio — crie sites e apps com IA.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Typography System - SpaceX/Grok Style */
+        h1, h2, h3, h4, h5, h6, .font-display,
+        .prospect-title, .sc-title, .how-title, .step-title,
+        .np-title {
+            font-family: 'Space Grotesk', sans-serif !important;
+        }
+
+        body, p, button, input, textarea, select, span, a,
+        .prospect-desc, .sc-lead, .sc-p, .how-sub, .step-desc,
+        .np-desc {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        /* Buttons Fix */
+        .btn-workspace, .btn-workspace *, 
+        .join-btn, .join-btn *,
+        .btn-join, .btn-join *,
+        .botao-branco, .botao-branco *,
+        button[style*="background: white"], button[style*="background: #FFFFFF"],
+        button[style*="background: white"] *, button[style*="background: #FFFFFF"] * {
+            color: #0A0A0A !important;
+            fill: #0A0A0A !important;
+            stroke: #0A0A0A !important;
+            -webkit-text-fill-color: #0A0A0A !important;
+        }
+    </style>
 </head>
 
 <body
@@ -1815,7 +1974,7 @@
             </p>
             <div class="space-y-3 w-full">
                 <button onclick="checkVerificationStatus(event)"
-                    class="w-full py-4 bg-gradient-to-r from-[#8A3FFC] to-[#34D7DD] text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:shadow-[0_0_30px_rgba(138,63,252,0.4)] transition-all">
+                    class="w-full py-4 bg-gradient-to-r from-[#FFFFFF] to-[#FFFFFF] text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:shadow-[0_0_30px_rgba(138,63,252,0.4)] transition-all">
                     Já confirmei meu e-mail
                 </button>
                 <button onclick="resendVerificationEmail(event)" id="resend-btn"
@@ -1840,8 +1999,8 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center space-x-3">
                         <div
-                            class="h-10 w-10 rounded-xl bg-[#34D7DD]/10 flex items-center justify-center border border-[#34D7DD]/20">
-                            <i data-lucide="folder-kanban" class="h-5 w-5 text-[#34D7DD]"></i>
+                            class="h-10 w-10 rounded-xl bg-[#FFFFFF]/10 flex items-center justify-center border border-[#FFFFFF]/20">
+                            <i data-lucide="folder-kanban" class="h-5 w-5 text-[#FFFFFF]"></i>
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-white">Meus Projetos</h3>
@@ -1865,7 +2024,7 @@
         <!-- Indicador de Auto-Save -->
         <div id="autosave-indicator"
             class="fixed bottom-4 right-4 z-[9998] px-4 py-2 bg-surface-900/90 border border-surface-700 rounded-lg text-xs text-surface-400 flex items-center space-x-2 backdrop-blur-md opacity-0 transition-opacity duration-500 pointer-events-none">
-            <i data-lucide="cloud" class="h-3.5 w-3.5 text-[#34D7DD]"></i>
+            <i data-lucide="cloud" class="h-3.5 w-3.5 text-[#FFFFFF]"></i>
             <span id="autosave-text">Salvando...</span>
         </div>
 
@@ -1920,9 +2079,9 @@
                     }
 
                     container.innerHTML = projects.map(p => `
-                    <div class="group flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-xl hover:bw-white/10 hover:border-[#34D7DD]/30 transition-all">
+                    <div class="group flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-xl hover:bw-white/10 hover:border-[#FFFFFF]/30 transition-all">
                         <div class="flex items-center space-x-4 cursor-pointer flex-1" onclick="loadProjectFromCloud('${p.id}')">
-                            ${p.thumbnail ? '<img src="' + p.thumbnail + '" class="h-10 w-10 rounded-lg object-cover group-hover:scale-110 transition-transform flex-shrink-0" />' : '<div class="h-10 w-10 rounded-lg bg-surface-900 border border-surface-800 flex items-center justify-center group-hover:sole-110 transition-transform flex-shrink-0"><i data-lucide="layout" class="h-5 w-5 text-[#34D7DD]"></i></div>' }
+                            ${p.thumbnail ? '<img src="' + p.thumbnail + '" class="h-10 w-10 rounded-lg object-cover group-hover:scale-110 transition-transform flex-shrink-0" />' : '<div class="h-10 w-10 rounded-lg bg-surface-900 border border-surface-800 flex items-center justify-center group-hover:sole-110 transition-transform flex-shrink-0"><i data-lucide="layout" class="h-5 w-5 text-[#FFFFFF]"></i></div>' }
                             <div>
                                 <h4 class="text-sm font-bold text-white">${p.name || p.title || 'Projeto sem nome'}</h4>
                                 <p class="text-[10px] text-surface-500">${window.amFmtDate(p.created_at, true)}</p>
@@ -1944,6 +2103,8 @@
                 try {
                     const userId = localStorage.getItem('aron_user_id');
                     if (!userId || !fullHtml) return;
+                    let htmlToSave = fullHtml;
+                    try { const p = JSON.parse(fullHtml); if (p.html) htmlToSave = p.html; } catch(e) {}
 
                     if (isAuto) showAutoSaveIndicator('Salvando...');
 
@@ -1957,7 +2118,7 @@
                         id: currentProjectId,
                         user_id: userId,
                         name: projectName,
-                        html_code: fullHtml,
+                       html_code: htmlToSave,
                         full_json: window.currentProjectData ? JSON.stringify(window.currentProjectData) : null,
                         thumbnail: (typeof generateThumbnail === "function" ? generateThumbnail(fullHtml) : null)
                     };
@@ -2019,6 +2180,30 @@
                                     window.renderMultiFileApp(projectData);
                                 }
                             }
+
+                            // __loadPreencheCodigo — o painel de codigo ficava vazio ("Nenhum codigo
+                            // gerado ainda") porque este caminho so renderizava o preview e nunca
+                            // setava o fullHtml nem o editor.
+                            var _htmlProj = '';
+                            var _est = projectData.project_structure || projectData;
+                            if (_est && typeof _est === 'object') {
+                                _htmlProj = _est.html || _est.index_html || _est['index.html'] || '';
+                            }
+                            if (!_htmlProj && p.html_code) _htmlProj = p.html_code;
+                            if (!_htmlProj && typeof projectData === 'string') _htmlProj = projectData;
+
+                            if (_htmlProj) {
+                                fullHtml = _htmlProj;
+                                if (window.__aronSetFullHtml) window.__aronSetFullHtml(_htmlProj);
+                                window.fullHtml = _htmlProj;
+                                if (window.monacoEditor) {
+                                    try { window.monacoEditor.setValue(_htmlProj); } catch (e) {}
+                                }
+                                if (typeof window.updateCodePanel === 'function') {
+                                    try { window.updateCodePanel(_htmlProj); } catch (e) {}
+                                }
+                            }
+                            window.currentProjectData = projectData;
                         } catch (parseErr) {
                             console.warn('>>> [PARSE PROTECT] full_json inválido em loadProjectFromCloud:', parseErr.message);
                             fullHtml = p.full_json;
@@ -2029,9 +2214,14 @@
                         }
                     } else {
                         fullHtml = p.html_code || p.full_code || '';
+                        if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
+                        window.fullHtml = fullHtml;
                         renderInIframe(fullHtml);
                         if (window.monacoEditor) {
                             try { window.monacoEditor.setValue(fullHtml); } catch(e) {}
+                        }
+                        if (typeof window.updateCodePanel === 'function') {
+                            try { window.updateCodePanel(fullHtml); } catch(e) {}
                         }
                     }
 
@@ -2058,7 +2248,7 @@
                         aiRow.className = 'aron-msg-row';
                         aiRow.innerHTML = `
                             <div class="aron-avatar" style="background:transparent;padding:2px;">
-                                <img src="img/bolha-aron.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
+                                <img src="img/Aron-mark.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
                             </div>
                             <div class="aron-bubble font-sans" style="background:#13131f; border:1px solid rgba(99,102,241,0.2); border-radius:4px 14px 14px 14px; padding:12px 14px; font-size:13px; color:rgba(241,245,249,0.85); line-height:1.6; max-width:85%;">
                                 <div style="color:#10b981; font-weight:bold; font-size:12px; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
@@ -2150,14 +2340,14 @@
                     container.innerHTML = recent.map(p => {
                         const isActive = currentProjectId === p.id;
                         return `<button onclick="selectProjectFromDropdown('${p.id}')" class="w-full flex items-center space-x-3 px-4 py-2.5 text-left hover:bg-white/5 transition-colors ${isActive ? 'bg-white/[0.04]' : ''}">
-                        <div class="h-7 w-7 rounded-lg ${isActive ? 'bg-[#B349F5]/15 border-[#B349F5]/30' : 'bg-white/5 border-white/[0.06]'} border flex items-center justify-center flex-shrink-0">
-                            <i data-lucide="${isActive ? 'folder-open' : 'file-code'}" class="h-3.5 w-3.5 ${isActive ? 'text-[#B349F5]' : 'text-surface-500'}"></i>
+                        <div class="h-7 w-7 rounded-lg ${isActive ? 'bg-[#B4B4B8]/15 border-[#B4B4B8]/30' : 'bg-white/5 border-white/[0.06]'} border flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="${isActive ? 'folder-open' : 'file-code'}" class="h-3.5 w-3.5 ${isActive ? 'text-[#B4B4B8]' : 'text-surface-500'}"></i>
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-[12px] font-medium ${isActive ? 'text-white' : 'text-surface-300'} truncate">${p.name || p.title || 'Projeto sem nome'}</p>
                             <p class="text-[10px] text-surface-600">${window.amFmtDate(p.created_at)}</p>
                         </div>
-                        ${isActive ? '<div class="h-1.5 w-1.5 rounded-full bg-[#B349F5] flex-shrink-0"></div>' : ''}
+                        ${isActive ? '<div class="h-1.5 w-1.5 rounded-full bg-[#B4B4B8] flex-shrink-0"></div>' : ''}
                     </button>`;
                     }).join('');
                     if (window.lucide?.createIcons) lucide.createIcons();
@@ -2280,15 +2470,24 @@
                     class="flex items-center mt-6 mb-6 transition-all overflow-hidden shrink-0 relative">
                     <!-- Logo Full (Symbol + HTML Text) -->
                     <div id="sidebar-logo-full" class="flex items-center ml-4 transition-opacity duration-300">
-                        <img src="img/Aron-v1-logo.png" alt="Aron Studio" class="h-11 w-18 object-contain">
+                        <img src="img/Aron-mark.png" alt="Aron Studio" class="h-8 w-auto object-contain">
                         <div class="ml-3 flex flex-col justify-center">
                            
                         </div>
                     </div>
                     <!-- Logo Collapsed (Symbol Only) -->
                     <img src="img/Aron-mark.png" alt="Aron" id="sidebar-logo-collapsed"
-                        class="h-11 w-16 object-contain absolute left-1/2 -translate-x-1/2 opacity-0 transition-opacity duration-300 pointer-events-none">
+                        class="h-8 w-auto object-contain absolute left-1/2 -translate-x-1/2 opacity-0 transition-opacity duration-300 pointer-events-none">
                 </div>
+                <!-- Novo Projeto (principal acao da sidebar) -->
+                <div class="px-3 mb-1">
+                    <button type="button" id="sidebar-novo-projeto" onclick="novoProjetoSidebar()"
+                        class="nav-item w-full flex items-center px-3 py-2 rounded-md hover:bg-surface-900/50 text-surface-400 hover:text-white transition-all">
+                        <i data-lucide="plus" class="h-4 w-4 flex-shrink-0"></i>
+                        <span class="sidebar-label font-medium text-sm ml-3 transition-opacity duration-300">Novo Projeto</span>
+                    </button>
+                </div>
+
                 <nav class="p-3 space-y-0.5 mt-2">
                     <p
                         class="sidebar-label text-[11px] font-semibold text-surface-400 uppercase tracking-wider mb-2 mt-2 px-3 whitespace-nowrap overflow-hidden">
@@ -2337,8 +2536,8 @@
                       <span class="sidebar-label font-medium text-sm ml-3 transition-opacity duration-300 whitespace-nowrap overflow-hidden">Prospecção</span>
                       <span class="sidebar-label" style="
                         margin-left:auto;
-                        background:linear-gradient(135deg,#6366f1,#8b5cf6);
-                        color:white;font-size:9px;font-weight:700;
+                        background: #FFFFFF; color: #0A0A0A;
+                        font-size:9px;font-weight:900;
                         padding:2px 6px;border-radius:10px;
                       ">PREMIUM</span>
                     </div>
@@ -2365,16 +2564,16 @@
                     class="group mb-2 flex items-center justify-between px-3 py-2.5 rounded-lg bg-white/5 backdrop-blur-md border border-white/5 cursor-pointer hover:bg-white/10 transition-all shadow-[0_0_15px_rgba(52,215,221,0.05)] hover:shadow-[0_0_20px_rgba(52,215,221,0.15)] overflow-hidden">
                     <div class="flex items-center">
                         <div id="credit-icon-container"
-                            class="h-6 w-6 rounded flex items-center justify-center bg-[#34D7DD]/10 transition-colors flex-shrink-0">
+                            class="h-6 w-6 rounded flex items-center justify-center bg-[#FFFFFF]/10 transition-colors flex-shrink-0">
                             <i data-lucide="zap" id="credit-icon"
-                                class="h-3.5 w-3.5 text-[#34D7DD] transition-colors"></i>
+                                class="h-3.5 w-3.5 text-[#FFFFFF] transition-colors"></i>
                         </div>
                         <span
                             class="sidebar-label text-xs font-bold text-white tracking-wide ml-2.5 whitespace-nowrap overflow-hidden">Créditos
                             IA</span>
                     </div>
                     <span id="credit-balance"
-                        class="sidebar-label text-sm font-mono font-black text-[#34D7DD] transition-all ml-2">...</span>
+                        class="sidebar-label text-sm font-mono font-black text-[#FFFFFF] transition-all ml-2">...</span>
                 </div>
 
                 <div
@@ -2427,12 +2626,12 @@
                     <span onclick="toggleProjectsDropdown()"
                         class="font-medium text-surface-100 flex items-center px-2 py-1 cursor-pointer hover:bg-white/5 rounded-md transition-colors">
                         <span id="topbar-project-name"
-                            class="bg-gradient-to-r from-[#B349F5] to-[#34D7DD] text-transparent bg-clip-text">Projeto
+                            class="bg-gradient-to-r from-white to-zinc-200 text-black text-transparent bg-clip-text">Projeto
                             Sem Nome</span>
                         <span id="topbar-save-status"
                             class="ml-2 text-[10px] text-surface-500 font-normal hidden"></span>
                         <i data-lucide="chevron-down"
-                            class="h-3 w-3 ml-1 text-[#34D7DD] transition-transform duration-200"
+                            class="h-3 w-3 ml-1 text-[#FFFFFF] transition-transform duration-200"
                             id="topbar-chevron"></i>
                     </span>
 
@@ -2445,7 +2644,7 @@
                                 <p class="text-[10px] uppercase tracking-widest text-surface-500 font-bold">Projetos
                                     Recentes</p>
                                 <button onclick="newProjectFromDropdown()"
-                                    class="flex items-center space-x-1.5 px-2.5 py-1 bg-white/5 hover:bg-[#B349F5]/15 border border-white/[0.06] hover:border-[#B349F5]/30 rounded-lg text-[11px] text-surface-300 hover:text-white transition-all duration-200">
+                                    class="flex items-center space-x-1.5 px-2.5 py-1 bg-white/5 hover:bg-[#B4B4B8]/15 border border-white/[0.06] hover:border-[#B4B4B8]/30 rounded-lg text-[11px] text-surface-300 hover:text-white transition-all duration-200">
                                     <i data-lucide="plus" class="h-3 w-3"></i>
                                     <span>Novo Projeto</span>
                                 </button>
@@ -2475,15 +2674,15 @@
                         class="relative p-2 md:px-3 md:py-1.5 text-surface-400 hover:text-white hover:bg-white/5 text-sm font-medium rounded-lg transition-all duration-300 flex items-center opacity-50 cursor-not-allowed topbar-btn group">
                         <span class="flex h-2 w-2 relative mr-0 md:mr-2">
                             <span
-                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-surface-500 opacity-75 group-[.active]:bg-[#B349F5]"></span>
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-surface-500 opacity-75 group-[.active]:bg-[#B4B4B8]"></span>
                             <span
-                                class="relative inline-flex rounded-full h-2 w-2 bg-surface-600 group-[.active]:bg-[#B349F5]"></span>
+                                class="relative inline-flex rounded-full h-2 w-2 bg-surface-600 group-[.active]:bg-[#B4B4B8]"></span>
                         </span>
                         <i data-lucide="external-link" class="h-4 w-4 md:mr-1.5"></i> <span
                             class="hidden md:inline">Live Preview</span>
                     </button>
                     <div class="relative inline-flex overflow-hidden rounded-lg p-[1.5px] transform hover:scale-105 transition-all duration-300">
-                        <span class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#8A3FFC_0%,#34D7DD_50%,#8A3FFC_100%)]"></span>
+                        <span class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#34D7DD_0%,#8A3FFC_25%,#FF3366_50%,#FFD700_75%,#34D7DD_100%)]"></span>
                         <button type="button" id="deploy-btn" onclick="performDeploy()"
                             class="relative inline-flex h-full w-full items-center justify-center rounded-[6px] bg-white px-3 py-1.5 md:px-5 md:py-1.5 text-black font-medium text-xs md:text-sm hover:bg-zinc-100 transition-colors">
                             <i data-lucide="rocket" class="h-3.5 w-3.5 md:mr-2 text-black"></i> <span class="hidden sm:inline">Deploy</span>
@@ -2547,7 +2746,7 @@
   ">
     <div id="ai-status-dot" style="
       width: 8px; height: 8px;
-      background: #6366f1;
+      background: #FFFFFF;
       border-radius: 50%;
       flex-shrink: 0;
       animation: ai-pulse 1.2s ease-in-out infinite;
@@ -2581,7 +2780,7 @@
   <span id="ai-cursor" style="
     display: inline-block;
     width: 2px; height: 14px;
-    background: #6366f1;
+    background: #FFFFFF;
     vertical-align: middle;
     margin-left: 2px;
     animation: ai-blink 1s step-end infinite;
@@ -2643,7 +2842,7 @@
                         if (window._codeViewActive) {
                             iframeWrapper.style.display = 'none';
                             codePanel.style.display = 'flex';
-                            btn.classList.add('text-[#34D7DD]', 'bg-[#34D7DD]/10');
+                            btn.classList.add('text-[#FFFFFF]', 'bg-[#FFFFFF]/10');
                             label.textContent = 'Preview';
                             const html = window.fullHtml || '';
                             content.textContent = html
@@ -2652,7 +2851,7 @@
                         } else {
                             iframeWrapper.style.display = '';
                             codePanel.style.display = 'none';
-                            btn.classList.remove('text-[#34D7DD]', 'bg-[#34D7DD]/10');
+                            btn.classList.remove('text-[#FFFFFF]', 'bg-[#FFFFFF]/10');
                             label.textContent = 'Código';
                         }
                         if (window.lucide) window.lucide.createIcons();
@@ -2694,14 +2893,14 @@
                     <div style="margin-bottom:28px;">
                       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
                         <i class="fa-solid fa-magnifying-glass-location"
-                           style="color:#6366f1;font-size:20px;"></i>
+                           style="color:#FFFFFF;font-size:20px;"></i>
                         <h2 style="color:#f1f5f9;font-size:20px;font-weight:700;
                                    font-family:'Plus Jakarta Sans',sans-serif;margin:0;">
                           Prospecção de Clientes
                         </h2>
                         <span style="
-                          background:linear-gradient(135deg,#6366f1,#8b5cf6);
-                          color:white;font-size:10px;font-weight:700;
+                          background: #FFFFFF; color: #0A0A0A;
+                          font-size:10px;font-weight:900;
                           padding:3px 10px;border-radius:20px;letter-spacing:0.05em;
                         ">PREMIUM</span>
                       </div>
@@ -2772,7 +2971,7 @@
                               <span id="label-city" class="placeholder">Selecione o estado primeiro</span>
                               <div id="city-spinner" style="display:none;width:12px;height:12px;
                                    border-radius:50%;border:2px solid rgba(99,102,241,0.3);
-                                   border-top:2px solid #6366f1;animation:dotSpin 0.85s linear infinite;">
+                                   border-top:2px solid #FFFFFF;animation:dotSpin 0.85s linear infinite;">
                               </div>
                             </div>
                             <span class="custom-select-arrow">▼</span>
@@ -2789,7 +2988,7 @@
                         <div style="display:flex;align-items:flex-end;">
                           <button onclick="window.runProspecting()" id="prospect-search-btn" style="
                             padding:12px 24px;
-                            background:linear-gradient(135deg,#6366f1,#8b5cf6);
+                            background: #FFFFFF; color: #0A0A0A;
                             color:white;border:none;border-radius:10px;
                             font-size:14px;font-weight:600;cursor:pointer;
                             font-family:'Plus Jakarta Sans',sans-serif;
@@ -2810,7 +3009,7 @@
                       <div style="
                         width:48px;height:48px;border-radius:50%;
                         border:3px solid rgba(99,102,241,0.2);
-                        border-top:3px solid #6366f1;
+                        border-top:3px solid #FFFFFF;
                         animation:dotSpin 0.85s linear infinite;
                         margin:0 auto 16px;
                       "></div>
@@ -2851,13 +3050,13 @@
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <h2 class="text-xl font-medium text-white mb-2 flex items-center">
-                                <i data-lucide="layers" class="h-5 w-5 mr-2 text-[#34D7DD]"></i> Inspetor de Componentes
+                                <i data-lucide="layers" class="h-5 w-5 mr-2 text-[#FFFFFF]"></i> Inspetor de Componentes
                             </h2>
                             <p class="text-surface-400 text-sm">Visualize e extraia os blocos lógicos gerados no seu
                                 design atual.</p>
                         </div>
                         <button type="button" onclick="atualizarListaComponentes()"
-                            class="p-2 bg-[rgba(255,255,255,0.02)] border border-surface-700 hover:bg-surface-800 rounded transition-all text-[#34D7DD]"
+                            class="p-2 bg-[rgba(255,255,255,0.02)] border border-surface-700 hover:bg-surface-800 rounded transition-all text-[#FFFFFF]"
                             title="Recarregar">
                             <i data-lucide="refresh-cw" class="h-4 w-4"></i>
                         </button>
@@ -2865,7 +3064,7 @@
 
                     <div id="components-loading"
                         class="hidden w-full flex-col flex items-center justify-center p-12 border border-surface-800 bg-[rgba(255,255,255,0.01)] rounded-xl">
-                        <i data-lucide="scan-face" class="h-8 w-8 text-[#B349F5] animate-pulse mb-4"></i>
+                        <i data-lucide="scan-face" class="h-8 w-8 text-[#B4B4B8] animate-pulse mb-4"></i>
                         <p class="text-surface-400 text-sm">A IA está escaneando sua interface...</p>
                     </div>
 
@@ -2880,7 +3079,7 @@
                 </div>
                 <div id="view-site-tree" class="view-panel w-full max-w-4xl mt-8 hidden relative z-10 px-4">
                     <h2 class="text-xl font-medium text-white mb-2 flex items-center">
-                        <i data-lucide="map" class="h-5 w-5 mr-2 text-[#34D7DD]"></i> Blueprint do Projeto
+                        <i data-lucide="map" class="h-5 w-5 mr-2 text-[#FFFFFF]"></i> Blueprint do Projeto
                     </h2>
                     <p class="text-surface-400 text-sm mb-6">Analise o planejamento sugerido pela IA ou digite um novo
                         prompt para gerar a arquitetura.</p>
@@ -2889,7 +3088,7 @@
 
                     <div id="blueprint-loading"
                         class="hidden w-full flex flex-col items-center justify-center p-12 border border-surface-800 bg-surface-900/30 rounded-xl">
-                        <i data-lucide="loader-2" class="h-8 w-8 text-[#B349F5] animate-spin mb-4"></i>
+                        <i data-lucide="loader-2" class="h-8 w-8 text-[#B4B4B8] animate-spin mb-4"></i>
                         <p class="text-surface-400 text-sm">Estruturando JSON de Arquitetura...</p>
                     </div>
 
@@ -2927,7 +3126,7 @@
                       ">
                         <div style="
                           width:36px;height:36px;border-radius:8px;
-                          background:linear-gradient(135deg,#6366f1,#8b5cf6);
+                          background: #FFFFFF; color: #0A0A0A;
                           display:flex;align-items:center;justify-content:center;
                           font-size:16px;flex-shrink:0;
                         "><i class="fa-solid fa-file-code" style="color:#ffffff;"></i></div>
@@ -3039,7 +3238,7 @@
                       ">
                         <p style="color:rgba(241,245,249,0.4);font-size:12px;
                                   line-height:1.6;font-family:'Inter',sans-serif;margin:0;">
-                          💡 O arquivo HTML é autocontido — inclui todo CSS e JavaScript.
+                           O arquivo HTML é autocontido — inclui todo CSS e JavaScript.
                           Basta hospedar o index.html em qualquer servidor ou CDN.
                         </p>
                       </div>
@@ -3054,7 +3253,7 @@
                       <!-- ESQUERDA: CHAT IA -->
                       <div style="width:380px;display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.06);background:#0d0d16;">
                         <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:10px;">
-                          <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;">
+                          <div style="width:28px;height:28px;border-radius:8px;background: #FFFFFF; color: #0A0A0A;display:flex;align-items:center;justify-content:center;">
                             <i class="fa-solid fa-wand-magic-sparkles" style="color:white;font-size:12px;"></i>
                           </div>
                           <div>
@@ -3074,7 +3273,7 @@
                               onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();window.sendEditorChatMessage();}"
                               style="flex:1;background:transparent;border:none;outline:none;color:#f1f5f9;font-size:13px;resize:none;font-family:'Inter',sans-serif;max-height:100px;"></textarea>
                             <button onclick="window.sendEditorChatMessage()" id="editor-chat-send"
-                              style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:white;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                              style="width:32px;height:32px;border-radius:8px;background: #FFFFFF; color: #0A0A0A;border:none;color:white;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
                               <i class="fa-solid fa-arrow-up" style="font-size:12px;"></i>
                             </button>
                           </div>
@@ -3086,7 +3285,7 @@
                         <div style="padding:8px 16px;background:#0f0f1a;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
                           <div style="display:flex;gap:4px;background:rgba(255,255,255,0.04);border-radius:8px;padding:3px;">
                             <button id="editor-tab-preview" onclick="window.toggleEditorView('preview')"
-                              style="padding:6px 16px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-family:'Inter',sans-serif;">
+                              style="padding:6px 16px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background: #FFFFFF; color: #0A0A0A;color:white;font-family:'Inter',sans-serif;">
                               <i class="fa-solid fa-eye" style="margin-right:6px;"></i>Preview
                             </button>
                             <button id="editor-tab-code" onclick="window.toggleEditorView('code')"
@@ -3118,13 +3317,13 @@
                 <div class="w-full max-w-3xl flex flex-col items-center">
                     <!-- Preview Container -->
                     <div id="image-preview-container"
-                        class="hidden flex items-center p-2 mb-2 bg-surface-900 border border-[#34D7DD]/30 rounded-lg shadow-lg w-fit self-start animate-[fadeIn_0.3s_ease]">
+                        class="hidden flex items-center p-2 mb-2 bg-surface-900 border border-[#FFFFFF]/30 rounded-lg shadow-lg w-fit self-start animate-[fadeIn_0.3s_ease]">
                         <img id="image-preview" src=""
                             class="h-10 w-10 object-cover rounded shadow-sm mr-3 border border-surface-700">
                         <div class="flex flex-col mr-4">
                             <span class="text-[11px] font-medium text-white mb-0.5 uppercase tracking-wide">Imagem
                                 Anexada</span>
-                            <span class="text-[9px] text-[#34D7DD] font-semibold">Visual Prompting</span>
+                            <span class="text-[9px] text-[#FFFFFF] font-semibold">Visual Prompting</span>
                         </div>
                         <button type="button" id="remove-image-btn"
                             class="p-1 hover:bg-surface-800 rounded bg-surface-950 text-surface-400 border border-surface-800 hover:text-white transition-colors">
@@ -3150,6 +3349,15 @@
                                <button type="button" id="mic-btn" onclick="toggleRecording()"
                                     class="p-1.5 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 text-surface-400 hover:text-white hover:bg-surface-800 rounded-md transition-all flex items-center justify-center relative"><i
                                         data-lucide="mic" class="h-3.5 w-3.5 relative z-10"></i></button>
+                            <div id="aron-voice-bars">
+                                <span class="vb"></span><span class="vb"></span><span class="vb"></span>
+                                <span class="vb"></span><span class="vb"></span><span class="vb"></span>
+                                <span class="vb"></span><span class="vb"></span><span class="vb"></span>
+                                <span class="vb"></span><span class="vb"></span><span class="vb"></span>
+                            </div>
+                            <span id="aron-voice-label">
+                                <span id="aron-voice-dot"></span>Ouvindo...
+                            </span>
                                 <button type="button" id="app-mode-btn" onclick="openAppModeModal()"
                                     title="Escolher o que criar (Site, App, Jogo)"
                                     class="p-1.5 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 text-surface-400 hover:text-white hover:bg-surface-800 rounded-md transition-all flex items-center justify-center relative"><i
@@ -3166,12 +3374,12 @@
                                     <p class="text-surface-500 text-[13px] mb-5">Escolha o tipo — a Aron ajusta a lógica de geração automaticamente.</p>
                                     <div class="grid grid-cols-2 gap-3 mb-3">
                                         <button onclick="selectAppMode('site')" class="app-mode-card group">
-                                            <i data-lucide="layout-template" class="h-6 w-6 mb-2 text-[#34D7DD]"></i>
+                                            <i data-lucide="layout-template" class="h-6 w-6 mb-2 text-[#FFFFFF]"></i>
                                             <span class="font-medium text-white text-sm">Site</span>
                                             <span class="text-[11px] text-surface-500">gere seu site </span>
                                         </button>
                                         <button onclick="selectAppMode('app')" class="app-mode-card group">
-                                            <i data-lucide="layout-dashboard" class="h-6 w-6 mb-2 text-[#B349F5]"></i>
+                                            <i data-lucide="layout-dashboard" class="h-6 w-6 mb-2 text-[#B4B4B8]"></i>
                                             <span class="font-medium text-white text-sm">crie seu App Funcional</span>
                                             <span class="text-[11px] text-surface-500">CRUD, dados salvos, lógica real</span>
                                         </button>
@@ -3197,18 +3405,25 @@
                                 <div id="model-selector-container" class="relative">
                                     <button type="button" id="model-selector-btn" onclick="toggleModelMenu()"
                                         class="flex items-center px-2 py-1 bg-surface-800 rounded text-[10px] font-mono text-surface-400 border border-surface-700 hover:bg-surface-700 transition-all">
-                                        <span id="current-model-name">gemini 3.5 flash</span>
+                                        <span id="current-model-name">Gemini 3.6 flash</span>
                                         <i data-lucide="chevron-down" class="h-3 w-3 ml-1"></i>
                                     </button>
 
                                     <div id="model-menu"
                                         class="hidden absolute bottom-full right-0 mb-2 w-52 model-dropdown">
                                         <div class="model-option active"
-                                            onclick="selectModel('gemini', 'Gemini 3.5 Flash')">
-                                            <svg class="h-4 w-4 mr-2 flex-shrink-0 text-surface-400" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 28C14 26.0633 13.6267 24.2433 12.88 22.54C12.1567 20.8367 11.165 19.355 9.905 18.095C8.645 16.835 7.16333 15.8433 5.46 15.12C3.75667 14.3733 1.93667 14 0 14C1.93667 14 3.75667 13.6383 5.46 12.915C7.16333 12.1683 8.645 11.165 9.905 9.905C11.165 8.645 12.1567 7.16333 12.88 5.46C13.6267 3.75667 14 1.93667 14 0C14 1.93667 14.3617 3.75667 15.085 5.46C15.8317 7.16333 16.835 8.645 18.095 9.905C19.355 11.165 20.8367 12.1683 22.54 12.915C24.2433 13.6383 26.0633 14 28 14C26.0633 14 24.2433 14.3733 22.54 15.12C20.8367 15.8433 19.355 16.835 18.095 18.095C16.835 19.355 15.8317 20.8367 15.085 22.54C14.3617 24.2433 14 26.0633 14 28Z" fill="currentColor"/><defs><linearGradient id="gemini_grad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#4285F4"/><stop offset="1" stop-color="#34D7DD"/></linearGradient></defs></svg>
+                                            onclick="selectModel('gemini', 'Gemini 3.6 Flash')">
+                                            <svg class="h-4 w-4 mr-2 flex-shrink-0 text-surface-400" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 28C14 26.0633 13.6267 24.2433 12.88 22.54C12.1567 20.8367 11.165 19.355 9.905 18.095C8.645 16.835 7.16333 15.8433 5.46 15.12C3.75667 14.3733 1.93667 14 0 14C1.93667 14 3.75667 13.6383 5.46 12.915C7.16333 12.1683 8.645 11.165 9.905 9.905C11.165 8.645 12.1567 7.16333 12.88 5.46C13.6267 3.75667 14 1.93667 14 0C14 1.93667 14.3617 3.75667 15.085 5.46C15.8317 7.16333 16.835 8.645 18.095 9.905C19.355 11.165 20.8367 12.1683 22.54 12.915C24.2433 13.6383 26.0633 14 28 14C26.0633 14 24.2433 14.3733 22.54 15.12C20.8367 15.8433 19.355 16.835 18.095 18.095C16.835 19.355 15.8317 20.8367 15.085 22.54C14.3617 24.2433 14 26.0633 14 28Z" fill="currentColor"/><defs><linearGradient id="gemini_grad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#4285F4"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs></svg>
+                                            <div class="flex-1">
+                                                <p class="text-xs font-medium">Gemini 3.6 Flash</p>
+                                                <p class="text-[9px] opacity-50">Velocidade e eficiência da nova versão</p>
+                                            </div>
+                                        </div>
+                                        <div class="model-option" onclick="selectModel('gemini-3.5-flash', 'Gemini 3.5 Flash')">
+                                            <svg class="h-4 w-4 mr-2 flex-shrink-0 text-surface-400" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 28C14 26.0633 13.6267 24.2433 12.88 22.54C12.1567 20.8367 11.165 19.355 9.905 18.095C8.645 16.835 7.16333 15.8433 5.46 15.12C3.75667 14.3733 1.93667 14 0 14C1.93667 14 3.75667 13.6383 5.46 12.915C7.16333 12.1683 8.645 11.165 9.905 9.905C11.165 8.645 12.1567 7.16333 12.88 5.46C13.6267 3.75667 14 1.93667 14 0C14 1.93667 14.3617 3.75667 15.085 5.46C15.8317 7.16333 16.835 8.645 18.095 9.905C19.355 11.165 20.8367 12.1683 22.54 12.915C24.2433 13.6383 26.0633 14 28 14C26.0633 14 24.2433 14.3733 22.54 15.12C20.8367 15.8433 19.355 16.835 18.095 18.095C16.835 19.355 15.8317 20.8367 15.085 22.54C14.3617 24.2433 14 26.0633 14 28Z" fill="currentColor"/><defs><linearGradient id="gemini_grad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#4285F4"/><stop offset="1" stop-color="#FFFFFF"/></linearGradient></defs></svg>
                                             <div class="flex-1">
                                                 <p class="text-xs font-medium">Gemini 3.5 Flash</p>
-                                                <p class="text-[9px] opacity-50">Veloz & Inteligente</p>
+                                                <p class="text-[9px] opacity-50">Estabilidade e alto desempenho</p>
                                             </div>
                                         </div>
                                         <div class="model-option" onclick="selectModel('gpt4o', 'GPT-4o')">
@@ -3234,8 +3449,7 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-center text-[10px] text-surface-500 mt-2 font-sans md:block hidden">A IA pode cometer
-                        erros. Revise o código gerado.</p>
+                    <p class="text-center text-[10px] text-surface-500 mt-2 font-sans md:block hidden">A IA pode cometer erros. Revise o código gerado.</p>
                 </div>
             </div>
         </main>
@@ -3254,35 +3468,28 @@
             let visualEditorEnabled = false;
 
             let currentModel = 'gemini'; // Estado Global do Modelo
-            let currentImageData = null; // Gestão de Imagem Anexada
-
+            let currentImagesData = []; // array de multiplas imagens
+            window.currentImagesData = currentImagesData;
             // Bridge para o Design Gallery setar imagem de referência
-            window.__aronSetReferenceImage = (base64) => {
-                currentImageData = base64;
-                const previewImg = document.getElementById('image-preview');
-                const previewContainer = document.getElementById('image-preview-container');
-                const clipBtn = document.getElementById('clip-btn') || document.querySelector('[id*="clip"]');
-                if (previewImg) previewImg.src = base64;
-                if (previewContainer) previewContainer.classList.remove('hidden');
-                if (clipBtn) {
-                    clipBtn.classList.remove('text-surface-400');
-                    clipBtn.classList.add('text-[#34D7DD]', 'bg-[#34D7DD]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]');
-                }
-            };
-
+          
             // Bridge para o Design Gallery setar contexto de estilo curado
             window.__aronSetDesignContext = (contextPrompt) => {
                 globalDesignContext = contextPrompt;
             };
-            window.__aronSetReferenceImage = (data) => {
-                currentImageData = data;
-                const pc = document.getElementById('image-preview-container');
-                const pi = document.getElementById('image-preview');
-                const clip = document.getElementById('clip-btn');
-                if (pi) pi.src = data;
-                if (pc) pc.classList.remove('hidden');
-                if (clip) { clip.classList.remove('text-surface-400'); clip.classList.add('text-[#34D7DD]','bg-[#34D7DD]/10','shadow-[0_0_15px_rgba(52,215,221,0.5)]'); }
-            };
+          window.__aronSetReferenceImage = (data) => {
+    if (data) { 
+        currentImagesData.push(data); 
+    } else { 
+        currentImagesData = []; 
+    }
+    window.currentImagesData = currentImagesData;
+    const pc = document.getElementById('image-preview-container');
+    const pi = document.getElementById('image-preview');
+    const clip = document.getElementById('clip-btn');
+    if (pi) { if (data) pi.src = data; else pi.removeAttribute('src'); }
+    if (pc) { if (data) pc.classList.remove('hidden'); else pc.classList.add('hidden'); }
+    if (clip) { clip.classList.remove('text-surface-400'); clip.classList.add('text-[#FFFFFF]','bg-[#FFFFFF]/10','shadow-[0_0_15px_rgba(52,215,221,0.5)]'); }
+};
             let lastUsedPrompt = ""; // Cache do último prompt para re-tentativa sem custo
 
             let iframeInitialized = false;
@@ -3313,8 +3520,7 @@
 
             window.selectModel = (alias, name) => {
                 currentModel = alias;
-                document.getElementById('current-model-name').innerText = alias === 'gemini' ? 'gemini 3.5 flash' : name;
-
+                document.getElementById('current-model-name').innerText = alias === 'gemini' ? 'Gemini 3.6 flash ': name;
                 const btn = document.getElementById('model-selector-btn');
                 btn.classList.remove('glow-gemini', 'glow-gpt', 'glow-claude');
 
@@ -3349,27 +3555,76 @@
                     if (file) {
                         const reader = new FileReader();
                         reader.onload = (evt) => {
-                            currentImageData = evt.target.result; // string base64
-                            previewImg.src = currentImageData;
+                            currentImagesData.push(evt.target.result);
+                            window.currentImagesData = currentImagesData;
+                            if (typeof window.renderImagePreviews === 'function') window.renderImagePreviews();
                             previewContainer.classList.remove('hidden');
-
-                            // Adiciona Glow effect ao botão de anexo
                             clipBtn.classList.remove('text-surface-400');
-                            clipBtn.classList.add('text-[#34D7DD]', 'bg-[#34D7DD]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]');
+                            clipBtn.classList.add('text-[#FFFFFF]', 'bg-[#FFFFFF]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]');
+                            fileInput.value = '';
                         };
                         reader.readAsDataURL(file);
                     }
                 };
 
-                if (removeImgBtn) removeImgBtn.onclick = () => { window.clearAttachedImage(); };
+                if (removeImgBtn) {
+                    const _fecharRef = (ev) => { ev.preventDefault(); ev.stopPropagation(); window.clearAttachedImage(); };
+                    removeImgBtn.onclick = _fecharRef;
+                    removeImgBtn.addEventListener('touchend', _fecharRef, { passive: false });
+                    removeImgBtn.style.touchAction = 'manipulation';
+                }
 
+                window.renderImagePreviews = () => {
+                    const pc = document.getElementById('image-preview-container');
+                    if (!pc) return;
+                    const imgs = window.currentImagesData || [];
+                    // limpa miniaturas antigas (mantem so o container)
+                    let strip = document.getElementById('aron-thumb-strip');
+                    if (!strip) {
+                        strip = document.createElement('div');
+                        strip.id = 'aron-thumb-strip';
+                        strip.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;';
+                        pc.innerHTML = '';
+                        pc.appendChild(strip);
+                        const info = document.createElement('div');
+                        info.style.cssText = 'margin-left:8px;display:flex;flex-direction:column;';
+                        info.innerHTML = '<span style="font-size:11px;font-weight:600;color:#fff;text-transform:uppercase;letter-spacing:.5px;">Imagens Anexadas</span><span id="aron-thumb-count" style="font-size:9px;color:#FFFFFF;font-weight:600;">Visual Prompting</span>';
+                        pc.appendChild(info);
+                    }
+                    strip.innerHTML = '';
+                    imgs.forEach((src, idx) => {
+                        const wrap = document.createElement('div');
+                        wrap.style.cssText = 'position:relative;';
+                        const im = document.createElement('img');
+                        im.src = src;
+                        im.style.cssText = 'height:40px;width:40px;object-fit:cover;border-radius:6px;border:1px solid #FFFFFF55;';
+                        const rm = document.createElement('button');
+                        rm.type = 'button';
+                        rm.textContent = 'x';
+                        rm.style.cssText = 'position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#111;color:#fff;border:1px solid #FFFFFF;font-size:10px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;';
+                        rm.onclick = () => {
+                            window.currentImagesData.splice(idx, 1);
+                            currentImagesData = window.currentImagesData;
+                            if (window.currentImagesData.length === 0) { window.clearAttachedImage(); }
+                            else { window.renderImagePreviews(); }
+                        };
+                        wrap.appendChild(im);
+                        wrap.appendChild(rm);
+                        strip.appendChild(wrap);
+                    });
+                    const cnt = document.getElementById('aron-thumb-count');
+                    if (cnt) cnt.textContent = imgs.length + (imgs.length === 1 ? ' imagem' : ' imagens');
+                };
                 window.clearAttachedImage = () => {
-                    currentImageData = null;
+                    currentImagesData = [];
+                    window.currentImagesData = [];
+                    const _strip = document.getElementById('aron-thumb-strip');
+                    if (_strip) _strip.innerHTML = '';
                     if (fileInput) fileInput.value = '';
                     if (previewContainer) previewContainer.classList.add('hidden');
                     if (clipBtn) {
                         clipBtn.classList.add('text-surface-400');
-                        clipBtn.classList.remove('text-[#34D7DD]', 'bg-[#34D7DD]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]');
+                        clipBtn.classList.remove('text-[#FFFFFF]', 'bg-[#FFFFFF]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]');
                     }
                 };
             });
@@ -3610,7 +3865,7 @@ window.selectOption = async function(type, value, label) {
                             <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px;">
                                 ${lead.address ? `
                                 <div style="display:flex;gap:6px;align-items:flex-start;">
-                                    <span style="font-size:12px;">📍</span>
+                                    <i class="fa-solid fa-location-dot" style="font-size:12px; color:rgba(241,245,249,0.5); padding-top: 3px;"></i>
                                     <span style="color:rgba(241,245,249,0.6);font-size:12px;
                                                  font-family:\'Inter\',sans-serif;line-height:1.5;">
                                         ${lead.address}
@@ -3618,7 +3873,7 @@ window.selectOption = async function(type, value, label) {
                                 </div>` : ''}
                                 ${lead.phone ? `
                                 <div style="display:flex;gap:6px;align-items:center;">
-                                    <span style="font-size:12px;">📞</span>
+                                    <i class="fa-solid fa-phone" style="font-size:12px; color:rgba(241,245,249,0.5);"></i>
                                     <span style="color:rgba(241,245,249,0.6);font-size:12px;
                                                  font-family:\'Inter\',sans-serif;">
                                         ${lead.phone}
@@ -3997,10 +4252,10 @@ INSTRUÇÕES:
                     const sitemapHtml = data.sitemap.map((item, idx) => `
                 <div class="flex items-stretch relative">
                     <div class="flex flex-col items-center mr-4">
-                        <div class="h-8 w-8 rounded-full bg-surface-900 border border-surface-700 flex items-center justify-center text-xs text-[#34D7DD] font-medium z-10">${idx + 1}</div>
-                        ${idx !== data.sitemap.length - 1 ? '<div class="w-[2px] h-full bg-gradient-to-b from-[#34D7DD]/30 to-[#B349F5]/30 my-1 flex-1"></div>' : ''}
+                        <div class="h-8 w-8 rounded-full bg-surface-900 border border-surface-700 flex items-center justify-center text-xs text-[#FFFFFF] font-medium z-10">${idx + 1}</div>
+                        ${idx !== data.sitemap.length - 1 ? '<div class="w-[2px] h-full bg-gradient-to-b from-[#FFFFFF]/30 to-[#B4B4B8]/30 my-1 flex-1"></div>' : ''}
                     </div>
-                    <div class="flex-1 p-4 bg-[rgba(255,255,255,0.02)] border border-surface-800 rounded-lg backdrop-blur-md mb-6 border-l-2 border-l-[#B349F5] hover:bg-[rgba(255,255,255,0.04)] transition-colors">
+                    <div class="flex-1 p-4 bg-[rgba(255,255,255,0.02)] border border-surface-800 rounded-lg backdrop-blur-md mb-6 border-l-2 border-l-[#B4B4B8] hover:bg-[rgba(255,255,255,0.04)] transition-colors">
                         <h4 class="text-surface-100 font-medium mb-1">${item.section}</h4>
                         <p class="text-xs text-surface-400 mb-2">${item.objective}</p>
                     </div>
@@ -4010,7 +4265,7 @@ INSTRUÇÕES:
                     container.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="p-5 bg-[rgba(255,255,255,0.03)] border border-surface-800 rounded-xl backdrop-blur-md shadow-xl">
-                        <h3 class="text-[10px] uppercase tracking-widest text-[#34D7DD] font-bold mb-4 flex items-center"><i data-lucide="palette" class="h-3.5 w-3.5 mr-2"></i> Identidade Visual</h3>
+                        <h3 class="text-[10px] uppercase tracking-widest text-[#FFFFFF] font-bold mb-4 flex items-center"><i data-lucide="palette" class="h-3.5 w-3.5 mr-2"></i> Identidade Visual</h3>
                         <p class="text-lg text-white font-medium mb-1">${data.brand_identity.name}</p>
                         <p class="text-xs text-surface-400 mb-4">${data.brand_identity.voice_tone}</p>
                         <div class="flex space-x-2">
@@ -4018,7 +4273,7 @@ INSTRUÇÕES:
                         </div>
                     </div>
                     <div class="p-5 bg-[rgba(255,255,255,0.03)] border border-surface-800 rounded-xl backdrop-blur-md shadow-xl">
-                        <h3 class="text-[10px] uppercase tracking-widest text-[#B349F5] font-bold mb-4 flex items-center"><i data-lucide="cpu" class="h-3.5 w-3.5 mr-2"></i> Tech Stack</h3>
+                        <h3 class="text-[10px] uppercase tracking-widest text-[#B4B4B8] font-bold mb-4 flex items-center"><i data-lucide="cpu" class="h-3.5 w-3.5 mr-2"></i> Tech Stack</h3>
                         <div class="flex flex-wrap gap-2">
                             ${data.tech_requirements.map(t => `<span class="px-2.5 py-1 bg-surface-900 border border-surface-700 rounded text-[11px] text-surface-300 shadow-sm">${t}</span>`).join('')}
                         </div>
@@ -4108,7 +4363,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     if (p.includes('dashboard')) items.push('dashboard com métricas');
                     if (p.includes('gráfico') || p.includes('chart')) items.push('gráficos interativos');
                     const list = items.length > 0 ? items.join(', ') : 'todos os componentes solicitados';
-                    return `Pronto! Criei seu projeto com ${list}. Design dark premium com animações e responsividade completa.`;
+                    return `Pronto! Criei seu projeto com ${list}. Design  premium com animações e responsividade completa.`;
                   })();
 
                   return { opening, steps, completion };
@@ -4116,8 +4371,6 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                 // FUNÇÃO DE ENVIO COM ESCUDO FÍSICO
                 async function sendPrompt(isRetry = false) {
-                    const thinkingStartTime = Date.now();
-                    const MIN_THINKING_TIME = 15000; // Reduzido um pouco para melhor UX
 
                     if (isSending) return;
                     isSending = true;
@@ -4232,7 +4485,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                       aiRow.id = 'ai-response-row';
                       aiRow.innerHTML = `
                         <div class="aron-avatar" style="background:transparent;padding:2px;">
-                           <img src="img/studio-aron.png" 
+                           <img src="img/Aron-mark.png" 
                                 alt="Aron" 
                                 style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
                          </div>
@@ -4240,15 +4493,18 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                           <div id="ai-opening-text">${conv.opening}</div>
                           <div class="aron-step-list" id="ai-step-list"></div>
                           
-                          <div class="aron-code-block" id="aron-code-block">
-                            <div class="aron-code-header">
-                              <div class="aron-code-header-left">
-                                <span class="aron-code-dot" id="aron-code-dot"></span>
-                                <span>GERANDO CÓDIGO</span>
+                          <div class="relative inline-flex flex-col overflow-hidden rounded-[8px] p-[1.5px] w-full mt-[12px]">
+                            <span id="aron-rainbow-border" class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#34D7DD_0%,#8A3FFC_25%,#FF3366_50%,#FFD700_75%,#34D7DD_100%)] transition-opacity duration-500"></span>
+                            <div class="aron-code-block relative h-full w-full z-10 m-0" id="aron-code-block" style="margin-top: 0; border: none;">
+                              <div class="aron-code-header">
+                                <div class="aron-code-header-left">
+                                  <span class="aron-code-dot" id="aron-code-dot"></span>
+                                  <span>GERANDO CÓDIGO</span>
+                                </div>
+                                <span class="aron-code-counter" id="aron-code-counter">0 chars</span>
                               </div>
-                              <span class="aron-code-counter" id="aron-code-counter">0 chars</span>
+                              <div class="aron-code-output" id="ai-stream-output"></div>
                             </div>
-                            <div class="aron-code-output" id="ai-stream-output"></div>
                           </div>
 
                           <div class="aron-status-line" id="ai-status-line">
@@ -4331,7 +4587,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         // 2. Stream/Generate
                         const finalPrompt = globalDesignContext ? (globalDesignContext + "\n\n" + prompt) : prompt;
                         const bodyJson = { chat_id: currentChatId, prompt: finalPrompt, mode: currentMode, model_alias: currentModel };
-                        if (currentImageData) bodyJson.image_data = currentImageData;
+                        if (currentImagesData.length > 0) bodyJson.images_data = currentImagesData;
 
                         // ── NOVO FETCH COM SSE STREAMING ──────────────────────
 
@@ -4344,7 +4600,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         if (aiStreamOutput) aiStreamOutput.textContent = '';
                         if (aiCharCount) { aiCharCount.textContent = '0 chars'; aiCharCount.style.color = 'rgba(99,102,241,0.8)'; }
                         if (aiCursor) aiCursor.style.display = 'inline-block';
-                        if (aiStatusDot) { aiStatusDot.style.animation = 'ai-pulse 1.2s ease-in-out infinite'; aiStatusDot.style.background = '#6366f1'; }
+                        if (aiStatusDot) { aiStatusDot.style.animation = 'ai-pulse 1.2s ease-in-out infinite'; aiStatusDot.style.background = '#FFFFFF'; }
                         if (thinkingPanel) thinkingPanel.style.display = 'block';
                         window.__thoughtCollapsed = false;
 
@@ -4539,6 +4795,9 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                           Array.from(stepList2.children).forEach(s => s.classList.add('done', 'visible'));
                         }
 
+                        const rainbowBorder = document.getElementById('aron-rainbow-border');
+                        if (rainbowBorder) rainbowBorder.style.opacity = '0';
+
                         // Substituir status por mensagem de conclusão + botão
                         if (statusLine) {
                           statusLine.innerHTML = `
@@ -4610,9 +4869,8 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                         performTransition();
                     } finally {
-                        const elapsedTime = Date.now() - thinkingStartTime;
-                        const wait = Math.max(0, MIN_THINKING_TIME - elapsedTime);
-                        setTimeout(() => resetSendButton(), wait);
+                        // Sem atraso artificial: o botao libera assim que a geracao termina.
+                        resetSendButton();
                     }
                 }
 
@@ -4661,8 +4919,8 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                                         c.style.color = '#d4d4d8';
                                         c.style.borderColor = 'rgba(255,255,255,0.1)';
                                     });
-                                    b.style.background = 'linear-gradient(135deg,#8A3FFC,#34D7DD)';
-                                    b.style.color = '#fff';
+                                    b.style.background = 'linear-gradient(135deg,#FFFFFF,#FFFFFF)';
+                                    b.style.color = '#0A0A0A';
                                     b.style.borderColor = 'transparent';
                                 };
                                 bw.appendChild(b);
@@ -4682,7 +4940,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     });
                     const submit = document.createElement('button');
                     submit.textContent = 'Gerar meu projeto';
-                    submit.style.cssText = 'margin-top:12px;width:100%;padding:12px;background:linear-gradient(135deg,#8A3FFC,#34D7DD);color:#fff;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer';
+                    submit.style.cssText = 'margin-top:12px;width:100%;padding:12px;background: #FFFFFF; color: #0A0A0A;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer';
                     submit.onclick = function() { submitClarifyAnswers(false); };
                     box.appendChild(submit);
                     const skip = document.createElement('button');
@@ -4691,7 +4949,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     skip.onclick = function() { submitClarifyAnswers(true); };
                     box.appendChild(skip);
                     row.appendChild(box);
-                    chatMessages.appendChild(row);
+                    (targetEl || chatMessages).appendChild(row);
                 }
                 function submitClarifyAnswers(skip) {
                     const st = window.__clarifyState;
@@ -4793,7 +5051,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                             + '<input id="rename-modal-input" type="text" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#fff;font-size:14px;outline:none;margin-bottom:18px;box-sizing:border-box" />'
                             + '<div style="display:flex;gap:10px;justify-content:flex-end">'
                             + '<button id="rename-cancel" style="padding:9px 18px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:#d4d4d8;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer">Cancelar</button>'
-                            + '<button id="rename-save" style="padding:9px 20px;background:linear-gradient(135deg,#8A3FFC,#34D7DD);border:none;color:#fff;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer">Salvar</button>'
+                            + '<button id="rename-save" style="padding:9px 20px;background: #FFFFFF; color: #0A0A0A;border:none;color:#fff;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer">Salvar</button>'
                             + '</div>';
                         ov.appendChild(modal);
                         document.body.appendChild(ov);
@@ -4815,6 +5073,84 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 }
 
                 window.processProjectData = processProjectData;
+
+                // ===== Aba CONTA: dados reais do usuario logado =====
+                const PLANOS_INFO = {
+                    free:    { nome: 'FREE',    desc: 'Plano gratuito. Adquira creditos para gerar mais.' },
+                    starter: { nome: 'STARTER', desc: 'Acesso aos modelos padrao.' },
+                    pro:     { nome: 'PRO',     desc: 'Acesso a todos os modelos, incluindo premium.' },
+                    ultra:   { nome: 'ULTRA',   desc: 'Acesso a todos os modelos, incluindo premium.' }
+                };
+
+                window.carregarDadosConta = async function() {
+                    const uid = localStorage.getItem('aron_user_id');
+                    if (!uid) return;
+
+                    // Nome, email e avatar vem do Firebase (usuario logado)
+                    try {
+                        const u = (typeof firebase !== 'undefined' && firebase.auth) ? firebase.auth().currentUser : null;
+                        if (u) {
+                            const nome = u.displayName || (u.email ? u.email.split('@')[0] : 'Usuario');
+                            const elNome = document.getElementById('acc-user-name');
+                            const elMail = document.getElementById('acc-user-email');
+                            const elAv   = document.getElementById('acc-avatar');
+                            if (elNome) elNome.textContent = nome;
+                            if (elMail) elMail.textContent = u.email || '';
+                            if (elAv) {
+                                const partes = nome.trim().split(/\s+/);
+                                const ini = (partes[0][0] || '') + (partes.length > 1 ? partes[partes.length-1][0] : '');
+                                elAv.textContent = ini.toUpperCase();
+                            }
+                        }
+                    } catch (e) { console.error('conta: firebase', e); }
+
+                    // Plano, creditos e projetos vem da API
+                    try {
+                        const r = await apiFetch(`${API_URL}/api/user/me?user_id=${uid}`);
+                        if (!r.ok) return;
+                        const d = await r.json();
+
+                        const plano = (d.plan || 'free').toLowerCase();
+                        const info = PLANOS_INFO[plano] || PLANOS_INFO.free;
+
+                        const elPlan = document.getElementById('acc-plan');
+                        if (elPlan) elPlan.textContent = info.nome;
+
+                        const elPlanDesc = document.getElementById('acc-plan-desc');
+                        if (elPlanDesc) elPlanDesc.textContent = info.desc;
+
+                        const elCred = document.getElementById('acc-credits');
+                        if (elCred) {
+                            const cred = d.credits;
+                            if (cred != null) {
+                                elCred.textContent = cred + (cred === 1 ? ' credito' : ' creditos');
+                                elCred.style.color = cred <= 3 ? '#f87171' : '#FFFFFF';
+                            }
+                        }
+
+                        const elProj = document.getElementById('acc-projects');
+                        if (elProj) elProj.textContent = (d.projects_count != null ? d.projects_count : '0');
+                    } catch (e) {
+                        console.error('conta: api', e);
+                    }
+                };
+
+                // Novo projeto a partir da sidebar (funciona no mobile)
+                window.novoProjetoSidebar = function () {
+                    // reaproveita a logica que ja existe
+                    if (typeof window.newProjectFromDropdown === "function") {
+                        window.newProjectFromDropdown();
+                    }
+                    // no mobile, fecha o menu para o usuario ver a tela de boas-vindas
+                    try {
+                        const sb = document.getElementById("app-sidebar");
+                        const aberta = sb && !sb.classList.contains("-translate-x-full");
+                        if (aberta && window.innerWidth < 768 && typeof window.toggleMobileSidebar === "function") {
+                            window.toggleMobileSidebar();
+                        }
+                    } catch (e) { console.error("novoProjetoSidebar:", e); }
+                };
+
                 window.sendPrompt = sendPrompt;
 
                 function resetSendButton() {
@@ -4848,6 +5184,8 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 }
 
                 document.addEventListener('submit', (e) => {
+                    // Nao sequestrar eventos do anexo de imagem (destrava o mobile)
+                    if (e.target && e.target.closest && e.target.closest('#image-preview-container')) return;
                     e.preventDefault();
                     e.stopPropagation();
                     e.stopImmediatePropagation();
@@ -4934,12 +5272,18 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         document.documentElement.classList.add('dark');
                     <\/script>
                     <style>
-                        body { margin: 0 !important; padding: 0 !important; background: #0a0a0a; color: #fff; font-family: sans-serif; position: relative; min-height: 100vh; overflow-x: hidden; overflow-y: auto !important; scrollbar-width: none; -ms-overflow-style: none; }
+                        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Space Grotesk', -apple-system, sans-serif !important;
+            letter-spacing: -0.03em;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif; margin: 0 !important; padding: 0 !important; background: #0a0a0a; color: #fff; font-family: sans-serif; position: relative; min-height: 100vh; overflow-x: hidden; overflow-y: auto !important; scrollbar-width: none; -ms-overflow-style: none; }
                         body::-webkit-scrollbar { display: none; }
                         /* Force scrolling on generated content */
                         html, body { overflow-y: auto !important; height: auto !important; max-height: none !important; }
                         #aron-plus-btn { 
-                            position: absolute; display: none; z-index: 999999999; background: #B349F5; color: white; border: none; border-radius: 4px; width: 28px; height: 28px; cursor: pointer; font-weight: bold; font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); transition: transform 0.1s; padding: 0; line-height: 1; align-items: center; justify-content: center;
+                            position: absolute; display: none; z-index: 999999999; background: #B4B4B8; color: white; border: none; border-radius: 4px; width: 28px; height: 28px; cursor: pointer; font-weight: bold; font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); transition: transform 0.1s; padding: 0; line-height: 1; align-items: center; justify-content: center;
                         }
                         #aron-plus-btn:hover { transform: scale(1.1); }
                     </style>
@@ -4980,7 +5324,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                                     }
                                     if (found) {
                                         hoverSelected = found;
-                                        found.style.outline = '2px solid #34D7DD';
+                                        found.style.outline = '2px solid #FFFFFF';
                                         found.style.outlineOffset = '-2px';
                                         found.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                     }
@@ -5012,13 +5356,13 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                             document.addEventListener('mouseover', (e) => {
                                 if (!isEditorEnabled) return;
                                 if (e.target === document.body || e.target.closest('#aron-plus-btn') || e.target.closest('#aron-editor-script') || e.target.closest('#aron-dynamic-content') === e.target) return;
-                                e.target.style.outline = '2px dashed #34D7DD';
+                                e.target.style.outline = '2px dashed #FFFFFF';
                                 e.target.style.outlineOffset = '-2px';
                             });
                             document.addEventListener('mouseout', (e) => {
                                 if (!isEditorEnabled) return;
                                 if (e.target === lastSelected) {
-                                    e.target.style.outline = '2px solid #B349F5';
+                                    e.target.style.outline = '2px solid #B4B4B8';
                                 } else {
                                     e.target.style.outline = '';
                                 }
@@ -5032,7 +5376,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                                 if (lastSelected) lastSelected.style.outline = '';
 
                                 lastSelected = e.target;
-                                lastSelected.style.outline = '2px solid #B349F5';
+                                lastSelected.style.outline = '2px solid #B4B4B8';
 
                                 const rect = e.target.getBoundingClientRect();
                                 plusBtn.style.top = (rect.top + window.pageYOffset) + 'px';
@@ -5428,7 +5772,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     if (status === 'saving') {
                         el.innerHTML = '<span style="color:rgba(255,255,255,0.4)">Salvando...</span>';
                     } else if (status === 'saved') {
-                        el.innerHTML = '<span style="color:#34D7DD">Salvo</span>';
+                        el.innerHTML = '<span style="color:#FFFFFF">Salvo</span>';
                         setTimeout(() => { el.classList.add('hidden'); el.innerHTML = ''; }, 3000);
                     } else if (status === 'error') {
                         el.innerHTML = '<span style="color:#ef4444">Erro ao salvar</span>';
@@ -5489,6 +5833,11 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         document.getElementById('thinking-state')?.classList.remove('active');
 
                         fullHtml = data.full_json || data.html_code || data.full_code || "";
+                        if (fullHtml && !fullHtml.trim().startsWith("{")) {
+                            window.fullHtml = fullHtml;
+                            if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
+                            if (typeof window.updateCodePanel === 'function') { try { window.updateCodePanel(fullHtml); } catch(e){} }
+                        }
 
                         try {
                             const parsedData = JSON.parse(fullHtml);
@@ -5500,9 +5849,14 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                                 } else {
                                     window.currentProjectData = null;
                                     if (window.files) window.files = {};
+                                    window.fullHtml = fullHtml;
+                                    if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
                                     renderInIframe(fullHtml);
                                     if (window.monacoEditor) {
                                         try { window.monacoEditor.setValue(fullHtml); } catch(e) {}
+                                    }
+                                    if (typeof window.updateCodePanel === 'function') {
+                                        try { window.updateCodePanel(fullHtml); } catch(e) {}
                                     }
                                 }
                             } else {
@@ -5546,7 +5900,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                             aiRow.className = 'aron-msg-row';
                             aiRow.innerHTML = `
                                 <div class="aron-avatar" style="background:transparent;padding:2px;">
-                                    <img src="img/studio-aron.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
+                                    <img src="img/Aron-mark.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">
                                 </div>
                                 <div class="aron-bubble font-sans" style="background:#13131f; border:1px solid rgba(99,102,241,0.2); border-radius:4px 14px 14px 14px; padding:12px 14px; font-size:13px; color:rgba(241,245,249,0.85); line-height:1.6; max-width:85%;">
                                     <div style="color:#10b981; font-weight:bold; font-size:12px; margin-bottom:4px; display:flex; align-items:center; gap:4px;">
@@ -5637,12 +5991,12 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                             const b64 = btoa(unescape(encodeURIComponent(c.outerHTML)));
 
                             return `
-                    <div class="flex flex-col p-4 bg-[rgba(255,255,255,0.02)] border border-surface-800 rounded-xl backdrop-blur-md hover:bg-[rgba(255,255,255,0.04)] transition-all shadow-lg hover:shadow-[0_0_20px_rgba(52,215,221,0.1)] hover:border-[#34D7DD]/50 group" 
+                    <div class="flex flex-col p-4 bg-[rgba(255,255,255,0.02)] border border-surface-800 rounded-xl backdrop-blur-md hover:bg-[rgba(255,255,255,0.04)] transition-all shadow-lg hover:shadow-[0_0_20px_rgba(52,215,221,0.1)] hover:border-[#FFFFFF]/50 group" 
                          onmouseenter="window.highlightComponent('${b64}')"
                          onmouseleave="window.removeHighlight()">
                          
                         <div class="flex items-start">
-                            <div class="h-10 w-10 rounded-lg bg-surface-900 border border-surface-700 flex items-center justify-center mr-4 text-surface-400 group-hover:text-[#34D7DD] transition-colors shadow-inner">
+                            <div class="h-10 w-10 rounded-lg bg-surface-900 border border-surface-700 flex items-center justify-center mr-4 text-surface-400 group-hover:text-[#FFFFFF] transition-colors shadow-inner">
                                 <i data-lucide="${icon}" class="h-5 w-5"></i>
                             </div>
                             <div class="flex-1">
@@ -5654,8 +6008,8 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-surface-800/50 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button type="button" onclick="window.editTargetComponent('${c.tipo.replace(/'/g, "\\'")}', '${b64}')" class="px-4 py-2 bg-surface-900 text-surface-300 hover:text-white hover:bg-surface-800 border border-surface-700 hover:border-[#B349F5]/50 font-medium text-xs rounded transition-all flex items-center shadow-md">
-                                <i data-lucide="edit-3" class="h-3.5 w-3.5 mr-2 text-[#B349F5]"></i> Editar este Componente
+                            <button type="button" onclick="window.editTargetComponent('${c.tipo.replace(/'/g, "\\'")}', '${b64}')" class="px-4 py-2 bg-surface-900 text-surface-300 hover:text-white hover:bg-surface-800 border border-surface-700 hover:border-[#B4B4B8]/50 font-medium text-xs rounded transition-all flex items-center shadow-md">
+                                <i data-lucide="edit-3" class="h-3.5 w-3.5 mr-2 text-[#B4B4B8]"></i> Editar este Componente
                             </button>
                         </div>
                     </div>
@@ -5901,10 +6255,10 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                         document.querySelectorAll('.file-tab').forEach(t => {
                             if (t.innerText.trim() === fileName) {
-                                t.classList.add('bg-[#1E1E1E]', 'text-[#34D7DD]', 'border-b-2', 'border-b-[#34D7DD]');
+                                t.classList.add('bg-[#1E1E1E]', 'text-[#FFFFFF]', 'border-b-2', 'border-b-[#FFFFFF]');
                                 t.classList.remove('text-surface-400');
                             } else {
-                                t.classList.remove('bg-[#1E1E1E]', 'text-[#34D7DD]', 'border-b-2', 'border-b-[#34D7DD]');
+                                t.classList.remove('bg-[#1E1E1E]', 'text-[#FFFFFF]', 'border-b-2', 'border-b-[#FFFFFF]');
                                 t.classList.add('text-surface-400');
                             }
                         });
@@ -6016,7 +6370,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                             files.forEach((f, index) => {
                                 const isActive = (f.name === window.currentActiveFile) || (!window.currentActiveFile && index === 0);
                                 if (isActive) window.currentActiveFile = f.name;
-                                tabsHtml += `<button type="button" onclick="window.switchEditorFile('${f.name}')" class="file-tab px-4 py-2 text-[11px] font-mono border-r border-surface-700 hover:bg-surface-800 transition-colors ${isActive ? 'bg-[#1E1E1E] text-[#34D7DD] border-b-2 border-b-[#34D7DD]' : 'text-surface-400'}">${f.name}</button>`;
+                                tabsHtml += `<button type="button" onclick="window.switchEditorFile('${f.name}')" class="file-tab px-4 py-2 text-[11px] font-mono border-r border-surface-700 hover:bg-surface-800 transition-colors ${isActive ? 'bg-[#1E1E1E] text-[#FFFFFF] border-b-2 border-b-[#FFFFFF]' : 'text-surface-400'}">${f.name}</button>`;
                             });
                             tabsContainer.innerHTML = tabsHtml;
                         }
@@ -6102,12 +6456,12 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     const btn = document.getElementById('btn-copy');
                     const originalHtml = btn.innerHTML;
                     btn.innerHTML = `<i data-lucide="check" class="h-4 w-4 mr-1.5"></i> Copiado!`;
-                    btn.classList.replace('text-[#34D7DD]', 'text-green-400');
+                    btn.classList.replace('text-[#FFFFFF]', 'text-green-400');
                     if (window.lucide?.createIcons) window.lucide.createIcons();
 
                     setTimeout(() => {
                         btn.innerHTML = originalHtml;
-                        btn.classList.replace('text-green-400', 'text-[#34D7DD]');
+                        btn.classList.replace('text-green-400', 'text-[#FFFFFF]');
                         if (window.lucide?.createIcons) window.lucide.createIcons();
                     }, 2500);
                 };
@@ -6221,7 +6575,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     }
 
                     try {
-                        const response = await apiFetch(`${window.API_URL || 'http://localhost:8000'}/deploy`, {
+                        const response = await apiFetch(`${window.API_URL || API_URL}/deploy`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -6369,10 +6723,11 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                     recognition.onstart = function () {
                         isRecording = true;
+                        iniciarBarrasVoz();
                         playSciFiBeep('start');
 
                         const micBtn = document.getElementById('mic-btn');
-                        micBtn.classList.add('text-[#34D7DD]', 'bg-[#34D7DD]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]', 'animate-pulse');
+                        micBtn.classList.add('text-[#FFFFFF]', 'bg-[#FFFFFF]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]', 'animate-pulse');
                         micBtn.classList.remove('text-surface-400');
 
                         const userPrompt = document.getElementById('user-prompt');
@@ -6423,13 +6778,85 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     };
                 }
 
+                // ===== Equalizador: le o volume real do microfone =====
+                let __vozStream = null, __vozCtx = null, __vozRaf = null;
+
+                async function iniciarBarrasVoz() {
+                    const wrap = document.getElementById('aron-voice-bars');
+                    const label = document.getElementById('aron-voice-label');
+                    if (!wrap) return;
+                    wrap.classList.add('on');
+                    if (label) label.classList.add('on');
+
+                    try {
+                        __vozStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        __vozCtx = new (window.AudioContext || window.webkitAudioContext)();
+                        const src = __vozCtx.createMediaStreamSource(__vozStream);
+                        const analyser = __vozCtx.createAnalyser();
+                        analyser.fftSize = 64;
+                        analyser.smoothingTimeConstant = 0.75;
+                        src.connect(analyser);
+
+                        const dados = new Uint8Array(analyser.frequencyBinCount);
+                        const barras = wrap.querySelectorAll('.vb');
+
+                        function animar() {
+                            analyser.getByteFrequencyData(dados);
+                            barras.forEach(function (b, idx) {
+                                // distribui as frequencias entre as barras
+                                const pos = Math.floor((idx / barras.length) * dados.length * 0.7) + 1;
+                                const v = dados[pos] || 0;
+                                const alt = Math.max(3, Math.min(24, (v / 255) * 30));
+                                b.style.height = alt + 'px';
+                            });
+                            __vozRaf = requestAnimationFrame(animar);
+                        }
+                        animar();
+                    } catch (e) {
+                        console.error('microfone:', e);
+                        // Sem permissao: anima as barras suavemente so para dar feedback
+                        const barras = wrap.querySelectorAll('.vb');
+                        let t = 0;
+                        function fake() {
+                            t += 0.18;
+                            barras.forEach(function (b, i) {
+                                const alt = 5 + Math.abs(Math.sin(t + i * 0.5)) * 12;
+                                b.style.height = alt + 'px';
+                            });
+                            __vozRaf = requestAnimationFrame(fake);
+                        }
+                        fake();
+                    }
+                }
+
+                function pararBarrasVoz() {
+                    const wrap = document.getElementById('aron-voice-bars');
+                    const label = document.getElementById('aron-voice-label');
+                    if (wrap) {
+                        wrap.classList.remove('on');
+                        wrap.querySelectorAll('.vb').forEach(function (b) { b.style.height = '3px'; });
+                    }
+                    if (label) label.classList.remove('on');
+
+                    if (__vozRaf) { cancelAnimationFrame(__vozRaf); __vozRaf = null; }
+                    if (__vozStream) {
+                        __vozStream.getTracks().forEach(function (t) { t.stop(); });
+                        __vozStream = null;
+                    }
+                    if (__vozCtx) {
+                        try { __vozCtx.close(); } catch (e) {}
+                        __vozCtx = null;
+                    }
+                }
+
                 function stopRecordingUI() {
                     if (!isRecording) return;
                     isRecording = false;
+                    pararBarrasVoz();
                     playSciFiBeep('stop');
                     const micBtn = document.getElementById('mic-btn');
                     if (micBtn) {
-                        micBtn.classList.remove('text-[#34D7DD]', 'bg-[#34D7DD]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]', 'animate-pulse');
+                        micBtn.classList.remove('text-[#FFFFFF]', 'bg-[#FFFFFF]/10', 'shadow-[0_0_15px_rgba(52,215,221,0.5)]', 'animate-pulse');
                         micBtn.classList.add('text-surface-400');
                     }
                     const userPrompt = document.getElementById('user-prompt');
@@ -6457,7 +6884,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
             class="fixed right-0 top-0 h-full w-full md:w-[350px] bg-surface-950 border-l border-surface-800 z-[100] transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
             <header class="h-14 flex items-center justify-between px-6 border-b border-surface-800 bg-surface-950">
                 <h3 class="text-white font-medium text-sm flex items-center">
-                    <i data-lucide="sparkles" class="h-3.5 w-3.5 mr-2 text-[#34D7DD]"></i>
+                    <i data-lucide="sparkles" class="h-3.5 w-3.5 mr-2 text-[#FFFFFF]"></i>
                     Modificar Elemento
                 </h3>
                 <button type="button" onclick="closeVisualEditor()"
@@ -6478,12 +6905,12 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     <label class="text-[10px] text-surface-500 uppercase font-bold tracking-[0.2em]">Sua
                         Instrução</label>
                     <textarea id="edit-prompt"
-                        class="w-full bg-surface-900 border border-surface-700 rounded-lg p-4 text-sm text-white focus:border-[#34D7DD]/50 outline-none transition-all resize-none shadow-inner"
+                        class="w-full bg-surface-900 border border-surface-700 rounded-lg p-4 text-sm text-white focus:border-[#FFFFFF]/50 outline-none transition-all resize-none shadow-inner"
                         rows="5"
                         placeholder="Ex: Adicione um ícone de estrela e mude o texto para 'Destaque'..."></textarea>
                 </div>
-                <div class="p-4 bg-[#34D7DD]/5 border border-[#34D7DD]/20 rounded-lg">
-                    <p class="text-[11px] text-[#34D7DD]/80 leading-relaxed">
+                <div class="p-4 bg-[#FFFFFF]/5 border border-[#FFFFFF]/20 rounded-lg">
+                    <p class="text-[11px] text-[#FFFFFF]/80 leading-relaxed">
                         <i data-lucide="info" class="h-3 w-3 inline mr-1 mb-0.5"></i>
                         A IA analisará o código do elemento e aplicará as alterações mantendo o design original.
                     </p>
@@ -6504,7 +6931,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 <div class="settings-sidebar">
                     <div class="px-5 mb-6">
                         <h2 class="text-white font-semibold text-sm flex items-center gap-2">
-                            <i data-lucide="settings" class="h-4 w-4 text-[#34D7DD]"></i>
+                            <i data-lucide="settings" class="h-4 w-4 text-[#FFFFFF]"></i>
                             Configurações
                         </h2>
                     </div>
@@ -6709,29 +7136,28 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                         <div
                             style="display: flex; align-items: center; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
-                            <div class="account-avatar">DV</div>
+                            <div class="account-avatar" id="acc-avatar">--</div>
                             <div>
-                                <div style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 4px;">
-                                    Desenvolvedor</div>
-                                <div style="font-size: 12px; color: #71717a;">dev@aronstudio.com</div>
+                                <div style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 4px;" id="acc-user-name">--</div>
+                                <div style="font-size: 12px; color: #71717a;" id="acc-user-email">--</div>
                             </div>
                         </div>
 
                         <div class="setting-row">
                             <div>
                                 <div class="setting-label">Plano Atual</div>
-                                <div class="setting-sublabel">Acesso ilimitado a todos os modelos.</div>
+                                <div class="setting-sublabel" id="acc-plan-desc">--</div>
                             </div>
                             <span
-                                style="padding: 4px 14px; background: linear-gradient(135deg, rgba(179,73,245,0.15), rgba(52,215,221,0.15)); border: 1px solid rgba(179,73,245,0.3); border-radius: 20px; font-size: 11px; font-weight: 700; color: #d4d4d8; letter-spacing: 0.05em;">ENTERPRISE</span>
+                                style="padding: 4px 14px; background: linear-gradient(135deg, rgba(179,73,245,0.15), rgba(52,215,221,0.15)); border: 1px solid rgba(179,73,245,0.3); border-radius: 20px; font-size: 11px; font-weight: 700; color: #d4d4d8; letter-spacing: 0.05em;" id="acc-plan">--</span>
                         </div>
 
                         <div class="setting-row">
                             <div>
                                 <div class="setting-label">Gerações Restantes</div>
-                                <div class="setting-sublabel">Ciclo mensal reinicia em 30 dias.</div>
+                                <div class="setting-sublabel" id="acc-credits-desc">Creditos disponiveis para gerar.</div>
                             </div>
-                            <span style="font-size: 14px; font-weight: 600; color: #34D7DD;">∞ Ilimitado</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #FFFFFF;">--</span>
                         </div>
 
                         <div class="setting-row">
@@ -6739,7 +7165,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                                 <div class="setting-label">Projetos Ativos</div>
                                 <div class="setting-sublabel">Total de projetos no workspace.</div>
                             </div>
-                            <span style="font-size: 14px; font-weight: 600; color: #a1a1aa;">3</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #a1a1aa;" id="acc-projects">--</span>
                         </div>
                     </div>
                 </div>
@@ -6759,6 +7185,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
             (function () {
                 // ---- Open / Close ----
                 window.openSettings = () => {
+                    if (window.carregarDadosConta) window.carregarDadosConta();
                     const overlay = document.getElementById('settings-overlay');
                     overlay.classList.add('active');
                     document.getElementById('settings-btn')?.classList.add('settings-active');
@@ -6921,7 +7348,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
         <div id="error-modal-overlay" onclick="if(event.target===this)closeErrorModal()">
             <div class="error-modal">
                 <div class="error-icon-ring">
-                    <i data-lucide="cloud-off" class="h-8 w-8 text-[#B349F5]"></i>
+                    <i data-lucide="cloud-off" class="h-8 w-8 text-[#B4B4B8]"></i>
                 </div>
                 <h3 style="font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px;">Servidores sob Alta
                     Carga</h3>
@@ -6938,7 +7365,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 <p style="font-size: 10px; color: #3f3f46; margin-top: 8px;">Tentativa de auto-recuperação iniciada</p>
 
                 <button type="button" id="retry-error-btn" onclick="closeErrorModal(); sendPrompt(true);"
-                    style="margin-top: 20px; padding: 12px 32px; background: linear-gradient(135deg, #B349F5, #34D7DD); color: #fff; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 8px 25px rgba(179,73,245,0.4); transition: all 0.2s; width: 100%;">
+                    style="margin-top: 20px; padding: 12px 32px; background: #FFFFFF; color: #0A0A0A; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s; width: 100%;">
                     Tentar Novamente Agora
                 </button>
             </div>
@@ -6951,13 +7378,13 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 class="relative w-[500px] max-w-[90vw] bg-[#0c0c0f] border border-white/5 rounded-2xl p-8 shadow-[0_40px_100px_rgba(0,0,0,0.9)] overflow-hidden">
                 <!-- Glow effects -->
                 <div
-                    class="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[100px] bg-[#34D7DD]/20 blur-[60px] rounded-full pointer-events-none">
+                    class="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[100px] bg-[#FFFFFF]/20 blur-[60px] rounded-full pointer-events-none">
                 </div>
 
                 <div class="text-center mb-8 relative z-10">
                     <div
-                        class="h-14 w-14 rounded-full bg-gradient-to-br from-[#B349F5]/20 to-[#34D7DD]/20 border border-white/10 flex items-center justify-center mx-auto mb-4">
-                        <i data-lucide="zap" class="h-6 w-6 text-[#34D7DD]"></i>
+                        class="h-14 w-14 rounded-full bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="zap" class="h-6 w-6 text-[#FFFFFF]"></i>
                     </div>
                     <h3 class="text-2xl font-black text-white tracking-tight">Recarregar Créditos</h3>
                     <p class="text-sm text-surface-400 mt-2">Escolha o plano ideal e libere poder total via Mercado
@@ -6967,10 +7394,10 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 <div class="grid grid-cols-1 gap-4 relative z-10">
                     <!-- Pacote Starter -->
                     <button onclick="checkoutCredits('PLAN_STARTER')"
-                        class="group flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all hover:border-[#34D7DD]/50 cursor-pointer text-left">
+                        class="group flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all hover:border-[#FFFFFF]/50 cursor-pointer text-left">
                         <div class="flex items-center space-x-4">
                             <div
-                                class="h-10 w-10 rounded bg-white/5 flex items-center justify-center font-bold text-[#34D7DD] group-hover:scale-110 transition-transform">
+                                class="h-10 w-10 rounded bg-white/5 flex items-center justify-center font-bold text-[#FFFFFF] group-hover:scale-110 transition-transform">
                                 50</div>
                             <div class="text-left">
                                 <p class="text-sm font-bold text-white mb-0.5">Starter Pack</p>
@@ -6984,17 +7411,17 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                     <!-- Pacote Pro -->
                     <button onclick="checkoutCredits('PLAN_PRO')"
-                        class="group flex items-center justify-between p-4 rounded-xl border border-[#B349F5]/30 bg-gradient-to-r from-[#B349F5]/10 to-transparent hover:from-[#B349F5]/20 transition-all shadow-[0_0_20px_rgba(179,73,245,0.1)] relative overflow-hidden cursor-pointer text-left">
+                        class="group flex items-center justify-between p-4 rounded-xl border border-[#B4B4B8]/30 bg-gradient-to-r from-[#B4B4B8]/10 to-transparent hover:from-[#B4B4B8]/20 transition-all shadow-[0_0_20px_rgba(179,73,245,0.1)] relative overflow-hidden cursor-pointer text-left">
                         <div
                             class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-1000">
                         </div>
                         <div class="flex items-center space-x-4 relative z-10">
                             <div
-                                class="h-10 w-10 rounded bg-[#B349F5]/20 flex items-center justify-center font-bold text-[#B349F5] group-hover:scale-110 transition-transform">
+                                class="h-10 w-10 rounded bg-[#B4B4B8]/20 flex items-center justify-center font-bold text-[#B4B4B8] group-hover:scale-110 transition-transform">
                                 150</div>
                             <div class="text-left">
                                 <p class="text-sm font-bold text-white mb-0.5 flex items-center">Pro Builder <span
-                                        class="ml-2 text-[9px] bg-[#B349F5] text-white px-1.5 py-0.5 rounded uppercase tracking-wider">Popular</span>
+                                        class="ml-2 text-[9px] bg-[#B4B4B8] text-white px-1.5 py-0.5 rounded uppercase tracking-wider">Popular</span>
                                 </p>
                                 <p class="text-[11px] text-surface-400">Assento para projetos completos.</p>
                             </div>
@@ -7033,13 +7460,13 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
         <div id="pix-modal-overlay"
             class="fixed inset-0 z-[99999] hidden items-center justify-center bg-black/80 backdrop-blur-xl transition-all">
             <div
-                class="relative w-[400px] max-w-[90vw] bg-[#0c0c0f] border border-[#34D7DD]/30 rounded-2xl p-8 shadow-[0_0_50px_rgba(52,215,221,0.15)] overflow-hidden flex flex-col items-center">
+                class="relative w-[400px] max-w-[90vw] bg-[#0c0c0f] border border-[#FFFFFF]/30 rounded-2xl p-8 shadow-[0_0_50px_rgba(52,215,221,0.15)] overflow-hidden flex flex-col items-center">
                 <!-- Neon Glow -->
                 <div
-                    class="absolute -top-10 -left-10 w-[200px] h-[200px] bg-[#B349F5]/30 blur-[70px] rounded-full pointer-events-none">
+                    class="absolute -top-10 -left-10 w-[200px] h-[200px] bg-[#B4B4B8]/30 blur-[70px] rounded-full pointer-events-none">
                 </div>
                 <div
-                    class="absolute -bottom-10 -right-10 w-[200px] h-[200px] bg-[#34D7DD]/30 blur-[70px] rounded-full pointer-events-none">
+                    class="absolute -bottom-10 -right-10 w-[200px] h-[200px] bg-[#FFFFFF]/30 blur-[70px] rounded-full pointer-events-none">
                 </div>
 
                 <h3 class="text-xl font-bold text-white mb-2 relative z-10 text-center">Pagamento via Pix</h3>
@@ -7051,12 +7478,12 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                 </div>
 
                 <button onclick="copyPixCode()" id="copy-pix-btn"
-                    class="w-full py-3 mb-4 rounded-xl bg-gradient-to-r from-[#B349F5] to-[#34D7DD] text-white font-semibold flex items-center justify-center shadow-[0_0_15px_rgba(179,73,245,0.4)] hover:shadow-[0_0_25px_rgba(52,215,221,0.6)] transition-all relative z-10">
+                    class="w-full py-3 mb-4 rounded-xl bg-gradient-to-r from-white to-zinc-200 text-black font-semibold flex items-center justify-center shadow-[0_0_15px_rgba(179,73,245,0.4)] hover:shadow-[0_0_25px_rgba(52,215,221,0.6)] transition-all relative z-10">
                     <i data-lucide="copy" class="h-4 w-4 mr-2"></i> Copiar Código Pix
                 </button>
 
                 <div class="flex items-center space-x-2 text-surface-400 text-xs mt-2 relative z-10 animate-pulse">
-                    <i data-lucide="loader-2" class="h-3 w-3 animate-spin text-[#34D7DD]"></i>
+                    <i data-lucide="loader-2" class="h-3 w-3 animate-spin text-[#FFFFFF]"></i>
                     <span>Aguardando confirmação...</span>
                 </div>
 
@@ -7071,16 +7498,16 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
         <div id="welcome-modal-overlay"
             class="fixed inset-0 z-[100000] hidden items-center justify-center bg-black/80 backdrop-blur-md transition-opacity duration-500 opacity-0">
             <div
-                class="relative w-[480px] max-w-[90vw] bg-[#0c0c0f] border border-[#34D7DD]/20 rounded-2xl p-10 shadow-[0_0_50px_rgba(52,215,221,0.15)] overflow-hidden flex flex-col items-center text-center transform scale-95 transition-transform duration-500">
+                class="relative w-[480px] max-w-[90vw] bg-[#0c0c0f] border border-[#FFFFFF]/20 rounded-2xl p-10 shadow-[0_0_50px_rgba(52,215,221,0.15)] overflow-hidden flex flex-col items-center text-center transform scale-95 transition-transform duration-500">
                 <!-- Neon Glow -->
                 <div
-                    class="absolute -top-10 -left-10 w-[200px] h-[200px] bg-[#B349F5]/20 blur-[70px] rounded-full pointer-events-none">
+                    class="absolute -top-10 -left-10 w-[200px] h-[200px] bg-[#B4B4B8]/20 blur-[70px] rounded-full pointer-events-none">
                 </div>
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#B349F5] to-[#34D7DD]"></div>
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-white to-zinc-200 text-black"></div>
 
                 <div
-                    class="h-16 w-16 rounded-full bg-gradient-to-br from-[#B349F5]/20 to-[#34D7DD]/20 border border-[#34D7DD]/30 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(52,215,221,0.2)] relative z-10">
-                    <i data-lucide="sparkles" class="h-8 w-8 text-[#34D7DD]"></i>
+                    class="h-16 w-16 rounded-full bg-gradient-to-br from-white/10 to-white/5 border border-[#FFFFFF]/30 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(52,215,221,0.2)] relative z-10">
+                    <i data-lucide="sparkles" class="h-8 w-8 text-[#FFFFFF]"></i>
                 </div>
 
                 <h2 class="text-2xl font-bold text-white mb-3 tracking-tight relative z-10">Bem-vindo à Aron Studio! 🚀
@@ -7088,12 +7515,12 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                 <p class="text-[15px] text-surface-300 leading-relaxed mb-8 px-2 relative z-10">
                     Sua jornada de criação começa aqui. Como presente, acabamos de adicionar <strong
-                        class="text-[#34D7DD]">20 créditos</strong> na sua conta para você gerar seus primeiros sites
+                        class="text-[#FFFFFF]">20 créditos</strong> na sua conta para você gerar seus primeiros sites
                     gratuitamente.
                 </p>
 
                 <button onclick="closeWelcomeModal()"
-                    class="w-full py-3.5 bg-gradient-to-r from-[#B349F5] to-[#34D7DD] text-white font-semibold rounded-xl shadow-[0_0_20px_rgba(179,73,245,0.4)] hover:shadow-[0_0_30px_rgba(52,215,221,0.6)] transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center space-x-2 relative z-10">
+                    class="w-full py-3.5 bg-gradient-to-r from-white to-zinc-200 text-black text-white font-semibold rounded-xl shadow-[0_0_20px_rgba(179,73,245,0.4)] hover:shadow-[0_0_30px_rgba(52,215,221,0.6)] transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center space-x-2 relative z-10">
                     <span>Começar a Criar</span>
                     <i data-lucide="arrow-right" class="h-5 w-5"></i>
                 </button>
@@ -7243,14 +7670,14 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                     const btn = document.getElementById('copy-pix-btn');
                     const originalHtml = btn.innerHTML;
                     btn.innerHTML = '<i data-lucide="check" class="h-4 w-4 mr-2"></i> Copiado!';
-                    btn.classList.replace('from-[#B349F5]', 'from-green-500');
-                    btn.classList.replace('to-[#34D7DD]', 'to-emerald-400');
+                    btn.classList.replace('from-[#B4B4B8]', 'from-green-500');
+                    btn.classList.replace('to-[#FFFFFF]', 'to-emerald-400');
                     if (window.lucide) window.lucide.createIcons();
 
                     setTimeout(() => {
                         btn.innerHTML = originalHtml;
-                        btn.classList.replace('from-green-500', 'from-[#B349F5]');
-                        btn.classList.replace('to-emerald-400', 'to-[#34D7DD]');
+                        btn.classList.replace('from-green-500', 'from-[#B4B4B8]');
+                        btn.classList.replace('to-emerald-400', 'to-[#FFFFFF]');
                         if (window.lucide) window.lucide.createIcons();
                     }, 2500);
                 }).catch(err => {
@@ -7359,7 +7786,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
             ];
 
  
-                function updateWelcomeGreeting(name) {
+                window.updateWelcomeGreeting = function(name) {
                     const el = document.getElementById('welcome-greeting');
                     if (!el) return;
                     const hour = new Date().getHours();
@@ -7587,6 +8014,7 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
 
                 // Captura rejeições de Promise não tratadas
                 window.onunhandledrejection = function (event) {
+                    if (event && event.reason && ((event.reason.name === 'AbortError') || /play\(\)|pause\(\)|interrupted|aborted/i.test(event.reason.message || ''))) return;
                     console.error('🚨 [UNHANDLED PROMISE]', event.reason);
                     emergencyReset();
                 };
@@ -7646,7 +8074,7 @@ window.toggleEditorView = function(view) {
         prev.style.display = 'none';
         code.style.display = 'flex';
         if (apply) apply.style.display = 'block';
-        tC.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)'; tC.style.color = 'white';
+        tC.style.background = 'linear-gradient(135deg,#FFFFFF,#B4B4B8)'; tC.style.color = 'white';
         tP.style.background = 'transparent'; tP.style.color = 'rgba(241,245,249,0.6)';
         if (window.monacoEditor && window.fullHtml) window.monacoEditor.setValue(window.fullHtml);
         if (window.monacoEditor) setTimeout(() => window.monacoEditor.layout(), 50);
@@ -7654,7 +8082,7 @@ window.toggleEditorView = function(view) {
         prev.style.display = 'block';
         code.style.display = 'none';
         if (apply) apply.style.display = 'none';
-        tP.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)'; tP.style.color = 'white';
+        tP.style.background = 'linear-gradient(135deg,#FFFFFF,#B4B4B8)'; tP.style.color = 'white';
         tC.style.background = 'transparent'; tC.style.color = 'rgba(241,245,249,0.6)';
         const ifr = document.getElementById('editor-preview-iframe');
         if (ifr && window.fullHtml) ifr.srcdoc = window.fullHtml;
@@ -7674,7 +8102,7 @@ window.sendEditorChatMessage = async function() {
     if (!currentHtml || currentHtml.length < 50) { showToast('Gere um site primeiro!', 'error'); return; }
 
     const u = document.createElement('div');
-    u.style.cssText = 'background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:14px 4px 14px 14px;padding:12px 14px;font-size:13px;color:white;line-height:1.6;align-self:flex-end;max-width:90%;';
+    u.style.cssText = 'background: #FFFFFF; color: #0A0A0A;border-radius:14px 4px 14px 14px;padding:12px 14px;font-size:13px;color:white;line-height:1.6;align-self:flex-end;max-width:90%;';
     u.textContent = msg;
     box.appendChild(u);
     input.value = ''; input.style.height = 'auto';
@@ -7682,7 +8110,7 @@ window.sendEditorChatMessage = async function() {
 
     const ai = document.createElement('div');
     ai.style.cssText = 'background:#13131f;border:1px solid rgba(99,102,241,0.2);border-radius:4px 14px 14px 14px;padding:12px 14px;font-size:13px;color:rgba(241,245,249,0.85);line-height:1.6;display:flex;align-items:center;gap:8px;';
-    ai.innerHTML = '<div style="width:12px;height:12px;border-radius:50%;border:2px solid rgba(99,102,241,0.3);border-top:2px solid #6366f1;animation:dotSpin 0.85s linear infinite;"></div> Aplicando ajuste...';
+    ai.innerHTML = '<div style="width:12px;height:12px;border-radius:50%;border:2px solid rgba(99,102,241,0.3);border-top:2px solid #FFFFFF;animation:dotSpin 0.85s linear infinite;"></div> Aplicando ajuste...';
     box.appendChild(ai);
     box.scrollTop = box.scrollHeight;
     if (btn) btn.disabled = true;
@@ -7770,12 +8198,12 @@ window.sendEditorChatMessage = async function() {
     overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:rgba(7,7,13,0.78);backdrop-filter:blur(6px);';
     overlay.innerHTML = ''
       + '<div style="position:relative;width:90%;max-width:420px;background:linear-gradient(145deg,#15151f,#0d0d16);border:1px solid rgba(99,102,241,0.3);border-radius:20px;padding:32px 28px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.6);font-family:Inter,sans-serif;">'
-      +   '<div style="width:64px;height:64px;margin:0 auto 20px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(99,102,241,0.5);">'
+      +   '<div style="width:64px;height:64px;margin:0 auto 20px;border-radius:50%;background: #FFFFFF; color: #0A0A0A;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(99,102,241,0.5);">'
       +     '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>'
       +   '</div>'
       +   '<h3 style="color:#f1f5f9;font-size:22px;font-weight:700;margin:0 0 10px;font-family:Plus Jakarta Sans,sans-serif;">Seus creditos acabaram</h3>'
       +   '<p style="color:rgba(241,245,249,0.6);font-size:15px;line-height:1.6;margin:0 0 26px;">Recarregue agora para continuar criando sites incriveis com a Aron.</p>'
-      +   '<button id="aron-credits-cta" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;box-shadow:0 8px 24px rgba(99,102,241,0.4);">Recarregar Agora</button>'
+      +   '<button id="aron-credits-cta" style="width:100%;padding:14px;border:none;border-radius:12px;background: #FFFFFF; color: #0A0A0A;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:Plus Jakarta Sans,sans-serif;box-shadow:0 8px 24px rgba(99,102,241,0.4);">Recarregar Agora</button>'
       +   '<button id="aron-credits-close" style="width:100%;margin-top:10px;padding:10px;border:none;border-radius:12px;background:transparent;color:rgba(241,245,249,0.4);font-size:13px;cursor:pointer;font-family:Inter,sans-serif;">Agora nao</button>'
       + '</div>';
     document.body.appendChild(overlay);
@@ -7795,7 +8223,264 @@ window.sendEditorChatMessage = async function() {
   };
 })();
 </script>
-<script src="manual-editor.js"></script>
+<script>
+/* ===== CARD DE FEEDBACK (estrelas + comentario) ===== */
+window.renderFeedbackCard = function (chatId, targetEl) {
+    var chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+    if (document.getElementById('aron-feedback-card')) return; // nao duplicar
+
+    var row = document.createElement('div');
+    row.className = 'aron-msg-row';
+    row.id = 'aron-feedback-card';
+    var starsHtml = '';
+    for (var i = 1; i <= 5; i++) {
+        starsHtml += '<span class="aron-fb-star" data-v="' + i + '" style="font-size:28px;cursor:pointer;color:#3f3f46;transition:color .15s;line-height:1;padding:2px;">\u2605</span>';
+    }
+    row.innerHTML =
+        '<div class="aron-avatar" style="background:transparent;padding:2px;">' +
+          '<img src="img/Aron-mark.png" alt="Aron" style="width:28px;height:28px;object-fit:contain;border-radius:50%;">' +
+        '</div>' +
+        '<div class="aron-bubble" style="background:#13131f;border:1px solid rgba(99,102,241,0.2);border-radius:4px 14px 14px 14px;padding:16px;max-width:90%;width:100%;">' +
+          '<div style="color:#e4e4e7;font-size:13px;font-weight:600;margin-bottom:12px;">O que voc\u00ea achou do resultado?</div>' +
+          '<div id="aron-fb-stars" style="display:flex;gap:4px;margin-bottom:14px;">' + starsHtml + '</div>' +
+          '<textarea id="aron-fb-comment" placeholder="Conte o que funcionou ou o que faltou (opcional)..." rows="2" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#f1f5f9;font-size:13px;padding:10px 12px;outline:none;resize:none;font-family:Inter,sans-serif;margin-bottom:12px;box-sizing:border-box;"></textarea>' +
+          '<button id="aron-fb-submit" style="padding:9px 20px;background:#FFFFFF;color:#0A0A0A;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;opacity:0.4;pointer-events:none;">Enviar feedback</button>' +
+          '<div id="aron-fb-done" style="display:none;color:#10b981;font-size:13px;font-weight:600;">\u2713 Obrigado pelo seu feedback!</div>' +
+        '</div>';
+    chatMessages.appendChild(row);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    var rating = 0;
+    var stars = row.querySelectorAll('.aron-fb-star');
+    var submitBtn = row.querySelector('#aron-fb-submit');
+
+    function paint(v) {
+        stars.forEach(function (s) {
+            s.style.color = (parseInt(s.getAttribute('data-v'), 10) <= v) ? '#fbbf24' : '#3f3f46';
+        });
+    }
+    stars.forEach(function (s) {
+        s.addEventListener('mouseenter', function () { paint(parseInt(s.getAttribute('data-v'), 10)); });
+        s.addEventListener('mouseleave', function () { paint(rating); });
+        s.addEventListener('click', function () {
+            rating = parseInt(s.getAttribute('data-v'), 10);
+            paint(rating);
+            submitBtn.style.opacity = '1';
+            submitBtn.style.pointerEvents = 'auto';
+        });
+    });
+
+    submitBtn.addEventListener('click', async function () {
+        if (!rating) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        var comment = (row.querySelector('#aron-fb-comment').value || '').trim();
+        var userId = localStorage.getItem('aron_user_id') || '';
+        var base = (window.API_URL || (typeof API_URL !== 'undefined' ? API_URL : ''));
+        try {
+            await apiFetch(base + '/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: userId,
+                    chat_id: chatId || window.currentChatId || '',
+                    rating: rating,
+                    comment: comment
+                })
+            });
+        } catch (e) { console.error('feedback:', e); }
+        // Estado de agradecimento (mesmo se a API falhar, nao trava a UX)
+        var s1 = row.querySelector('#aron-fb-stars');
+        var c1 = row.querySelector('#aron-fb-comment');
+        if (s1) s1.style.display = 'none';
+        if (c1) c1.style.display = 'none';
+        submitBtn.style.display = 'none';
+        row.querySelector('#aron-fb-done').style.display = 'block';
+        if (window.__aronFeedbackEnviado) window.__aronFeedbackEnviado();
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+};
+</script>
+<script>
+/* ===== FEEDBACK v3: barra (Avaliar + Estrutura) abaixo do preview ===== */
+(function () {
+    var jaAvaliou = false;
+    var STAR = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    var LAYERS = '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>';
+    var UP = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
+    var DOWN = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>';
+
+    function barra() { return document.getElementById('aron-avaliar-fab'); }
+
+    function criarBarra() {
+        if (barra()) return;
+        var wrap = document.createElement('div');
+        wrap.id = 'aron-avaliar-fab';
+        wrap.style.cssText = 'display:none;gap:10px;justify-content:center;align-items:center;padding:12px 0 4px;width:100%;flex-shrink:0;';
+
+        function botao(label, icon, onClick) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.innerHTML = icon + '<span style="margin-left:7px;">' + label + '</span>';
+            b.style.cssText = 'display:inline-flex;align-items:center;padding:9px 18px;background:#FFFFFF;color:#0A0A0A;border:none;border-radius:999px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);transition:transform .15s;';
+            b.onmouseenter = function () { b.style.transform = 'scale(1.05)'; };
+            b.onmouseleave = function () { b.style.transform = 'scale(1)'; };
+            b.addEventListener('click', onClick);
+            return b;
+        }
+        wrap.appendChild(botao('Avaliar', STAR, abrirFeedback));
+        wrap.appendChild(botao('Estrutura', LAYERS, abrirEstrutura));
+
+        var pc = document.getElementById('preview-container');
+        if (pc && pc.parentNode) {
+            pc.insertAdjacentElement('afterend', wrap);  // ABAIXO do preview
+        } else {
+            wrap.style.position = 'fixed';
+            wrap.style.bottom = '20px';
+            wrap.style.left = '0';
+            wrap.style.zIndex = '99998';
+            document.body.appendChild(wrap);
+        }
+    }
+    function mostrar() { var w = barra(); if (w && !jaAvaliou) w.style.display = 'flex'; }
+    function esconder() { var w = barra(); if (w) w.style.display = 'none'; }
+
+    /* ---------- MODAL DE ESTRUTURA (arvore de secoes) ---------- */
+    function extrairEstrutura(html) {
+        var doc = new DOMParser().parseFromString(html || '', 'text/html');
+        var ICON = [
+            [/(header|topo|navbar|menu)/, '\u2261'], [/(hero|banner|destaque)/, '\u25c6'],
+            [/(service|servico|feature|recurso)/, '\u2726'], [/(depoiment|testimonial|review|avalia)/, '\u2605'],
+            [/(gallery|galeria|portfolio)/, '\u25a6'], [/(price|preco|plano)/, '$'],
+            [/(contact|contato|fale)/, '\u2709'], [/(about|sobre|quem)/, '\u2139'],
+            [/(footer|rodape)/, '\u2581'], [/(faq|duvida|pergunta)/, '?']
+        ];
+        function icone(txt) {
+            txt = (txt || '').toLowerCase();
+            for (var i = 0; i < ICON.length; i++) { if (ICON[i][0].test(txt)) return ICON[i][1]; }
+            return '\u25b8';
+        }
+        var els = doc.querySelectorAll('header, nav, main, section, article, footer, [class*="section"], [class*="-block"]');
+        var seen = [], out = [];
+        els.forEach(function (el) {
+            if (seen.indexOf(el) >= 0) return; seen.push(el);
+            var tag = el.tagName.toLowerCase();
+            var id = el.id || '';
+            var cls = (el.className || '').toString();
+            var h = el.querySelector('h1,h2,h3');
+            var titulo = h ? h.textContent.trim().replace(/\s+/g, ' ').slice(0, 45) : '';
+            var nome = titulo || id || (cls.split(' ')[0]) || tag;
+            out.push({ icon: icone(id + ' ' + cls + ' ' + titulo + ' ' + tag), nome: nome, tag: tag });
+        });
+        return out;
+    }
+
+    function abrirEstrutura() {
+        if (document.getElementById('aron-estrutura-overlay')) return;
+        var html = window.fullHtml || '';
+        var itens = extrairEstrutura(html);
+
+        var overlay = document.createElement('div');
+        overlay.id = 'aron-estrutura-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;';
+
+        var lista = itens.length
+            ? itens.map(function (it) {
+                return '<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;background:rgba(255,255,255,0.03);margin-bottom:6px;">' +
+                       '<span style="font-size:16px;color:#a78bfa;width:22px;text-align:center;">' + it.icon + '</span>' +
+                       '<span style="flex:1;color:#e4e4e7;font-size:13px;">' + it.nome + '</span>' +
+                       '<span style="color:#71717a;font-size:11px;font-family:monospace;">&lt;' + it.tag + '&gt;</span>' +
+                       '</div>';
+              }).join('')
+            : '<div style="color:#a1a1aa;font-size:13px;text-align:center;padding:20px;">Nao consegui ler a estrutura do site.</div>';
+
+        var box = document.createElement('div');
+        box.style.cssText = 'position:relative;max-width:460px;width:100%;max-height:80vh;overflow-y:auto;background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px;font-family:Inter,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
+        box.innerHTML =
+            '<button id="aron-est-x" type="button" style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.06);color:#a1a1aa;font-size:15px;cursor:pointer;">\u2715</button>' +
+            '<div style="color:#f4f4f5;font-size:15px;font-weight:600;margin-bottom:4px;">Estrutura do site</div>' +
+            '<div style="color:#a1a1aa;font-size:12px;margin-bottom:16px;">' + itens.length + ' blocos identificados no que a Aron gerou.</div>' +
+            lista;
+        overlay.appendChild(box);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+        box.querySelector('#aron-est-x').addEventListener('click', function () { overlay.remove(); });
+        document.body.appendChild(overlay);
+    }
+
+    /* ---------- MODAL DE FEEDBACK (curtir/nao curtir + comentario) ---------- */
+    function abrirFeedback() {
+        if (document.getElementById('aron-fb-overlay')) return;
+        var voto = 0;
+        var overlay = document.createElement('div');
+        overlay.id = 'aron-fb-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;';
+        var box = document.createElement('div');
+        box.style.cssText = 'position:relative;max-width:420px;width:100%;background:#13131f;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:22px;font-family:Inter,sans-serif;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
+        box.innerHTML =
+            '<button id="aron-fb-x" type="button" style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,0.06);color:#a1a1aa;font-size:15px;cursor:pointer;">\u2715</button>' +
+            '<div style="color:#f4f4f5;font-size:15px;font-weight:600;margin-bottom:4px;">O que voc\u00ea achou do resultado?</div>' +
+            '<div style="color:#a1a1aa;font-size:12px;margin-bottom:16px;">Sua opini\u00e3o ajuda a Aron a melhorar.</div>' +
+            '<div style="display:flex;gap:12px;margin-bottom:16px;">' +
+              '<button id="aron-fb-like" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;">' + UP + '<span style="font-size:12px;font-weight:600;">Curti</span></button>' +
+              '<button id="aron-fb-dislike" type="button" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;color:#d4d4d8;cursor:pointer;">' + DOWN + '<span style="font-size:12px;font-weight:600;">N\u00e3o curti</span></button>' +
+            '</div>' +
+            '<textarea id="aron-fb-comment" rows="3" placeholder="Conte o que funcionou ou o que faltou (opcional)..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#f1f5f9;font-size:13px;padding:11px 13px;outline:none;resize:none;font-family:Inter,sans-serif;box-sizing:border-box;margin-bottom:14px;"></textarea>' +
+            '<button id="aron-fb-send" type="button" style="width:100%;padding:11px;background:#FFFFFF;color:#0A0A0A;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;opacity:0.45;pointer-events:none;">Enviar feedback</button>' +
+            '<div id="aron-fb-thanks" style="display:none;text-align:center;color:#10b981;font-size:14px;font-weight:600;padding:8px 0;">\u2713 Obrigado pelo seu feedback!</div>';
+        overlay.appendChild(box);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.remove(); });
+        document.body.appendChild(overlay);
+
+        var like = box.querySelector('#aron-fb-like');
+        var dislike = box.querySelector('#aron-fb-dislike');
+        var sendBtn = box.querySelector('#aron-fb-send');
+        function sel(q) {
+            voto = (q === 'like') ? 5 : 1;
+            like.style.borderColor = q === 'like' ? '#10b981' : 'rgba(255,255,255,0.1)';
+            like.style.color = q === 'like' ? '#10b981' : '#d4d4d8';
+            dislike.style.borderColor = q === 'dislike' ? '#f43f5e' : 'rgba(255,255,255,0.1)';
+            dislike.style.color = q === 'dislike' ? '#f43f5e' : '#d4d4d8';
+            sendBtn.style.opacity = '1'; sendBtn.style.pointerEvents = 'auto';
+        }
+        like.addEventListener('click', function () { sel('like'); });
+        dislike.addEventListener('click', function () { sel('dislike'); });
+        box.querySelector('#aron-fb-x').addEventListener('click', function () { overlay.remove(); });
+        sendBtn.addEventListener('click', async function () {
+            if (!voto) return;
+            sendBtn.disabled = true; sendBtn.textContent = 'Enviando...';
+            var comment = (box.querySelector('#aron-fb-comment').value || '').trim();
+            var userId = localStorage.getItem('aron_user_id') || '';
+            var base = window.API_URL || (typeof API_URL !== 'undefined' ? API_URL : '');
+            try {
+                await apiFetch(base + '/api/feedback', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, chat_id: window.currentChatId || '', rating: voto, comment: comment })
+                });
+            } catch (e) { console.error('feedback:', e); }
+            like.style.display = 'none'; dislike.style.display = 'none';
+            box.querySelector('#aron-fb-comment').style.display = 'none';
+            sendBtn.style.display = 'none';
+            box.querySelector('#aron-fb-thanks').style.display = 'block';
+            jaAvaliou = true;
+            setTimeout(function () { overlay.remove(); esconder(); }, 1400);
+        });
+    }
+
+    function vigiar() {
+        var pc = document.getElementById('preview-container');
+        if (!pc) { setTimeout(vigiar, 800); return; }
+        criarBarra();
+        new MutationObserver(function () {
+            if (pc.classList.contains('active')) mostrar(); else esconder();
+        }).observe(pc, { attributes: true, attributeFilter: ['class'] });
+        if (pc.classList.contains('active')) mostrar();
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', vigiar);
+    else vigiar();
+})();
+</script>
+<script src="manual-editor.js?v=5"></script>
 <script src="design-gallery.js?v=3"></script>
 
 </body>
