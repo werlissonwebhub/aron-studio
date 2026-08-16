@@ -99,7 +99,7 @@ def _get_mode_instruction(mode: str) -> str:
     if mode == "site":
         return SITE_MODE_INSTRUCTION
     return ""
-ARON_BADGE = '<a href="https://aronstudio.com.br?ref=badge" target="_blank" rel="noopener" style="position:fixed;bottom:16px;right:16px;z-index:2147483647;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(10,10,10,0.9);backdrop-filter:blur(8px);color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:12px;font-weight:600;text-decoration:none;border-radius:999px;box-shadow:0 4px 20px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.12);"><span style="opacity:0.7;">Criado com</span><img src="https://aronstudio.com.br/img/criado-com-Aron.png" alt="Aron" style="height:14px;width:auto;" /></a>'
+ARON_BADGE = '<style>html,body{max-width:100%;overflow-x:hidden;}</style><a href="https://aronstudio.com.br?ref=badge" target="_blank" rel="noopener" style="position:fixed;bottom:16px;right:16px;left:auto;max-width:calc(100% - 32px);z-index:2147483647;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(10,10,10,0.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:12px;font-weight:600;text-decoration:none;border-radius:999px;box-shadow:0 4px 20px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.12);box-sizing:border-box;white-space:nowrap;overflow:hidden;">\u200b<span style="opacity:0.7;">Criado com</span><img src="https://aronstudio.com.br/img/criado-com-Aron.png" alt="Aron" style="height:14px;width:auto;" /></a>'
 
 def _inject_aron_badge(html: str) -> str:
     if "</body>" in html:
