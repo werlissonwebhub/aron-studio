@@ -111,25 +111,25 @@ def _inject_color_fallbacks(html: str) -> str:
     css_rules = set()
     for m in re.finditer(r'bg-\[#([0-9a-fA-F]{3,6})\]', all_classes):
         h = m.group(1)
-        css_rules.add(f'.bg-\\[\\#{h}\\]{{background-color:#{h}}}')
+        css_rules.add(f'.bg-\\[\\#{h}\\]{{background-color:#{h}!important}}')
     for m in re.finditer(r'text-\[#([0-9a-fA-F]{3,6})\]', all_classes):
         h = m.group(1)
-        css_rules.add(f'.text-\\[\\#{h}\\]{{color:#{h}}}')
+        css_rules.add(f'.text-\\[\\#{h}\\]{{color:#{h}!important}}')
     for m in re.finditer(r'border-\[#([0-9a-fA-F]{3,6})\]', all_classes):
         h = m.group(1)
-        css_rules.add(f'.border-\\[\\#{h}\\]{{border-color:#{h}}}')
+        css_rules.add(f'.border-\\[\\#{h}\\]{{border-color:#{h}!important}}')
     rgba_pats = re.findall(r"rgba\([^)]+\)", all_classes)
     base_rules = """
-.bg-primary{background-color:#6366f1}
-.bg-surface,.bg-surface-950{background-color:#080810}
-.bg-surface-900{background-color:#0f0f1a}
-.bg-surface-800{background-color:#13131f}
-.bg-card{background-color:#13131f}
-.text-primary{color:#6366f1}
-.text-surface-400{color:rgba(241,245,249,0.5)}
-.text-surface-500{color:rgba(241,245,249,0.35)}
-.border-surface-700{border-color:rgba(255,255,255,0.1)}
-.border-surface-800{border-color:rgba(255,255,255,0.07)}
+.bg-primary{background-color:#6366f1!important}
+.bg-surface,.bg-surface-950{background-color:#080810!important}
+.bg-surface-900{background-color:#0f0f1a!important}
+.bg-surface-800{background-color:#13131f!important}
+.bg-card{background-color:#13131f!important}
+.text-primary{color:#6366f1!important}
+.text-surface-400{color:rgba(241,245,249,0.5)!important}
+.text-surface-500{color:rgba(241,245,249,0.35)!important}
+.border-surface-700{border-color:rgba(255,255,255,0.1)!important}
+.border-surface-800{border-color:rgba(255,255,255,0.07)!important}
 """
     css = '<style id="cf">' + base_rules + '\n'.join(css_rules) + '</style>'
     scrollbar_css = '''<style id="sb">
