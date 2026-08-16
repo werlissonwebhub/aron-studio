@@ -1147,7 +1147,173 @@
                 padding: 12px;
             }
         }
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
     <style>
         /* Typography System - Corporate Tech Style */
@@ -1173,6 +1339,89 @@
             stroke: #0A0A0A !important;
             -webkit-text-fill-color: #0A0A0A !important;
         }
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
     <style>
         .how-section {
@@ -1708,6 +1957,89 @@
                 animation: none;
             }
         }
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
     <style>
         .brand-logo-icon {
@@ -1722,6 +2054,89 @@
         .brand-logo-icon:hover {
             opacity: 1;
         }
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
     <style>
         /* --- TECH STACK LOGO MARQUEE CAROUSEL --- */
@@ -1811,6 +2226,89 @@
             z-index: 10;
             pointer-events: none;
         }
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
     <style>
         .comment-avatar-img {
@@ -1820,6 +2318,89 @@
             object-fit: cover;
             display: block;
         }
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
 </head>
 
@@ -2656,6 +3237,89 @@
                 grid-template-rows: repeat(3, 48px);
             }
         }
+    
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
     </style>
     <script>
         (function () {
@@ -2998,7 +3662,90 @@
 .feature-card-rainbow:hover {
     transform: translateY(-5px) scale(1.02);
 }
-</style>
+
+        /* --- V0 NODES STYLE --- */
+        .v0-wrapper {
+            position: relative;
+            width: 100%;
+            max-w: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+        }
+
+        .v0-center {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 450px;
+            background: #09090b;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .v0-node {
+            position: absolute;
+            z-index: 11;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .v0-node:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .v0-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 1px;
+            background: transparent;
+            border-top: 2px dashed rgba(255, 255, 255, 0.3);
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Node positions */
+        .node-web { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .node-plan { top: 25%; right: 5%; transform: translate(0, -50%); }
+        .node-db { top: 75%; right: 5%; transform: translate(0, -50%); }
+        .node-api { bottom: 5%; left: 50%; transform: translate(-50%, 50%); }
+        .node-deploy { top: 75%; left: 5%; transform: translate(0, -50%); }
+        .node-llm { top: 25%; left: 5%; transform: translate(0, -50%); }
+
+        @media (max-width: 768px) {
+            .v0-wrapper { padding: 40px 10px; max-width: 100%; overflow: hidden; }
+            .v0-node { font-size: 11px; padding: 6px 12px; gap: 6px; }
+            .v0-line { width: 120px; }
+            .node-plan { right: 0; }
+            .node-db { right: 0; }
+            .node-deploy { left: 0; }
+            .node-llm { left: 0; }
+        }
+
+    </style>
 
         <div class="grid md:grid-cols-3 gap-6">
             <!-- 1. Design Multimodal -->
@@ -3192,21 +3939,52 @@
             </div>
 
             <!-- VÍDEO SHOWCASE EM LOOP (3D FLOATING / SEM FUNDO) -->
-            <div class="mt-12 lg:mt-16 flex justify-center items-center reveal">
-                <div class="w-full max-w-lg lg:max-w-xl mx-auto flex items-center justify-center">
-                    <video 
-                        id="prospect-video-loop"
-                        src="video/VID_20260814_004700.mp4" 
-                        autoplay 
-                        loop 
-                        muted 
-                        playsinline 
-                        preload="metadata"
-                        class="w-full h-auto object-contain block bg-transparent"
-                        style="mix-blend-mode: screen;"
-                    >
-                        Seu navegador não suporta a reprodução de vídeo.
-                    </video>
+            <div class="mt-20 lg:mt-32 flex justify-center items-center reveal">
+                <div class="v0-wrapper">
+                    <!-- Linhas tracejadas -->
+                    <div class="v0-line" style="transform: rotate(-90deg); width: 220px;"></div> <!-- Web -->
+                    <div class="v0-line" style="transform: rotate(-30deg); width: 280px;"></div> <!-- Plan -->
+                    <div class="v0-line" style="transform: rotate(30deg); width: 280px;"></div> <!-- DB -->
+                    <div class="v0-line" style="transform: rotate(90deg); width: 220px;"></div> <!-- API -->
+                    <div class="v0-line" style="transform: rotate(150deg); width: 280px;"></div> <!-- Deploy -->
+                    <div class="v0-line" style="transform: rotate(210deg); width: 280px;"></div> <!-- LLM -->
+
+                    <!-- Central Video -->
+                    <div class="v0-center">
+                        <video 
+                            id="prospect-video-loop"
+                            src="video/VID_20260814_004700.mp4" 
+                            autoplay 
+                            loop 
+                            muted 
+                            playsinline 
+                            preload="metadata"
+                            class="w-full h-auto object-contain block bg-transparent"
+                            style="mix-blend-mode: screen; border-radius: 50%;"
+                        >
+                            Seu navegador não suporta a reprodução de vídeo.
+                        </video>
+                    </div>
+
+                    <!-- Nodes -->
+                    <div class="v0-node node-web">
+                        <i class="fa-solid fa-window-maximize"></i> Web
+                    </div>
+                    <div class="v0-node node-plan">
+                        <i class="fa-solid fa-book-open"></i> Plan
+                    </div>
+                    <div class="v0-node node-db">
+                        <i class="fa-solid fa-database"></i> DB
+                    </div>
+                    <div class="v0-node node-api">
+                        <i class="fa-solid fa-code"></i> API
+                    </div>
+                    <div class="v0-node node-deploy">
+                        <i class="fa-solid fa-rocket"></i> Deploy
+                    </div>
+                    <div class="v0-node node-llm">
+                        <i class="fa-solid fa-sparkles"></i> LLM
+                    </div>
                 </div>
             </div>
         </div>
