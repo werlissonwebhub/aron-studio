@@ -15,7 +15,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -149,7 +149,8 @@ app.include_router(feedback_router)
 @app.get("/google022d0f40a84805e0.html")
 async def google_verification():
     return FileResponse("../front/google022d0f40a84805e0.html")
-    
+
+
 @app.get("/favicon.ico")
 async def favicon():
     return FileResponse("../front/img/favicon-32.png")
@@ -158,6 +159,11 @@ async def favicon():
 @app.get("/chat")
 async def get_chat_page():
     return FileResponse("../front/chat.html")
+
+@app.get("/chat.html")
+async def redirect_chat_html():
+    return RedirectResponse(url="/chat", status_code=301)
+
 
 @app.get("/privacidade")
 async def get_privacidade_page():
