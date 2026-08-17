@@ -99,7 +99,7 @@ def _get_mode_instruction(mode: str) -> str:
     if mode == "site":
         return SITE_MODE_INSTRUCTION
     return ""
-ARON_BADGE = '<style>html,body{max-width:100%;overflow-x:hidden;}</style><a href="https://aronstudio.com.br?ref=badge" target="_blank" rel="noopener" style="position:fixed;bottom:16px;right:16px;left:auto;max-width:calc(100% - 32px);z-index:2147483647;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(10,10,10,0.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:12px;font-weight:600;text-decoration:none;border-radius:999px;box-shadow:0 4px 20px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.12);box-sizing:border-box;white-space:nowrap;overflow:hidden;">\u200b<span style="opacity:0.7;">Criado com</span><img src="https://aronstudio.com.br/img/criado-com-Aron.png" alt="Aron" style="height:14px;width:auto;" /></a>'
+ARON_BADGE = '<a href="https://aronstudio.com.br?ref=badge" target="_blank" rel="noopener" style="position:fixed;bottom:16px;right:16px;left:auto;max-width:calc(100% - 32px);z-index:2147483647;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(10,10,10,0.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:12px;font-weight:600;text-decoration:none;border-radius:999px;box-shadow:0 4px 20px rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.12);box-sizing:border-box;white-space:nowrap;overflow:hidden;">\u200b<span style="opacity:0.7;">Criado com</span><img src="https://aronstudio.com.br/img/criado-com-Aron.png" alt="Aron" style="height:14px;width:auto;" /></a>'
 
 def _inject_aron_badge(html: str) -> str:
     if "</body>" in html:
@@ -111,27 +111,30 @@ def _inject_color_fallbacks(html: str) -> str:
     css_rules = set()
     for m in re.finditer(r'bg-\[#([0-9a-fA-F]{3,6})\]', all_classes):
         h = m.group(1)
-        css_rules.add(f'.bg-\\[\\#{h}\\]{{background-color:#{h}!important}}')
+        css_rules.add(f'.bg-\\[\\#{h}\\]{{background-color:#{h}}}')
     for m in re.finditer(r'text-\[#([0-9a-fA-F]{3,6})\]', all_classes):
         h = m.group(1)
-        css_rules.add(f'.text-\\[\\#{h}\\]{{color:#{h}!important}}')
+        css_rules.add(f'.text-\\[\\#{h}\\]{{color:#{h}}}')
     for m in re.finditer(r'border-\[#([0-9a-fA-F]{3,6})\]', all_classes):
         h = m.group(1)
-        css_rules.add(f'.border-\\[\\#{h}\\]{{border-color:#{h}!important}}')
+        css_rules.add(f'.border-\\[\\#{h}\\]{{border-color:#{h}}}')
     rgba_pats = re.findall(r"rgba\([^)]+\)", all_classes)
     base_rules = """
-.bg-primary{background-color:#6366f1!important}
-.bg-surface,.bg-surface-950{background-color:#080810!important}
-.bg-surface-900{background-color:#0f0f1a!important}
-.bg-surface-800{background-color:#13131f!important}
-.bg-card{background-color:#13131f!important}
-.text-primary{color:#6366f1!important}
-.text-surface-400{color:rgba(241,245,249,0.5)!important}
-.text-surface-500{color:rgba(241,245,249,0.35)!important}
-.border-surface-700{border-color:rgba(255,255,255,0.1)!important}
-.border-surface-800{border-color:rgba(255,255,255,0.07)!important}
+.bg-primary{background-color:#6366f1}
+.bg-surface,.bg-surface-950{background-color:#080810}
+.bg-surface-900{background-color:#0f0f1a}
+.bg-surface-800{background-color:#13131f}
+.bg-card{background-color:#13131f}
+.text-primary{color:#6366f1}
+.text-surface-400{color:rgba(241,245,249,0.5)}
+.text-surface-500{color:rgba(241,245,249,0.35)}
+.border-surface-700{border-color:rgba(255,255,255,0.1)}
+.border-surface-800{border-color:rgba(255,255,255,0.07)}
 """
     css = '<style id="cf">' + base_rules + '\n'.join(css_rules) + '</style>'
+    # CSS global que previne overflow horizontal no mobile (menu mobile bugado)
+    # Antes ficava dentro do ARON_BADGE (so free), agora roda para TODOS os planos.
+    overflow_fix = '<style id="of">html,body{max-width:100%;overflow-x:hidden;}</style>'
     scrollbar_css = '''<style id="sb">
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -140,8 +143,8 @@ def _inject_color_fallbacks(html: str) -> str:
 html{scrollbar-width:thin;scrollbar-color:rgba(128,128,128,0.35) transparent}
 </style>'''
     if '<head>' in html:
-        return html.replace('<head>', '<head>\n' + scrollbar_css + '\n' + css, 1)
-    return scrollbar_css + css + html
+        return html.replace('<head>', '<head>\n' + overflow_fix + '\n' + scrollbar_css + '\n' + css, 1)
+    return overflow_fix + scrollbar_css + css + html
 
 
 router = APIRouter()
