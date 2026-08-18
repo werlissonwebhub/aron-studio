@@ -295,7 +295,7 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
                 # Gemini — streaming padrao
                 # Mapeamento dinamico: cada alias aponta para seu modelo real
                 GEMINI_ALIAS_MAP = {
-                    'gemini': MODEL_NAME,            # default = gemini-3.7-flash
+                    'gemini': MODEL_NAME,            # default = gemini-3.6-flash
                     'gemini-3.7-flash': 'gemini-3.7-flash',
                     'gemini-3.6-flash': 'gemini-3.6-flash',
                     'gemini-3.5-flash': 'gemini-3.5-flash',
