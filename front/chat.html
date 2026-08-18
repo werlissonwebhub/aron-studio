@@ -2844,7 +2844,7 @@
                             codePanel.style.display = 'flex';
                             btn.classList.add('text-[#FFFFFF]', 'bg-[#FFFFFF]/10');
                             label.textContent = 'Preview';
-                            const html = window.fullHtml || '';
+                            const html = window.fullHtml || fullHtml || (window.currentProjectData && (window.currentProjectData.html || window.currentProjectData.full_html)) || '';
                             content.textContent = html
                                 ? html
                                 : '// Nenhum código gerado ainda. Crie um site primeiro.';
@@ -5884,49 +5884,38 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         previewContainer.classList.add('active');
                         document.getElementById('thinking-state')?.classList.remove('active');
 
-                        fullHtml = data.full_json || data.html_code || data.full_code || "";
-                        if (fullHtml && !fullHtml.trim().startsWith("{")) {
-                            window.fullHtml = fullHtml;
-                            if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
-                            if (typeof window.updateCodePanel === 'function') { try { window.updateCodePanel(fullHtml); } catch(e){} }
+                        let rawHtml = data.html_code || data.full_code || data.full_json || "";
+                        let extractedHtml = rawHtml;
+                        if (rawHtml && rawHtml.trim().startsWith("{")) {
+                            try {
+                                const parsedData = JSON.parse(rawHtml);
+                                window.currentProjectData = parsedData;
+                                if (parsedData.project_structure) {
+                                    if (window.renderMultiFileApp) window.renderMultiFileApp(parsedData.project_structure);
+                                    extractedHtml = parsedData.project_structure.html || parsedData.project_structure['index.html'] || rawHtml;
+                                } else if (parsedData.html || parsedData.full_html) {
+                                    if (window.renderMultiFileApp) window.renderMultiFileApp(parsedData);
+                                    extractedHtml = parsedData.html || parsedData.full_html || rawHtml;
+                                }
+                            } catch (_eJson) {
+                                extractedHtml = rawHtml;
+                            }
                         }
 
-                        try {
-                            const parsedData = JSON.parse(fullHtml);
-                            if (window.renderMultiFileApp) {
-                                if (parsedData.project_structure) {
-                                    window.renderMultiFileApp(parsedData.project_structure);
-                                } else if (parsedData.files || parsedData.html || parsedData.full_html) {
-                                    window.renderMultiFileApp(parsedData);
-                                } else {
-                                    window.currentProjectData = null;
-                                    if (window.files) window.files = {};
-                                    window.fullHtml = fullHtml;
-                                    if (window.__aronSetFullHtml) window.__aronSetFullHtml(fullHtml);
-                                    renderInIframe(fullHtml);
-                                    if (window.monacoEditor) {
-                                        try { window.monacoEditor.setValue(fullHtml); } catch(e) {}
-                                    }
-                                    if (typeof window.updateCodePanel === 'function') {
-                                        try { window.updateCodePanel(fullHtml); } catch(e) {}
-                                    }
-                                }
-                            } else {
-                                window.currentProjectData = null;
-                                if (window.files) window.files = {};
-                                renderInIframe(fullHtml);
-                                if (window.monacoEditor) {
-                                    try { window.monacoEditor.setValue(fullHtml); } catch (e) {}
-                                }
-                            }
-                        } catch (e) {
-                            // Fallback
-                            window.currentProjectData = null;
-                            if (window.files) window.files = {};
-                            renderInIframe(fullHtml);
-                            if (window.monacoEditor) {
-                                try { window.monacoEditor.setValue(fullHtml); } catch (e) {}
-                            }
+                        fullHtml = extractedHtml;
+                        window.fullHtml = extractedHtml;
+                        if (window.__aronSetFullHtml) window.__aronSetFullHtml(extractedHtml);
+                        renderInIframe(extractedHtml);
+
+                        if (window.monacoEditor) {
+                            try { window.monacoEditor.setValue(extractedHtml); } catch (e) {}
+                        }
+                        if (typeof window.updateCodePanel === 'function') {
+                            try { window.updateCodePanel(extractedHtml); } catch (e) {}
+                        }
+                        const _codeViewContent = document.getElementById('code-view-content');
+                        if (_codeViewContent && extractedHtml) {
+                            _codeViewContent.textContent = extractedHtml;
                         }
 
                         // Renderizar balões no chat

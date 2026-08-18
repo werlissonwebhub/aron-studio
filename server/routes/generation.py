@@ -372,13 +372,19 @@ async def _generate_handler(request: Request, body: GenerationRequest, verified_
                 yield f'data: {json.dumps({"type": "error", "message": "Saldo insuficiente para concluir a geracao."})}\n\n'
                 return
 
-            # Persistir o código gerado no banco de dados SQLite diretamente no servidor
+            # Persistir o código gerado no banco de dados SQLite diretamente no servidor (UPSERT resiliente)
             try:
                 async with aiosqlite.connect(DB_NAME) as _db_save:
-                    await _db_save.execute(
+                    _cur_save = await _db_save.execute(
                         "UPDATE chats SET full_code = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?",
                         (extracted, body.chat_id, body.user_id)
                     )
+                    if _cur_save.rowcount == 0:
+                        _title_save = (body.prompt or "Projeto Sem Nome")[:50] + ("..." if len(body.prompt or "") > 50 else "")
+                        await _db_save.execute(
+                            "INSERT OR REPLACE INTO chats (id, user_id, title, full_code, mode, created_at, updated_at) VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))",
+                            (body.chat_id, body.user_id, _title_save, extracted, body.mode or "site")
+                        )
                     await _db_save.commit()
             except Exception as _e_save:
                 print(f">>> [DB SAVE ERROR] Falha ao salvar full_code gerado: {_e_save}")
