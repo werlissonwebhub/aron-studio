@@ -4814,8 +4814,17 @@ Lembre-se de seguir EXTRETAMENTE as cores listadas, a stack, e o objetivo de cad
                         // MAS salva o projeto no banco imediatamente (essencial para a IA
                         // reconhecer o codigo em modificacoes futuras)
                         try {
-                            const _decoded = decodeURIComponent(escape(atob(htmlBase64)));
+                            let _decoded = '';
+                            try {
+                                const _bin = atob(htmlBase64);
+                                const _bytes = new Uint8Array(_bin.length);
+                                for (let _i = 0; _i < _bin.length; _i++) _bytes[_i] = _bin.charCodeAt(_i);
+                                _decoded = new TextDecoder('utf-8').decode(_bytes);
+                            } catch (_eDec) {
+                                _decoded = decodeURIComponent(escape(atob(htmlBase64)));
+                            }
                             if (window.__aronSetFullHtml) window.__aronSetFullHtml(_decoded);
+                            if (typeof window.updateCodePanel === 'function') window.updateCodePanel(_decoded);
                             if (window.saveProjectToCloud) window.saveProjectToCloud(true);
                         } catch (_eSave) {
                             try {
